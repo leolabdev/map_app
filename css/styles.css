@@ -22,6 +22,7 @@ html {
 }
 *, *::before, *::after {
     box-sizing: inherit;
+    outline: 1px solid red;
 }
 
 /* generic styles for the page */
@@ -54,4 +55,14 @@ a:hover {
 
 img{
     width:100%;
+}
+
+#searchBar{
+    margin: 50px 0 50px 50px;
+}
+
+#map {
+    width: 80%;
+    height: 700px;
+    margin: 0 auto;
 }
