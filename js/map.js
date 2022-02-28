@@ -9,6 +9,6 @@ L.Routing.control({
     waypoints: [
         L.latLng(51.505, -0.09),
         L.latLng(52.505, -0.09),
-        L.latLng(53.505, -1)
+        L.latLng(53.505, -3)
     ]
 }).addTo(map);
