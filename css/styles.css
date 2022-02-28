@@ -36,7 +36,7 @@ body {
     margin: 0;
     font-family: var(--sans);
     background-color: var(--black);
-    color: var(--white);
+    color: var(--black);
     font-size: var(--font-size);
 }
 
