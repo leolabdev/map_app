@@ -2,7 +2,7 @@ import About from "./about";
 import { Counter } from './counter';
 import { OS } from "./os";
 import { Elements } from "./elements";
-
+import {MapR} from "./mapR"
 
 export const screens = [
     {
@@ -13,6 +13,11 @@ export const screens = [
     {
         name: 'Counter',
         component: Counter
+    },
+
+    {
+        name: 'MapR',
+        component: MapR
     },
 
     {
