@@ -27,7 +27,7 @@ const makeQuery = async (sqlQuery , params) => {
         console.log("Error during getting data from DB:");
         console.log(err);
     } finally {
-        con.end();
+        await con.end();
     }
 }
 

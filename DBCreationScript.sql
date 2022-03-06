@@ -2,15 +2,61 @@ DROP DATABASE IF EXISTS mapApp;
 CREATE DATABASE mapApp;
 USE mapApp;
 
-CREATE TABLE route (
-  routeId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  startLat DOUBLE NOT NULL,
-  startLon DOUBLE NOT NULL,
-  endLat DOUBLE NOT NULL,
-  endLon DOUBLE NOT NULL
+CREATE TABLE Manufacturer
+(
+    manufacturerId INT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    PRIMARY KEY (manufacturerId)
 );
 
-INSERT INTO route (startLat, startLon, endLat, endLon) VALUES (60.2265482, 24.816782, 60.2259408, 24.8119744);
-INSERT INTO route (startLat, startLon, endLat, endLon) VALUES (60.23169, 24.8060796, 60.2053543, 24.870023);
-INSERT INTO route (startLat, startLon, endLat, endLon) VALUES (60.2128726, 25.0843684, 60.2143693, 25.1046107);
-INSERT INTO route (startLat, startLon, endLat, endLon) VALUES (60.3746647, 24.7518197, 60.3310057, 24.8552877);
+CREATE TABLE Client
+(
+    clientId INT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    PRIMARY KEY (clientId)
+);
+
+CREATE TABLE Address
+(
+    street VARCHAR(255) NOT NULL,
+    building VARCHAR(10) NOT NULL,
+    flat INT,
+    addressId INT NOT NULL,
+    lon DOUBLE NOT NULL,
+    lat DOUBLE NOT NULL,
+    PRIMARY KEY (addressId)
+);
+
+CREATE TABLE OrderData
+(
+    orderId INT NOT NULL,
+    manufacturerId INT NOT NULL,
+    clientId INT NOT NULL,
+    shipmentAddressId INT NOT NULL,
+    deliveryAddressId INT NOT NULL,
+    PRIMARY KEY (orderId),
+    FOREIGN KEY (manufacturerId) REFERENCES Manufacturer(manufacturerId),
+    FOREIGN KEY (clientId) REFERENCES Client(clientId),
+    FOREIGN KEY (shipmentAddressId) REFERENCES Address(addressId),
+    FOREIGN KEY (deliveryAddressId) REFERENCES Address(addressId)
+);
+
+CREATE TABLE AsShipmentAddress
+(
+    manufacturerId INT NOT NULL,
+    addressId INT NOT NULL,
+    PRIMARY KEY (manufacturerId, addressId),
+    FOREIGN KEY (manufacturerId) REFERENCES Manufacturer(manufacturerId),
+    FOREIGN KEY (addressId) REFERENCES Address(addressId)
+);
+
+CREATE TABLE AsDeliveryAddress
+(
+    addressId INT NOT NULL,
+    clientId INT NOT NULL,
+    PRIMARY KEY (addressId, clientId),
+    FOREIGN KEY (addressId) REFERENCES Address(addressId),
+    FOREIGN KEY (clientId) REFERENCES Client(clientId)
+);
