@@ -2,10 +2,6 @@ const express = require('express');
 const https = require('https');
 
 const router = express.Router();
-const accessToken = {
-    mapbox : 'pk.eyJ1IjoibGVvMTMzNzgiLCJhIjoiY2t1eWFpODdlMG03YzJucXFqYzIzejY2ZiJ9._2n5SN75xLxFTpcNxZFdKQ',
-    openroute : '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe'
-};
 
 /**
  * Converts openrouteservices GeoJson to our own GeoJson.
@@ -56,7 +52,7 @@ router.get('/address', async (req, res) => {
     let search_text = req.query.search;
     console.log(search_text);
     //let url = `https://api.mapbox.com/geocoding/v5/${endpoint}/${search_text}.json?country=FI&access_token=${accessToken.mapbox}`
-    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${accessToken.openroute}&text=${search_text}&size=500`
+    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500`
     console.log(url);
     let json;
     await https.get(url,(response) => {
@@ -126,7 +122,7 @@ router.get('/address/geojson', async (req, res) => {
     let search_text = req.query.search;
     console.log(search_text);
     //let url = `https://api.mapbox.com/geocoding/v5/${endpoint}/${search_text}.json?country=FI&access_token=${accessToken.mapbox}`
-    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${accessToken.openroute}&text=${search_text}&size=500`
+    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500`
     console.log(url);
     let json;
     await https.get(url,(response) => {

@@ -5,8 +5,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
-
 dotenv.config();
+
 const {getSequelizeInstance} = require("./modules/sequalizeUtil");
 const address = require('./routes/api/v1/address');
 
@@ -17,12 +17,9 @@ app.use(bodyParser.json());
 
 app.use('/api/v1', address);
 
-//port for heroku/any server which uses environmental variables or 8081 (a port for our localhost)
+//port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const port = process.env.PORT || 8081;
-console.log(
-    process.env.DATABASE,
-    process.env.DATABASE_USER,
-    process.env.DATABASE_PASSWORD,);
+
 app.listen(port, async () => {
     console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
     //Testing connection to the DB
