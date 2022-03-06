@@ -25,6 +25,7 @@ function getTwoPointDirection(start, end, mode) {
         const query = "api_key=" + key + "&start=" + startPointDir + "&end=" + endPointDir;
         const url = "https://api.openrouteservice.org/v2/directions/" + profile + "?" + query;
 
+        console.log(url);
         request.open("GET", url);
         request.onreadystatechange = () => {
             if(this.readyState === 4){
