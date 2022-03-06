@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 
 const address = require('./routes/api/v1/address');
-app.use('/api/v1/address', address);
+app.use('/api/v1', address);
 
 //port for heroku or 5000 (a port for our localhost)
 const port = process.env.PORT || 5000;
