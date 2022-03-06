@@ -16,4 +16,4 @@ app.use('/api/v1', address);
 //port for heroku or 5000 (a port for our localhost)
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server started on port ${port} // http://localhost:5000/api/projects`)); //huomaa, et täytyy olla ` eikä '
+app.listen(port, () => console.log(`Server started on port ${port} // http://localhost:5000/api/v1`));
