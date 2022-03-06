@@ -4,16 +4,33 @@
 // Dev Start: npm run dev
 const express = require('express');
 const bodyParser = require('body-parser');
+const dotenv = require("dotenv");
+
+dotenv.config();
+const {getSequelizeInstance} = require("./modules/sequalizeUtil");
+const address = require('./routes/api/v1/address');
 
 const app = express();
 
 //middleware
 app.use(bodyParser.json());
 
-const address = require('./routes/api/v1/address');
 app.use('/api/v1', address);
 
-//port for heroku or 5000 (a port for our localhost)
-const port = process.env.PORT || 5000;
-
-app.listen(port, () => console.log(`Server started on port ${port} // http://localhost:5000/api/v1`));
+//port for heroku/any server which uses environmental variables or 8081 (a port for our localhost)
+const port = process.env.PORT || 8081;
+console.log(
+    process.env.DATABASE,
+    process.env.DATABASE_USER,
+    process.env.DATABASE_PASSWORD,);
+app.listen(port, async () => {
+    console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
+    //Testing connection to the DB
+    try {
+        const sequelize = getSequelizeInstance();
+        await sequelize.authenticate();
+        console.log('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+});
