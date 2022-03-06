@@ -1,10 +1,5 @@
 const express = require('express');
-const https = require('https')
-const options = {
-    hostname: 'https://api.mapbox.com',
-    path: '/geocoding/v5/mapbox.places/',
-    method: 'GET'
-}
+const https = require('https');
 
 const router = express.Router();
 const accessToken = 'pk.eyJ1IjoibGVvMTMzNzgiLCJhIjoiY2t1eWFpODdlMG03YzJucXFqYzIzejY2ZiJ9._2n5SN75xLxFTpcNxZFdKQ';
