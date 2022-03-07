@@ -4,7 +4,7 @@ USE mapApp;
 
 CREATE TABLE Manufacturer
 (
-    manufacturerId INT NOT NULL,
+    manufacturerId INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     name VARCHAR(255),
     PRIMARY KEY (manufacturerId)
@@ -12,7 +12,7 @@ CREATE TABLE Manufacturer
 
 CREATE TABLE Client
 (
-    clientId INT NOT NULL,
+    clientId INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     name VARCHAR(255),
     PRIMARY KEY (clientId)
@@ -20,10 +20,10 @@ CREATE TABLE Client
 
 CREATE TABLE Address
 (
+    addressId INT NOT NULL AUTO_INCREMENT,
     street VARCHAR(255) NOT NULL,
     building VARCHAR(10) NOT NULL,
     flat INT,
-    addressId INT NOT NULL,
     lon DOUBLE NOT NULL,
     lat DOUBLE NOT NULL,
     PRIMARY KEY (addressId)
@@ -31,7 +31,7 @@ CREATE TABLE Address
 
 CREATE TABLE OrderData
 (
-    orderId INT NOT NULL,
+    orderId INT NOT NULL AUTO_INCREMENT,
     manufacturerId INT NOT NULL,
     clientId INT NOT NULL,
     shipmentAddressId INT NOT NULL,
