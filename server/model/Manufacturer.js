@@ -23,7 +23,8 @@ Manufacturer.init({
 
     username: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
 
     name: {
@@ -31,3 +32,5 @@ Manufacturer.init({
         allowNull: true
     }
 }, options);
+
+module.exports.Manufacturer = Manufacturer;
