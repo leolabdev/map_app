@@ -9,12 +9,14 @@ dotenv.config();
 
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
 const address = require('./routes/api/v1/address');
+const manufacturer = require('./routes/dao/manufacturer');
 
 const app = express();
 
 //middleware
 app.use(bodyParser.json());
 app.use('/api/v1', address);
+app.use('/dao/manufacturer', manufacturer);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const port = process.env.PORT || 8081;
