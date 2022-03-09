@@ -4,7 +4,7 @@ dotenv.config();
 
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
 const  Manufacturer = require("./model/Manufacturer").Manufacturer;
-const { Sequelize, Model, DataTypes } = require("sequelize");
+const  ManufacturerDAO = require("./DAO/ManufacturerDAO").ManufacturerDAO;
 
 const app = express();
 
@@ -14,14 +14,30 @@ const app = express();
 app.use(express.json());
 
 const sequelizeUtil = new SequelizeUtil();
+const manufacturerDAO = new ManufacturerDAO();
 
 app.listen(8082, async () => {
     if(sequelizeUtil.isSequelizeConnected()){
-        const sequelize = sequelizeUtil.getSequelizeInstance();
+        let resp = await manufacturerDAO.create({manufacturerUsername: "johnny", name: "John Smith"});
+        console.log(resp);
+        const johnny = await manufacturerDAO.read("johnny");
+        console.log(johnny);
 
-        const john = await Manufacturer.create({username: "johnny", name: "John"});
-        console.log(john.toJSON());
+        await manufacturerDAO.create({manufacturerUsername: "anna", name: "Anna Black"});
+        await manufacturerDAO.create({manufacturerUsername: "george", name: "George Eagle"});
 
+        let allMans = await manufacturerDAO.readAll();
+        console.log(allMans);
+
+        resp = await manufacturerDAO.update({manufacturerUsername: "johnny", name: "John Parker"});
+        console.log(resp);
+
+        resp = await manufacturerDAO.delete("anna");
+        console.log(resp);
+
+        allMans = await manufacturerDAO.readAll();
+        console.log(allMans);
+/*
         let manufacturers = await Manufacturer.findAll();
         console.log(JSON.stringify(manufacturers));
 
@@ -33,6 +49,6 @@ app.listen(8082, async () => {
             attributes: ['name'],
             where: {manufacturerId: 1}
         });
-        console.log(JSON.stringify(manufacturers));
+        console.log(JSON.stringify(manufacturers));*/
     }
 });

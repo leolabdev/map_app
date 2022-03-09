@@ -14,17 +14,10 @@ const options = {
 class Manufacturer extends Model{}
 
 Manufacturer.init({
-    manufacturerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true
-    },
-
-    username: {
+    manufacturerUsername: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        primaryKey: true
     },
 
     name: {
