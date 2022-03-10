@@ -19,6 +19,7 @@ CREATE TABLE Client
 CREATE TABLE Address
 (
     addressId INT NOT NULL AUTO_INCREMENT,
+    city VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
     building VARCHAR(10) NOT NULL,
     flat INT,

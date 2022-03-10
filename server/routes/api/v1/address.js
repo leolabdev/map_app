@@ -50,10 +50,8 @@ function parseGeoJsonFromORS(geojson){
  */
 router.get('/address', async (req, res) => {
     let search_text = req.query.search;
-    console.log(search_text);
     //let url = `https://api.mapbox.com/geocoding/v5/${endpoint}/${search_text}.json?country=FI&access_token=${accessToken.mapbox}`
-    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500`
-    console.log(url);
+    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500`;
     let json;
     await https.get(url,(response) => {
         let body = "";
@@ -102,7 +100,6 @@ function parseAddressFromORS(geojson){
             },
         });
     });
-    console.log(json);
     return json;
 }
 

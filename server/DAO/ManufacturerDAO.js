@@ -7,11 +7,11 @@ const daoUtil = new DaoUtil();
 
 class ManufacturerDAO{
     async create(data){
-        const { manufacturerUsername, name } = data;
+        const { manufacturerUsername } = data;
 
-        if(manufacturerUsername != null && !stringValidator.isBlank(manufacturerUsername)){
+        if(daoUtil.containNoNullArr([manufacturerUsername]) && daoUtil.containNoBlankArr([manufacturerUsername])){
             try{
-                const resp = await Manufacturer.create({manufacturerUsername: manufacturerUsername, name: name});
+                const resp = await Manufacturer.create(data);
                 return resp != null;
             }catch(e){
                 console.error("ManufacturerDAO: Could not execute the query");
@@ -44,16 +44,17 @@ class ManufacturerDAO{
             return daoUtil.getDataValues(resp);
         }catch(e){
             console.error("ManufacturerDAO: Could not execute the query");
-            return false;
+            return null;
         }
     }
 
     async update(data){
-        const {manufacturerUsername, name} = data;
+        const { manufacturerUsername } = data;
         if(manufacturerUsername != null && !stringValidator.isBlank(manufacturerUsername)){
             try{
+                delete data.manufacturerUsername;
                 const resp = await Manufacturer.update(
-                    {name: name},
+                    data,
                     {where: {manufacturerUsername: manufacturerUsername}}
                 );
                 return resp[0] > 0;
@@ -74,11 +75,11 @@ class ManufacturerDAO{
                 return resp > 0;
             }catch(e){
                 console.error("ManufacturerDAO: Could not execute the query");
-                return null;
+                return false;
             }
         } else{
             console.error("ManufacturerDAO: Wrong parameter provided");
-            return null;
+            return false;
         }
     }
 }
