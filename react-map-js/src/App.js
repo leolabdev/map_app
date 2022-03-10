@@ -8,6 +8,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import Map from "./components/Map/Map";
 import Droplist from './droplist'
 import Droplist1 from './droplist1'
+import "leaflet-geosearch/dist/geosearch.css";
+
+
 
 function App() {
 
@@ -26,6 +29,10 @@ function App() {
       console.log(latitude, longitude)
     });
   }, []);
+
+
+
+
 
 
   function LocationMarker() {
@@ -50,6 +57,15 @@ function App() {
       </Marker>
     )
   }
+
+  function LocationMarker2({ }) {
+    const map = useMapEvents('load', (e) => {
+      map.flyTo(e.latlng, map.getZoom())
+    })
+
+    return null
+  }
+
 
 
 
