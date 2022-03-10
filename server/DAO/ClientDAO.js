@@ -7,11 +7,11 @@ const daoUtil = new DaoUtil();
 
 class ClientDAO{
     async create(data){
-        const { clientUsername, name } = data;
+        const { clientUsername } = data;
 
-        if(clientUsername != null && !stringValidator.isBlank(clientUsername)){
+        if(daoUtil.containNoNullArr([clientUsername]) && daoUtil.containNoBlankArr([clientUsername])){
             try{
-                const resp = await Client.create({clientUsername: clientUsername, name: name});
+                const resp = await Client.create(data);
                 return resp != null;
             }catch(e){
                 console.error("ClientDAO: Could not execute the query");
@@ -49,11 +49,12 @@ class ClientDAO{
     }
 
     async update(data){
-        const {clientUsername, name} = data;
+        const { clientUsername } = data;
         if(clientUsername != null && !stringValidator.isBlank(clientUsername)){
             try{
+                delete data.clientUsername;
                 const resp = await Client.update(
-                    {name: name},
+                    data,
                     {where: {clientUsername: clientUsername}}
                 );
                 return resp[0] > 0;
@@ -74,11 +75,11 @@ class ClientDAO{
                 return resp > 0;
             }catch(e){
                 console.error("ClientDAO: Could not execute the query");
-                return null;
+                return false;
             }
         } else{
             console.error("ClientDAO: Wrong parameter provided");
-            return null;
+            return false;
         }
     }
 }
