@@ -82,6 +82,21 @@ class AddressDAO{
             return false;
         }
     }
+
+    async search(options){
+        if(options != null){
+            try{
+                const resp = await Address.findAll({ where: options });
+                return daoUtil.getDataValues(resp);
+            }catch(e){
+                console.error("AddressDAO: Could not execute the query");
+                return null;
+            }
+        } else{
+            console.error("AddressDAO: Wrong parameter provided");
+            return null;
+        }
+    }
 }
 
 module.exports.AddressDAO = AddressDAO;

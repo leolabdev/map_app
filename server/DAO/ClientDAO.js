@@ -1,3 +1,4 @@
+const {Address} = require("../model/Address");
 const StringValidator = require("../util/StringValidator").StringValidator;
 const Client = require("../model/Client").Client;
 const DaoUtil = require("../util/DaoUtil").DaoUtil;
@@ -7,10 +8,17 @@ const daoUtil = new DaoUtil();
 
 class ClientDAO{
     async create(data){
-        const { clientUsername } = data;
+        const { clientUsername, address } = data;
 
         if(daoUtil.containNoNullArr([clientUsername]) && daoUtil.containNoBlankArr([clientUsername])){
             try{
+                if(address != null){
+                    const { city, street, lon, lat } = data;
+                    if(daoUtil.containNoNullArr([city, street, lon, lat]) && daoUtil.containNoBlankArr([city, street, lon, lat])){
+
+                    }
+                }
+
                 const resp = await Client.create(data);
                 return resp != null;
             }catch(e){

@@ -15,6 +15,7 @@ const address = require('./routes/api/v1/address');
 const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
 const address_dao = require('./routes/dao/address');
+const {DaoUtil} = require("./util/DaoUtil");
 
 const app = express();
 
@@ -36,7 +37,7 @@ const sequelizeUtil = new SequelizeUtil();
 app.listen(port, async () => {
     if(sequelizeUtil.isSequelizeConnected()){
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
-/*
+
         axios
             .post('http://localhost:8081/dao/address', {
                 city: "Helsinki",
@@ -50,6 +51,15 @@ app.listen(port, async () => {
                 console.error(error);
             })
 
+            const daoUtil = new DaoUtil();
+            daoUtil.getAddressesDataFromDB("Pohjoinen Rautatiekatu", "13", "Helsinki").then(
+                res => { console.log(res.data); }
+            ).catch(error => {
+                console.error(error);
+            });
+
+
+/*
         axios
             .get('http://localhost:8081/dao/address')
             .then(res => {
