@@ -6,15 +6,15 @@ const sequelizeUtil = new SequelizeUtil();
 const sequelize = sequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
-    modelName: 'Manufacturer',
+    modelName: 'Client',
     freezeTableName: true,
     timestamps: false
 };
 
-class Manufacturer extends Model{}
+class Client extends Model{}
 
-Manufacturer.init({
-    manufacturerUsername: {
+Client.init({
+    clientUsername: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true
@@ -26,4 +26,4 @@ Manufacturer.init({
     }
 }, options);
 
-module.exports.Manufacturer = Manufacturer;
+module.exports.Client = Client;

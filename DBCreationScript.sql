@@ -4,23 +4,22 @@ USE mapApp;
 
 CREATE TABLE Manufacturer
 (
-    manufacturerId INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
+    manufacturerUsername VARCHAR(255) NOT NULL,
     name VARCHAR(255),
-    PRIMARY KEY (manufacturerId)
+    PRIMARY KEY (manufacturerUsername)
 );
 
 CREATE TABLE Client
 (
-    clientId INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
+    clientUsername VARCHAR(255) NOT NULL,
     name VARCHAR(255),
-    PRIMARY KEY (clientId)
+    PRIMARY KEY (clientUsername)
 );
 
 CREATE TABLE Address
 (
     addressId INT NOT NULL AUTO_INCREMENT,
+    city VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
     building VARCHAR(10) NOT NULL,
     flat INT,
@@ -32,31 +31,31 @@ CREATE TABLE Address
 CREATE TABLE OrderData
 (
     orderId INT NOT NULL AUTO_INCREMENT,
-    manufacturerId INT NOT NULL,
-    clientId INT NOT NULL,
+    manufacturerUsername VARCHAR(255) NOT NULL,
+    clientUsername VARCHAR(255) NOT NULL,
     shipmentAddressId INT NOT NULL,
     deliveryAddressId INT NOT NULL,
     PRIMARY KEY (orderId),
-    FOREIGN KEY (manufacturerId) REFERENCES Manufacturer(manufacturerId),
-    FOREIGN KEY (clientId) REFERENCES Client(clientId),
+    FOREIGN KEY (manufacturerUsername) REFERENCES Manufacturer(manufacturerUsername),
+    FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername),
     FOREIGN KEY (shipmentAddressId) REFERENCES Address(addressId),
     FOREIGN KEY (deliveryAddressId) REFERENCES Address(addressId)
 );
 
 CREATE TABLE AsShipmentAddress
 (
-    manufacturerId INT NOT NULL,
     addressId INT NOT NULL,
-    PRIMARY KEY (manufacturerId, addressId),
-    FOREIGN KEY (manufacturerId) REFERENCES Manufacturer(manufacturerId),
-    FOREIGN KEY (addressId) REFERENCES Address(addressId)
+    manufacturerUsername VARCHAR(255) NOT NULL,
+    PRIMARY KEY (addressId, manufacturerUsername),
+    FOREIGN KEY (addressId) REFERENCES Address(addressId),
+    FOREIGN KEY (manufacturerUsername) REFERENCES Manufacturer(manufacturerUsername)
 );
 
 CREATE TABLE AsDeliveryAddress
 (
     addressId INT NOT NULL,
-    clientId INT NOT NULL,
-    PRIMARY KEY (addressId, clientId),
+    clientUsername VARCHAR(255) NOT NULL,
+    PRIMARY KEY (addressId, clientUsername),
     FOREIGN KEY (addressId) REFERENCES Address(addressId),
-    FOREIGN KEY (clientId) REFERENCES Client(clientId)
+    FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername)
 );

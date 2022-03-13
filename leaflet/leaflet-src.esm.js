@@ -6,7 +6,7 @@
 var version = "1.6.0";
 
 /*
- * @namespace Util
+ * @namespace ResponseUtil
  *
  * Various utility functions, used by Leaflet internally.
  */
