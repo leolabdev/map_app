@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/leolab1337/map_app/issues"
   },
-  "homepage": "https://github.com/leolab1337/map_app#readme"
+  "homepage": "https://github.com/leolab1337/map_app#readme",
+  "devDependencies": {
+    "cors": "^2.8.5"
+  }
 }
