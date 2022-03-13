@@ -6,6 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require("axios");
 const dotenv = require("dotenv");
+const cors = require('cors');
 dotenv.config();
 
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
@@ -20,6 +21,7 @@ const address_dao = require('./routes/dao/address');
 const app = express();
 
 //middleware
+app.use(cors());
 app.use(bodyParser.json());
 
 //API routing
