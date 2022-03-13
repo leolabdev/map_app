@@ -32,7 +32,7 @@ router.use('/address', (req, res, next) => {
  * @param geojson to convert
  * @returns {{features: [{geometry: *, type, properties: {country: *, housenumber: *, street: *, postalcode: *, county: *}}], type: string}}
  */
-function parseGeoJsonFromORS(geojson){
+function parseGeoJsonFromORS(geojson) {
     let features = geojson.features;
     let GeoJson = {
         type : "FeatureCollection",
@@ -106,7 +106,7 @@ router.get('/address/search', async (req, res) => {
  * @param geojson to convert
  * @returns {[{country: *, housenumber: *, street: *, postalcode: *, county: *, geometry: *}]}
  */
-function parseAddressFromORS(geojson){
+function parseAddressFromORS(geojson) {
     let features = geojson.features;
     let json = [];
     features.forEach(places => {

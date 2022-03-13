@@ -11,6 +11,7 @@ dotenv.config();
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
 
 const address = require('./routes/api/v1/address');
+const routing = require('./routes/api/v1/routing');
 
 const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 
 //API routing
 app.use('/api/v1', address);
+app.use('/api/v1', routing);
 
 //DAO routing
 app.use('/dao/manufacturer', manufacturer);
