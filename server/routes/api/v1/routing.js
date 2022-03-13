@@ -16,7 +16,7 @@ let options = {
     method: 'POST',
     headers: {
         'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-        'Authorization': '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe',
+        'Authorization': process.env.ORS_API_KEY,
         'Content-Type': 'application/json',
     }
 };
