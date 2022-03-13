@@ -20,6 +20,8 @@ let endClicked = false;
 
 let startlatlng;
 let endlatlng;
+let endMarker =  L.marker();
+let startMarker =  L.marker();
 
 startButton.onclick = (ev)=> {
     startClicked = true;
@@ -36,7 +38,7 @@ calculateButton.onclick = (ev)=>{
             [endlatlng.lng, endlatlng.lat],
         ]
     }
-    fetch('http://localhost:8081/api/v1/routing/test', {
+    fetch('http://localhost:8081/api/v1/routing', {
         method: 'POST', // or 'PUT'
         headers: {
             'Content-Type': 'application/json',
@@ -70,11 +72,15 @@ map.on('click', (e) => {
         startLabel.innerHTML = e.latlng;
         startlatlng = e.latlng;
         startClicked = false;
+        map.removeLayer(startMarker);
+        startMarker = new L.marker(e.latlng).addTo(map);
     }
     if(endClicked){
         endLabel.innerHTML = e.latlng;
         endlatlng = e.latlng;
         endClicked = false;
+        map.removeLayer(endMarker);
+        endMarker = new L.marker(e.latlng).addTo(map);
     }
     console.log(e.latlng.lat);
     console.log(e.latlng.lng);

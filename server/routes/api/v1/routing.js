@@ -3,6 +3,11 @@ const https = require('https');
 
 const router = express.Router();
 
+/**
+ * Default options for https request.
+ * REMEMBER TO ADD options.headers["Content-Length"] = data.length; when trying to post data
+ * @type {{path: string, headers: {Authorization: string, Accept: string, "Content-Type": string}, protocol: string, hostname: string, method: string, port: number}}
+ */
 let options = {
     protocol: 'https:',
     hostname: 'api.openrouteservice.org',
@@ -15,8 +20,12 @@ let options = {
         'Content-Type': 'application/json',
     }
 };
-
-router.post('/routing/test', async (req, res) => {
+/**
+ * Sends api query to openrouteservice to calculate route. Uses openrouteservices directions service.
+ *
+ * responses back geoJSON
+ */
+router.post('/routing', async (req, res) => {
     let coordinates = req.body.coordinates;
     console.log(coordinates);
     let data = JSON.stringify({
