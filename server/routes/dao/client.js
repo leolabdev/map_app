@@ -1,4 +1,6 @@
 const express = require('express');
+const {DaoUtil} = require("../../util/DaoUtil");
+const axios = require("axios");
 
 const router = express.Router();
 const ResponseUtil = require('./ResponseUtil').ResponseUtil;
@@ -9,8 +11,22 @@ const responseUtil = new ResponseUtil();
 const clientDAO = new ClientDAO();
 
 router.post("/", async (req, res) => {
-    const status = await clientDAO.create(req.body);
-    responseUtil.sendStatusOfOperation(res, status);
+    const { address } = req.body;
+    if(address == null){
+        const result = await clientDAO.create(req.body);
+        responseUtil.sendResultOfQuery(res, result);
+    } else{
+        axios
+            .post('http://localhost:8081/dao/address', address)
+            .then(async response => {
+                req.body.address = response;
+                const result = await clientDAO.create(req.body);
+                responseUtil.sendResultOfQuery(res, result);
+            })
+            .catch(error => {
+                console.error("client: can not create address");
+            });
+    }
 });
 
 router.get("/:clientUsername", async (req, res) => {

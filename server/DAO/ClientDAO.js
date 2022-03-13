@@ -1,4 +1,4 @@
-const {Address} = require("../model/Address");
+const {AsShipmentAddress} = require("../model/AsShipmentAddress");
 const StringValidator = require("../util/StringValidator").StringValidator;
 const Client = require("../model/Client").Client;
 const DaoUtil = require("../util/DaoUtil").DaoUtil;
@@ -13,21 +13,28 @@ class ClientDAO{
         if(daoUtil.containNoNullArr([clientUsername]) && daoUtil.containNoBlankArr([clientUsername])){
             try{
                 if(address != null){
-                    const { city, street, lon, lat } = data;
-                    if(daoUtil.containNoNullArr([city, street, lon, lat]) && daoUtil.containNoBlankArr([city, street, lon, lat])){
+                    delete data.address;
+                    const resp = await Client.create(data);
+                    const addressId = await address.getDataValues().addressId;
 
-                    }
+                    await AsShipmentAddress.create({
+                        clientUsername: resp.dataValues.clientUsername,
+                        addressId: addressId
+                    });
+
+                    return resp;
+                } else{
+                    const resp = await Client.create(data);
+                    return resp;
                 }
-
-                const resp = await Client.create(data);
-                return resp != null;
             }catch(e){
                 console.error("ClientDAO: Could not execute the query");
-                return false;
+                console.log(e);
+                return null;
             }
         } else{
             console.error("ClientDAO: Wrong parameter provided");
-            return false;
+            return null;
         }
     }
 
@@ -65,14 +72,14 @@ class ClientDAO{
                     data,
                     {where: {clientUsername: clientUsername}}
                 );
-                return resp[0] > 0;
+                return resp[0];
             }catch(e){
                 console.error("ClientDAO: Could not execute the query");
-                return false;
+                return null;
             }
         } else{
             console.error("ClientDAO: Wrong parameter provided");
-            return false;
+            return null;
         }
     }
 

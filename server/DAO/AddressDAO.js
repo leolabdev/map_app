@@ -11,15 +11,14 @@ class AddressDAO{
 
         if(daoUtil.containNoNullArr([city, street, building, lon, lat]) && daoUtil.containNoBlankArr([city, street, building])) {
             try{
-                const resp = await Address.create(data);
-                return resp != null;
+                return await Address.create(data);
             }catch(e){
                 console.error("AddressDAO: Could not execute the query");
-                return false;
+                return null;
             }
         } else{
             console.error("AddressDAO: Wrong parameter provided");
-            return false;
+            return null;
         }
     }
 
@@ -57,14 +56,14 @@ class AddressDAO{
                     data,
                     {where: {addressId: addressId}}
                 );
-                return resp[0] > 0;
+                return resp[0];
             }catch(e){
                 console.error("AddressDAO: Could not execute the query");
-                return false;
+                return null;
             }
         } else{
             console.error("AddressDAO: Wrong parameter provided");
-            return false;
+            return null;
         }
     }
 

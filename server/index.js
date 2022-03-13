@@ -39,22 +39,19 @@ app.listen(port, async () => {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
 
         axios
-            .post('http://localhost:8081/dao/address', {
-                city: "Helsinki",
-                street: "Pohjoinen Rautatiekatu",
-                building: "13"
+            .post('http://localhost:8081/dao/client', {
+                clientUsername: "johnny",
+                name: "John Smith",
+                address: {
+                    city: "Helsinki",
+                    street: "Pohjoinen Rautatiekatu",
+                    building: "13"
+                }
             })
             .then(res => {
                 console.log("Create Success");
             })
             .catch(error => {
-                console.error(error);
-            })
-
-            const daoUtil = new DaoUtil();
-            daoUtil.getAddressesDataFromDB("Pohjoinen Rautatiekatu", "13", "Helsinki").then(
-                res => { console.log(res.data); }
-            ).catch(error => {
                 console.error(error);
             });
 

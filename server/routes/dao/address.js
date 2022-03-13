@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
     const existingAddresses = await daoUtil.getAddressesDataFromDB(street, building, city);
 
     //if such address is not exists, create it
-    if(existingAddresses.data.result.length == 0){
+    if(existingAddresses != null && existingAddresses.data.result.length === 0){
         //if coordinates are not provided
         if(lon == null || lat == null){
             //get coordinates of the street address
@@ -27,17 +27,17 @@ router.post("/", async (req, res) => {
                 const coordinates = addressData.data[0].coordinates;
                 req.body.lon = coordinates.lon;
                 req.body.lat = coordinates.lat;
-                const status = await addressDAO.create(req.body);
-                responseUtil.sendStatusOfOperation(res, status);
+                const result = await addressDAO.create(req.body);
+                responseUtil.sendResultOfQuery(res, result);
             } else{
-                responseUtil.sendStatusOfOperation(res, false);
+                responseUtil.sendResultOfQuery(res, null);
             }
         } else{
-            const status = await addressDAO.create(req.body);
-            responseUtil.sendStatusOfOperation(res, status);
+            const result = await addressDAO.create(req.body);
+            responseUtil.sendResultOfQuery(res, result);
         }
     } else{
-        responseUtil.sendStatusOfOperation(res, true);
+        responseUtil.sendResultOfQuery(res, existingAddresses.data.result[0]);
     }
 });
 
