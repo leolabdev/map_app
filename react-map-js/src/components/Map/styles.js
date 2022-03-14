@@ -13,4 +13,11 @@ export default makeStyles(() => ({
     pointer: {
         cursor: 'pointer',
     },
+
+    button: {
+        zIndex: 999,
+        position: "absolute",
+        left: "10px",
+        top: "170px"
+    }
 }));

@@ -11,23 +11,23 @@ const DropList1 = () => {
         { label: 'Tampere', value: 'Tampere' },
     ];
 
-    const [value, setValue] = React.useState('Lahti');
+    const [value, setValue] = useState('Lahti');
 
     const handleChange = (event) => {
         setValue(event.target.value);
     };
 
     return (
-            <>
-                <select value={value} onChange={handleChange}>
-                    {options.map((option) => (
-                        <option value={option.value}>{option.label}</option>
-                    ))}
-                </select>
+        <>
+            <select value={value} onChange={handleChange}>
+                {options.map((option) => (
+                    <option value={option.value}>{option.label}</option>
+                ))}
+            </select>
 
 
             <p>We go to {value}!</p>
-            </>
+        </>
     );
 };
 export default DropList1
