@@ -15,7 +15,7 @@ const address = require('./routes/api/v1/address');
 const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
 const address_dao = require('./routes/dao/address');
-const {DaoUtil} = require("./util/DaoUtil");
+const { DaoUtil } = require("./util/DaoUtil");
 
 const app = express();
 
@@ -34,18 +34,26 @@ app.use('/dao/address', address_dao);
 const port = process.env.PORT || 8081;
 const sequelizeUtil = new SequelizeUtil();
 
-app.listen(port, async () => {
-    if(sequelizeUtil.isSequelizeConnected()){
+app.listen(port, async() => {
+    if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
 
-        axios
+        /*
+        await axios
             .post('http://localhost:8081/dao/client', {
                 clientUsername: "johnny",
                 name: "John Smith",
-                address: {
+                addressAdd: {
                     city: "Helsinki",
                     street: "Pohjoinen Rautatiekatu",
-                    building: "13"
+                    building: "13",
+                    lat: 60.3,
+                    lon: 40.345
+                },
+                addressDelete: {
+                    city: "Helsinki",
+                    street: "Pohjoinen Rautatiekatu",
+                    building: "15"
                 }
             })
             .then(res => {
@@ -54,43 +62,9 @@ app.listen(port, async () => {
             .catch(error => {
                 console.error(error);
             });
-
-
-/*
-        axios
-            .get('http://localhost:8081/dao/address')
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(error => {
-                console.error(error)
-            })
-
-        axios
-            .put('http://localhost:8081/dao/address', {
-                addressId: 2,
-                city: "Vantaa",
-                street: "Pohjoinen Rautatiekatu",
-                building: "12"
-            })
-            .then(res => {
-                console.log("Update Success");
-            })
-            .catch(error => {
-                console.error(error);
-            })
-
-        axios
-            .get('http://localhost:8081/dao/address/1')
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(error => {
-                console.error(error);
-            })
-
-        axios
-            .delete('http://localhost:8081/dao/address/1')
+*/
+        await axios
+            .delete('http://localhost:8081/dao/client/johnny')
             .then(res => {
                 console.log("Delete Success");
             })
@@ -98,13 +72,55 @@ app.listen(port, async () => {
                 console.error(error);
             })
 
-        axios
-            .get('http://localhost:8081/dao/address')
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(error => {
-                console.error(error);
-            })*/
+        /*
+                axios
+                    .get('http://localhost:8081/dao/address')
+                    .then(res => {
+                        console.log(res.data);
+                    })
+                    .catch(error => {
+                        console.error(error)
+                    })
+
+                axios
+                    .put('http://localhost:8081/dao/address', {
+                        addressId: 2,
+                        city: "Vantaa",
+                        street: "Pohjoinen Rautatiekatu",
+                        building: "12"
+                    })
+                    .then(res => {
+                        console.log("Update Success");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
+
+                axios
+                    .get('http://localhost:8081/dao/address/1')
+                    .then(res => {
+                        console.log(res.data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
+
+                axios
+                    .delete('http://localhost:8081/dao/address/1')
+                    .then(res => {
+                        console.log("Delete Success");
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
+
+                axios
+                    .get('http://localhost:8081/dao/address')
+                    .then(res => {
+                        console.log(res.data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })*/
     }
 });

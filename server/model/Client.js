@@ -11,7 +11,7 @@ const options = {
     timestamps: false
 };
 
-class Client extends Model{}
+class Client extends Model {}
 
 Client.init({
     clientUsername: {
