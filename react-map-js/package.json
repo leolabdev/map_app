@@ -12,6 +12,7 @@
     "axios": "^0.26.1",
     "leaflet": "^1.7.1",
     "leaflet-geosearch": "^3.6.0",
+    "leaflet-routing-machine": "^3.2.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-leaflet": "^3.2.5",
