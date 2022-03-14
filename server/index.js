@@ -38,9 +38,9 @@ app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
 
-        /*
+
         await axios
-            .post('http://localhost:8081/dao/client', {
+            .put('http://localhost:8081/dao/client', {
                 clientUsername: "johnny",
                 name: "John Smith",
                 addressAdd: {
@@ -62,7 +62,7 @@ app.listen(port, async() => {
             .catch(error => {
                 console.error(error);
             });
-*/
+
         await axios
             .delete('http://localhost:8081/dao/client/johnny')
             .then(res => {
