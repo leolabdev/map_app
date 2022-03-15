@@ -37,34 +37,56 @@ const sequelizeUtil = new SequelizeUtil();
 app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
-
-
         await axios
-            .put('http://localhost:8081/dao/client', {
-                clientUsername: "johnny",
-                name: "John Smith",
+            .post('http://localhost:8081/dao/client', {
+                manufacturerUsername: "jane",
+                name: 'Jane Parker',
                 addressAdd: {
-                    city: "Helsinki",
-                    street: "Pohjoinen Rautatiekatu",
-                    building: "13",
-                    lat: 60.3,
-                    lon: 40.345
-                },
-                addressDelete: {
-                    city: "Helsinki",
-                    street: "Pohjoinen Rautatiekatu",
-                    building: "15"
+                    city: "Vantaa",
+                    street: "Rantatie",
+                    building: "10",
+                    lat: 61.3,
+                    lon: 41.345
                 }
             })
             .then(res => {
-                console.log("Create Success");
+                console.log("Update Success");
             })
             .catch(error => {
                 console.error(error);
             });
 
+
         await axios
-            .delete('http://localhost:8081/dao/client/johnny')
+            .post('http://localhost:8081/dao/manufacturer', {
+                manufacturerUsername: "john",
+                name: 'John Smith',
+                addressAdd: {
+                    city: "Vantaa",
+                    street: "Rantatie",
+                    building: "10",
+                    lat: 61.3,
+                    lon: 41.345
+                }
+            })
+            .then(res => {
+                console.log("Update Success");
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        axios
+            .delete('http://localhost:8081/dao/manufacturer/jane')
+            .then(res => {
+                console.log("Delete Success");
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        axios
+            .delete('http://localhost:8081/dao/client/john')
             .then(res => {
                 console.log("Delete Success");
             })

@@ -42,38 +42,32 @@ router.get("/", async(req, res) => {
 
 router.put("/", async(req, res) => {
     const { addressAdd, addressDelete } = req.body;
-    if (addressAdd == null) {
-        const result = await clientDAO.update(req.body);
-        responseUtil.sendResultOfQuery(res, result);
-    } else if (addressAdd != null || addressDelete != null) {
-        if (addressAdd != null) {
-            axios
-                .post('http://localhost:8081/dao/address', addressAdd)
-                .then(async response => {
-                    req.body.addressAdd = response.data.result;
-                })
-                .catch(error => {
-                    console.error("client: can not create address");
-                });
-        }
 
-        if (addressDelete != null) {
-            const { street, building, city } = addressDelete;
-            if (street && building && city) {
-                const response = await daoUtil.getAddressesDataFromDB(street, building, city);
-                if (response.data.result != null && response.data.result.length > 0) {
-                    req.body.addressDelete = response.data.result[0];
-                } else {
-                    console.error("client: can not find this address from data base");
-                }
-            }
-        } else {
-            console.error("client: wrong parameter was provided");
-        }
-
-        const result = await clientDAO.update(req.body);
-        responseUtil.sendResultOfQuery(res, result);
+    if (addressAdd != null) {
+        await axios
+            .post('http://localhost:8081/dao/address', addressAdd)
+            .then(async response => {
+                req.body.addressAdd = response.data.result;
+            })
+            .catch(error => {
+                console.error("client: can not create address");
+            });
     }
+
+    if (addressDelete != null) {
+        const { street, building, city } = addressDelete;
+        if (street && building && city) {
+            const response = await daoUtil.getAddressesDataFromDB(street, building, city);
+            if (response.data.result != null && response.data.result.length > 0) {
+                req.body.addressDelete = response.data.result[0];
+            } else {
+                console.error("client: can not find this address from the data base");
+            }
+        }
+    }
+
+    const result = await clientDAO.update(req.body);
+    responseUtil.sendResultOfQuery(res, result);
 });
 
 router.delete("/:clientUsername", async(req, res) => {

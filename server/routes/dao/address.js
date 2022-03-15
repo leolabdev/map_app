@@ -56,7 +56,7 @@ router.get("/search", async(req, res) => {
     responseUtil.sendResultOfQuery(res, result);
 });
 
-//No need for updating address data throw AddressDAO
+//No need for updating address data through AddressDAO
 /*router.put("/", async (req, res) => {
     let {street, building, city} = req.body;
 
@@ -85,9 +85,11 @@ router.get("/search", async(req, res) => {
     }
 });*/
 
+//No need to delete address through, when deleting client/manufacturer, if nobody is connected to the address it will be removed automatically
+/*
 router.delete("/:addressId", async(req, res) => {
     const status = await addressDAO.delete(req.params.addressId);
     responseUtil.sendStatusOfOperation(res, status);
-});
+});*/
 
 module.exports = router;
