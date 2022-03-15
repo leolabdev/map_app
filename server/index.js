@@ -15,7 +15,6 @@ const address = require('./routes/api/v1/address');
 const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
 const address_dao = require('./routes/dao/address');
-const { DaoUtil } = require("./util/DaoUtil");
 
 const app = express();
 
@@ -77,7 +76,7 @@ app.listen(port, async() => {
             });
 
         axios
-            .delete('http://localhost:8081/dao/manufacturer/jane')
+            .delete('http://localhost:8081/dao/manufacturer/john')
             .then(res => {
                 console.log("Delete Success");
             })
@@ -86,7 +85,7 @@ app.listen(port, async() => {
             })
 
         axios
-            .delete('http://localhost:8081/dao/client/john')
+            .delete('http://localhost:8081/dao/client/jane')
             .then(res => {
                 console.log("Delete Success");
             })
