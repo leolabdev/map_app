@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
-const {Manufacturer} = require("./Manufacturer");
-const {Client} = require('./Client');
-const {Address} = require("./Address");
+const { Manufacturer } = require("./Manufacturer");
+const { Client } = require('./Client');
+const { Address } = require("./Address");
 const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
 
 const sequelizeUtil = new SequelizeUtil();
@@ -14,7 +14,7 @@ const options = {
     timestamps: false
 };
 
-class OrderData extends Model{}
+class OrderData extends Model {}
 
 OrderData.init({
     orderId: {
@@ -47,11 +47,12 @@ OrderData.init({
 
 Manufacturer.hasMany(OrderData, { foreignKey: 'manufacturerUsername' });
 Client.hasMany(OrderData, { foreignKey: 'clientUsername' });
-Address.hasMany(OrderData, { as: 'ShipmentAddress', foreignKey: 'shipmentAddressId' });
-Address.hasMany(OrderData, { as: 'DeliveryAddress', foreignKey: 'deliveryAddressId' });
+Address.hasMany(OrderData, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
+Address.hasMany(OrderData, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
 
-OrderData.belongsTo(Manufacturer);
-OrderData.belongsTo(Client);
-OrderData.belongsTo(Address);
+OrderData.belongsTo(Manufacturer, { foreignKey: 'manufacturerUsername' });
+OrderData.belongsTo(Client, { foreignKey: 'clientUsername' });
+OrderData.belongsTo(Address, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
+OrderData.belongsTo(Address, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
 
 module.exports.OrderData = OrderData;

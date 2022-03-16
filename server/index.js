@@ -15,6 +15,7 @@ const address = require('./routes/api/v1/address');
 const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
 const address_dao = require('./routes/dao/address');
+const order = require('./routes/dao/order');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api/v1', address);
 app.use('/dao/manufacturer', manufacturer);
 app.use('/dao/client', client);
 app.use('/dao/address', address_dao);
+app.use('/dao/order', order);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const port = process.env.PORT || 8081;
@@ -38,14 +40,14 @@ app.listen(port, async() => {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
         await axios
             .post('http://localhost:8081/dao/client', {
-                manufacturerUsername: "jane",
-                name: 'Jane Parker',
+                clientUsername: "john",
+                name: 'John Smith',
                 addressAdd: {
-                    city: "Vantaa",
-                    street: "Rantatie",
+                    city: "Helsinki",
+                    street: "Rautatiekatu",
                     building: "10",
-                    lat: 61.3,
-                    lon: 41.345
+                    lat: 61.3345,
+                    lon: 40.133323
                 }
             })
             .then(res => {
@@ -58,14 +60,14 @@ app.listen(port, async() => {
 
         await axios
             .post('http://localhost:8081/dao/manufacturer', {
-                manufacturerUsername: "john",
-                name: 'John Smith',
+                manufacturerUsername: "luke",
+                name: 'Luke Skywalker',
                 addressAdd: {
-                    city: "Vantaa",
-                    street: "Rantatie",
-                    building: "10",
-                    lat: 61.3,
-                    lon: 41.345
+                    city: "Tampere",
+                    street: "Rauhankatu",
+                    building: "2",
+                    lat: 62.3909,
+                    lon: 41.899
                 }
             })
             .then(res => {
@@ -75,15 +77,38 @@ app.listen(port, async() => {
                 console.error(error);
             });
 
-        axios
+        const manufacturerData = await axios.get('http://localhost:8081/dao/manufacturer/luke');
+        const clientData = await axios.get('http://localhost:8081/dao/client/john');
+
+        await axios
+            .put('http://localhost:8081/dao/order', {
+                orderId: 1,
+                manufacturerUsername: "john",
+                clientUsername: 'john',
+                shipmentAddressId: manufacturerData.data.result.Addresses[0].addressId,
+                deliveryAddressId: clientData.data.result.Addresses[0].addressId
+            })
+            .then(res => {
+                console.log("Update Success");
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        const orderData = await axios.get('http://localhost:8081/dao/order/');
+        console.log(orderData.data.result);
+
+        /*
+        await axios
             .delete('http://localhost:8081/dao/manufacturer/john')
             .then(res => {
                 console.log("Delete Success");
             })
             .catch(error => {
                 console.error(error);
-            })
+            })*/
 
+        /*
         axios
             .delete('http://localhost:8081/dao/client/jane')
             .then(res => {
@@ -91,7 +116,7 @@ app.listen(port, async() => {
             })
             .catch(error => {
                 console.error(error);
-            })
+            })*/
 
         /*
                 axios

@@ -1,7 +1,7 @@
 const { Address } = require("../model/Address");
 const Client = require("../model/Client").Client;
 const Manufacturer = require("../model/Manufacturer").Manufacturer;
-const {OrderData} = require("../model/OrderData");
+const { OrderData } = require("../model/OrderData");
 
 const StringValidator = require("../util/StringValidator").StringValidator;
 
@@ -14,7 +14,7 @@ class OrderDataDAO {
     async create(data) {
         const { manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId } = data;
 
-        if (daoUtil.containNoNullArr([manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId]) && daoUtil.containNoBlankArr([manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId])) {
+        if (daoUtil.containNoNullArr([manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId]) && daoUtil.containNoBlankArr([manufacturerUsername, clientUsername])) {
             try {
                 const resp = await OrderData.create(data);
                 return resp;
@@ -29,12 +29,13 @@ class OrderDataDAO {
     }
 
     async read(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
+        if (primaryKey != null) {
             try {
                 const resp = await OrderData.findByPk(primaryKey, { include: [{ all: true }] });
                 return resp != null ? resp.dataValues : null;
             } catch (e) {
                 console.error("OrderDataDAO: Could not execute the query");
+                console.log(e);
                 return null;
             }
         } else {
@@ -56,7 +57,7 @@ class OrderDataDAO {
     async update(data) {
         const { orderId } = data;
 
-        if (orderId != null && !stringValidator.isBlank(orderId)) {
+        if (orderId != null) {
             try {
                 const resp = await OrderData.update(
                     data, { where: { orderId: orderId } }
@@ -74,7 +75,7 @@ class OrderDataDAO {
     }
 
     async delete(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
+        if (primaryKey != null) {
             try {
                 const resp = await OrderData.destroy({ where: { orderId: primaryKey } });
                 return resp > 0;
