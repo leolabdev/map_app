@@ -25,6 +25,14 @@ class DaoUtil{
         }
     }
 
+    async getAddressesDataFromDB(street, building, city){
+        if(street != null && building != null && city != null){
+            return await axios.get(`http://localhost:8081/dao/address/search/?city=${city}&street=${street}&building=${building}`);
+        } else{
+            return null;
+        }
+    }
+
     containNoNullArr(arr){
         if(arr != null){
             for(let i = 0; i < arr.length; i++){
