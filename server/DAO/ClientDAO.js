@@ -1,5 +1,6 @@
 const { Address } = require("../model/Address");
 const { AsDeliveryAddress } = require("../model/AsDeliveryAddress");
+const {OrderData} = require("../model/OrderData");
 
 const StringValidator = require("../util/StringValidator").StringValidator;
 const Client = require("../model/Client").Client;
@@ -103,6 +104,8 @@ class ClientDAO {
             try {
                 const allClientAddresses = await AsDeliveryAddress.findAll({ where: { clientUsername: primaryKey } });
                 await AsDeliveryAddress.destroy({ where: { clientUsername: primaryKey } });
+
+                await OrderData.destroy({ where: { clientUsername: primaryKey } });
 
                 const resp = await Client.destroy({ where: { clientUsername: primaryKey } });
 

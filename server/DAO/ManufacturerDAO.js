@@ -1,5 +1,6 @@
 const { Address } = require("../model/Address");
 const { AsShipmentAddress } = require("../model/AsShipmentAddress");
+const {OrderData} = require("../model/OrderData");
 
 const StringValidator = require("../util/StringValidator").StringValidator;
 const Manufacturer = require("../model/Manufacturer").Manufacturer;
@@ -102,6 +103,8 @@ class ManufacturerDAO {
             try {
                 const allManufacturerAddresses = await AsShipmentAddress.findAll({ where: { manufacturerUsername: primaryKey } });
                 await AsShipmentAddress.destroy({ where: { manufacturerUsername: primaryKey } });
+
+                await OrderData.destroy({ where: { manufacturerUsername: primaryKey } });
 
                 const resp = await Manufacturer.destroy({ where: { manufacturerUsername: primaryKey } });
 
