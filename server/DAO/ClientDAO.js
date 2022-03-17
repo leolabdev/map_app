@@ -77,7 +77,7 @@ class ClientDAO {
 
                     if (updatedClient != null) {
                         if (addressAdd != null) {
-                            const test = await updatedClient.addAddress(addressAdd.addressId);
+                            await updatedClient.addAddress(addressAdd.addressId);
                         }
                         if (addressDelete != null) {
                             await updatedClient.removeAddress(addressDelete.addressId);
@@ -87,15 +87,15 @@ class ClientDAO {
                     }
                 }
 
-                return resp;
+                return resp[0] > 0;
             } catch (e) {
                 console.error("ClientDAO: Could not execute the query");
                 console.log(e);
-                return null;
+                return false;
             }
         } else {
             console.error("ClientDAO: Wrong parameter provided");
-            return null;
+            return false;
         }
     }
 
@@ -126,6 +126,7 @@ class ClientDAO {
                 return resp > 0;
             } catch (e) {
                 console.error("ClientDAO: Could not execute the query");
+                console.log(e);
                 return false;
             }
         } else {

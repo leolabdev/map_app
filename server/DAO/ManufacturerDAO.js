@@ -87,14 +87,15 @@ class ManufacturerDAO {
                     }
                 }
 
-                return resp;
+                return resp[0] > 0;
             } catch (e) {
-                console.error("ManufacturerDAO: Could not execute the query");
-                return null;
+                console.log("ManufacturerDAO: Could not execute the query");
+                console.log(e);
+                return false;
             }
         } else {
-            console.error("ManufacturerDAO: Wrong parameter provided");
-            return null;
+            console.log("ManufacturerDAO: Wrong parameter provided");
+            return false;
         }
     }
 

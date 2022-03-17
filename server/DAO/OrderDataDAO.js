@@ -1,13 +1,7 @@
-const { Address } = require("../model/Address");
-const Client = require("../model/Client").Client;
-const Manufacturer = require("../model/Manufacturer").Manufacturer;
 const { OrderData } = require("../model/OrderData");
-
-const StringValidator = require("../util/StringValidator").StringValidator;
 
 const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
-const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
 
 class OrderDataDAO {
@@ -19,11 +13,12 @@ class OrderDataDAO {
                 const resp = await OrderData.create(data);
                 return resp;
             } catch (e) {
-                console.error("OrderDataDAO: Could not execute the query");
+                console.log("OrderDataDAO: Could not execute the query");
+                console.log(e);
                 return null;
             }
         } else {
-            console.error("OrderDataDAO: Wrong parameter provided");
+            console.log("OrderDataDAO: Wrong parameter provided");
             return null;
         }
     }
@@ -34,7 +29,7 @@ class OrderDataDAO {
                 const resp = await OrderData.findByPk(primaryKey, { include: [{ all: true }] });
                 return resp != null ? resp.dataValues : null;
             } catch (e) {
-                console.error("OrderDataDAO: Could not execute the query");
+                console.log("OrderDataDAO: Could not execute the query");
                 console.log(e);
                 return null;
             }
@@ -49,7 +44,8 @@ class OrderDataDAO {
             const resp = await OrderData.findAll({ include: [{ all: true }] });
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.error("OrderDataDAO: Could not execute the query");
+            console.log("OrderDataDAO: Could not execute the query");
+            console.log(e);
             return false;
         }
     }
@@ -63,14 +59,15 @@ class OrderDataDAO {
                     data, { where: { orderId: orderId } }
                 );
 
-                return resp;
+                return resp[0] > 0;
             } catch (e) {
-                console.error("OrderDataDAO: Could not execute the query");
-                return null;
+                console.log("OrderDataDAO: Could not execute the query");
+                console.log(e);
+                return false;
             }
         } else {
-            console.error("OrderDataDAO: Wrong parameter provided");
-            return null;
+            console.log("OrderDataDAO: Wrong parameter provided");
+            return false;
         }
     }
 
@@ -80,11 +77,12 @@ class OrderDataDAO {
                 const resp = await OrderData.destroy({ where: { orderId: primaryKey } });
                 return resp > 0;
             } catch (e) {
-                console.error("OrderDataDAO: Could not execute the query");
+                console.log("OrderDataDAO: Could not execute the query");
+                console.log(e);
                 return false;
             }
         } else {
-            console.error("OrderDataDAO: Wrong parameter provided");
+            console.log("OrderDataDAO: Wrong parameter provided");
             return false;
         }
     }
