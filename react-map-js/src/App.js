@@ -157,6 +157,8 @@ function App() {
 
   function LocationMarker() {
     const [position, setPosition] = useState(null)
+    var executed = false;
+
     const map = useMapEvents({
 
       mouseover() {
@@ -165,9 +167,12 @@ function App() {
       },
 
       locationfound(e) {
+        if (!executed) {
+          executed = true;
+          setPosition(e.latlng);
+          map.flyTo(e.latlng, map.getZoom());
+        }
 
-        setPosition(e.latlng)
-        map.flyTo(e.latlng, map.getZoom())
       },
     })
 
