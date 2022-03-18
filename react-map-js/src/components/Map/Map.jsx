@@ -121,8 +121,10 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             click: () => {
                 let data = {
                     coordinates: [
-                        [start.lng, start.lat],
-                        [end.lng, end.lat],
+                        // [start.lng, start.lat],
+                        [start.lon, start.lat],
+                        // [end.lng, end.lat],
+                        [end.lon, end.lat],
                     ]
                 }
                 fetch('http://localhost:8081/api/v1/routing', {

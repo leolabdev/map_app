@@ -37,10 +37,13 @@ function App() {
   const [result, setResult] = useState(0);
 
 
-  const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
+  // const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
+  const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
 
-  const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
-  const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
+  // const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
+  const [start, setStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
+  const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
 
   let [currentLocation, setCurrentLocation] = useState()
 
@@ -105,7 +108,7 @@ function App() {
       map.addControl(searchControl);
       function searchEventHandler(result) {
         setStart(result.location.x, result.location.y)
-        console.log(start);
+        // console.log(start);
       }
 
       map.on('geosearch/showlocation', searchEventHandler);
@@ -138,7 +141,7 @@ function App() {
 
       function searchEventHandler(result) {
         setEnd(result.location.x, result.location.y)
-        console.log(end);
+        // console.log(end);
       }
 
       map.on('geosearch/showlocation', searchEventHandler);
