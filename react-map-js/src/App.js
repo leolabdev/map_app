@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CssBaseline, Grid } from '@material-ui/core'
 //import logo from './logo.svg';
 import './App.css';
@@ -9,7 +9,10 @@ import Map from "./components/Map/Map";
 import Droplist from './droplist'
 import Droplist1 from './droplist1'
 import "leaflet-geosearch/dist/geosearch.css";
+import L from "leaflet";
 
+// import mapData from "./data/customgeo.json"
+// import mapData3 from "./data/customgeo3.json"
 
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import icon from "../src/components/constants"
@@ -18,7 +21,12 @@ import icon from "../src/components/constants"
 
 function App() {
 
+  // const mapRef = useRef();
 
+  // useEffect(() => {
+  //   const map = mapRef.current
+  //   console.log(map)
+  // }, []);
 
   const [long, setLong] = useState(null);
   const [lat, setLat] = useState(null);
@@ -31,10 +39,12 @@ function App() {
 
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
 
-  const [start, setStart] = useState({ lat: 60.1699, lng: 24.9384 });
-  const [end, setEnd] = useState({ lat: 61.1699, lng: 24.9384 })
+  const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
+  const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
 
   let [currentLocation, setCurrentLocation] = useState()
+
+
 
 
   // [60.169, 24.938]
@@ -46,6 +56,7 @@ function App() {
   //     console.log(latitude, longitude)
   //   });
   // }, []);
+
 
 
   // function LeafletgeoSearch() {
@@ -144,21 +155,24 @@ function App() {
 
 
 
-
-
   function LocationMarker() {
     const [position, setPosition] = useState(null)
+    var executed = false;
+
     const map = useMapEvents({
 
       mouseover() {
-        console.log(useMapEvents)
+        // console.log(useMapEvents)
         map.locate()
       },
 
       locationfound(e) {
+        if (!executed) {
+          executed = true;
+          setPosition(e.latlng);
+          map.flyTo(e.latlng, map.getZoom());
+        }
 
-        setPosition(e.latlng)
-        map.flyTo(e.latlng, map.getZoom())
       },
     })
 
@@ -194,6 +208,7 @@ function App() {
       <span>Where are you ?</span>  <Droplist /> <br />
       <span>Where we go ?</span> <Droplist1 />
       <Map
+        // ref={mapRef}
         start={start}
         end={end}
         coordinates={coordinates}
