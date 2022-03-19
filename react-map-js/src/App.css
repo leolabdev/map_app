@@ -4,3 +4,10 @@
     height: 700px;
     margin: 0 auto;
 }
+.list{
+    padding: 0px;
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    text-align: center;
+}

@@ -4,18 +4,23 @@ import { CssBaseline, Grid } from '@material-ui/core'
 import './App.css';
 import Header from "./components/Header/Header";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
-//import List from "./components/List/List";
+
 import Map from "./components/Map/Map";
-import Droplist from './droplist'
-import Droplist1 from './droplist1'
+import List from "./components/List/List";
+// import Droplist from './droplist'
+// import Droplist1 from './droplist1'
 import "leaflet-geosearch/dist/geosearch.css";
 import L from "leaflet";
 
 // import mapData from "./data/customgeo.json"
 // import mapData3 from "./data/customgeo3.json"
-
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import icon from "../src/components/constants"
+
+
+import { getHumansData } from './api/humans/GetHumansData'
+import { postNewHuman } from "./api/humans/PostNewHuman";
+
 
 
 
@@ -28,14 +33,18 @@ function App() {
   //   console.log(map)
   // }, []);
 
-  const [long, setLong] = useState(null);
-  const [lat, setLat] = useState(null);
+  // const [long, setLong] = useState(null);
+  // const [lat, setLat] = useState(null);
 
 
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
   const [result, setResult] = useState(0);
 
+
+  const [humans, setHumans] = useState([]);
+  const [humansType, setHumansType] = useState("client");
+  const [isLoading, setIsLoading] = useState(false)
 
   // const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
@@ -45,48 +54,29 @@ function App() {
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
   const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
 
-  let [currentLocation, setCurrentLocation] = useState()
+  // let [currentLocation, setCurrentLocation] = useState()
 
 
+  useEffect(() => {
+
+    setIsLoading(true)
+
+    getHumansData(humansType)
 
 
-  // [60.169, 24.938]
+      .then((data) => {
+        //filter if there name
+        // setPlases(data?.filter((place) => place.name && place.num_reviews > 0))
+        setHumans(data)
+        // .filter((place) => place.name && place.num_reviews > 0))
+        // setFilteredPlaces([])
+        setIsLoading(false)
+      })
 
-  // get user position 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-  //     setCoordinates({ lat: latitude, lng: longitude });
-  //     console.log(latitude, longitude)
-  //   });
-  // }, []);
-
-
-
-  // function LeafletgeoSearch() {
+    // if array is empty effect will work only when once when page is loaded
+  }, [humansType]);
 
 
-  //   const map = useMap();
-  //   useEffect(() => {
-  //     const provider = new OpenStreetMapProvider();
-
-  //     const searchControl = new GeoSearchControl({
-
-  //       provider,
-  //       marker: {
-  //         icon
-
-  //       },
-  //     });
-  //     map.addControl(searchControl);
-
-
-
-  //     // console.log("h", searchControl.provider)
-  //     return () => map.removeControl(searchControl);
-  //   }, []);
-
-  //   return null;
-  // }
 
 
 
@@ -100,10 +90,10 @@ function App() {
       const searchControl = new GeoSearchControl({
 
         provider,
-        marker: {
-          icon
+        // marker: {
+        //   icon
 
-        },
+        // },
       });
       map.addControl(searchControl);
       function searchEventHandler(result) {
@@ -132,6 +122,7 @@ function App() {
       const searchControl = new GeoSearchControl({
 
         provider,
+
         // marker: {
         //   icon
 
@@ -186,13 +177,16 @@ function App() {
     )
   }
 
-  // function LocationMarker2({ }) {
-  //   const map = useMapEvents('load', (e) => {
-  //     map.flyTo(e.latlng, map.getZoom())
-  //   })
 
-  //   return null
-  // }
+  const createHuman = (newHuman) => {
+    postNewHuman(newHuman)
+  }
+
+
+  // get post from children element
+  const removeHuman = (human) => {
+
+  }
 
 
 
@@ -208,8 +202,8 @@ function App() {
       <button onClick={() => setResult(Number(value1) + Number(value2))}>btn</button>
       <input type="text" />
       <p>result: {result}</p>
-      <span>Where are you ?</span>  <Droplist /> <br />
-      <span>Where we go ?</span> <Droplist1 />
+      {/* <span>Where are you ?</span>  <Droplist /> <br /> */}
+      {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
         // ref={mapRef}
         start={start}
@@ -222,6 +216,17 @@ function App() {
 
 
       />
+      <div className="list">
+        <List
+          createHuman={createHuman}
+          humans={humans}
+          isLoading={isLoading}
+          humansType={humansType}
+          setHumansType={setHumansType}
+        />
+      </div>
+
+
     </div>
   );
 }
