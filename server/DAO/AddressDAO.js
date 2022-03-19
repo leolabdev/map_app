@@ -13,11 +13,11 @@ class AddressDAO {
             try {
                 return await Address.create(data);
             } catch (e) {
-                console.error("AddressDAO: Could not execute the query");
+                console.error("AddressDAO create: Could not execute the query");
                 return null;
             }
         } else {
-            console.error("AddressDAO: Wrong parameter provided");
+            console.error("AddressDAO create: Wrong parameter provided");
             return null;
         }
     }
@@ -29,6 +29,7 @@ class AddressDAO {
                 return resp != null ? resp.dataValues : null;
             } catch (e) {
                 console.error("AddressDAO: Could not execute the query");
+                console.log(e);
                 return null;
             }
         } else {
@@ -43,6 +44,7 @@ class AddressDAO {
             return daoUtil.getDataValues(resp);
         } catch (e) {
             console.error("AddressDAO: Could not execute the query");
+            console.log(e);
             return null;
         }
     }
@@ -58,6 +60,7 @@ class AddressDAO {
                 return resp[0];
             } catch (e) {
                 console.error("AddressDAO: Could not execute the query");
+                console.log(e);
                 return null;
             }
         } else {
@@ -73,6 +76,7 @@ class AddressDAO {
                 return resp > 0;
             } catch (e) {
                 console.error("AddressDAO: Could not execute the query");
+                console.log(e);
                 return false;
             }
         } else {
@@ -88,6 +92,7 @@ class AddressDAO {
                 return daoUtil.getDataValues(resp);
             } catch (e) {
                 console.error("AddressDAO: Could not execute the query");
+                console.log(e);
                 return null;
             }
         } else {

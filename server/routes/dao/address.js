@@ -29,31 +29,36 @@ const addressDAO = new AddressDAO();
  */
 router.post("/", async(req, res) => {
     let { street, building, city, lon, lat } = req.body;
-    const existingAddresses = await daoUtil.getAddressesDataFromDB(street, building, city);
+    if(daoUtil.containNoNullArr([city, street, building]) && daoUtil.containNoBlankArr([city, street, building])){
+        const existingAddresses = await daoUtil.getAddressesDataFromDB(street, building, city);
 
-    //if such address is not exists, create it
-    if (existingAddresses != null && existingAddresses.data.result.length === 0) {
-        //if coordinates are not provided
-        if (lon == null || lat == null) {
-            //get coordinates of the street address
-            const addressData = await daoUtil.getAddressData(street, building, city);
-
-            if (await addressData != null) {
-                const coordinates = addressData.data[0].coordinates;
-                req.body.lon = coordinates.lon;
-                req.body.lat = coordinates.lat;
+        //if such address is not exists, create it
+        if (existingAddresses.data.result.length === 0) {
+            //if coordinates are not provided
+            if (lon == null || lat == null) {
+                //get coordinates of the street address
+                const addressData = await daoUtil.getAddressData(street, building, city);
+                if (await addressData != null) {
+                    const coordinates = addressData.data[0].coordinates;
+                    req.body.lon = coordinates.lon;
+                    req.body.lat = coordinates.lat;
+                    const result = await addressDAO.create(req.body);
+                    responseUtil.sendResultOfQuery(res, result);
+                } else {
+                    responseUtil.sendResultOfQuery(res, null);
+                }
+            } else {
                 const result = await addressDAO.create(req.body);
                 responseUtil.sendResultOfQuery(res, result);
-            } else {
-                responseUtil.sendResultOfQuery(res, null);
             }
         } else {
-            const result = await addressDAO.create(req.body);
-            responseUtil.sendResultOfQuery(res, result);
+            responseUtil.sendResultOfQuery(res, existingAddresses.data.result[0]);
         }
-    } else {
-        responseUtil.sendResultOfQuery(res, existingAddresses.data.result[0]);
+    } else{
+        console.log("address: wrong parameters provided");
+        responseUtil.sendResultOfQuery(res, null);
     }
+
 });
 
 /**
