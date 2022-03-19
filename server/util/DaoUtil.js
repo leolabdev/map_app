@@ -19,7 +19,7 @@ class DaoUtil{
     async getAddressData(street, building, city) {
         if(street != null && building != null && city != null){
             const address = street + " " + building + ", " + city;
-            return await axios.get(`http://localhost:8081/api/v1/address/?search=` + address);
+            return await axios.get(`http://localhost:8081/api/v1/address/search?text=` + address);
         } else{
             return null;
         }

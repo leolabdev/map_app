@@ -55,6 +55,7 @@ router.post("/", async(req, res) => {
             .then(async response => {
                 req.body.addressAdd = response.data.result;
                 const result = await manufacturerDAO.create(req.body);
+                result.dataValues.addressAdd = response.data.result;
                 responseUtil.sendResultOfQuery(res, result);
             })
             .catch(e => {
