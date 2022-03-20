@@ -14,6 +14,22 @@ import MyButton from '../../UI/button/MyButton';
 
 const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => {
 
+    // Post form
+    const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+
+    function addNewPost(e) {
+        // desabled autoupdating
+        e.preventDefault()
+        const newPost = {
+            ...post
+        }
+        createHuman(humansType, ...newPost)
+        setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+        console.log(post)
+    }
+
+
+
     const classes = useStyles();
 
 
@@ -52,18 +68,24 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                         >
                             <div>
                                 <TextField
+                                    // onChange={e => setTitle(e.target.value)}
+                                    onChange={e => setPost({ ...post, username: e.target.value })}
+                                    value={post.username}
                                     required
                                     id="outlined-required"
                                     label="Username"
                                     autoComplete="current-username"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, name: e.target.value })}
+                                    value={post.name}
                                     required
                                     id="outlined-required"
                                     label="Name"
                                     helperText="Firstname and Lastname"
                                 />
                                 <TextField
+
                                     disabled
                                     id="filled-disabled"
                                     label=" Give Address--------------------->"
@@ -71,18 +93,25 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     variant="filled"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, city: e.target.value })}
+                                    value={post.city}
+
                                     required
                                     id="outlined-required"
                                     label="City"
                                     helperText="example: 'Helsinki'"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, street: e.target.value })}
+                                    value={post.street}
                                     required
                                     id="outlined-required"
                                     label="Street"
                                     helperText="example:'Porvoonkatu'"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, building: e.target.value })}
+                                    value={post.building}
                                     id="outlined-number"
                                     label="Building's number"
                                     // type="number"
@@ -92,6 +121,8 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example: '1B'"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, lat: e.target.value })}
+                                    value={post.lat}
                                     id="outlined-number"
                                     label="Lat"
                                     type="number"
@@ -101,6 +132,8 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example: '60.1699'"
                                 />
                                 <TextField
+                                    onChange={e => setPost({ ...post, lon: e.target.value })}
+                                    value={post.lon}
                                     id="outlined-number"
                                     label="Lon"
                                     type="number"
@@ -109,7 +142,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     }}
                                     helperText="example: '24.9384'"
                                 />
-                                <button>Create new Human</button>
+                                <button onClick={addNewPost}>Create new Human</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
 
                                 {/* <Button variant="contained" size="large">send</Button> */}
