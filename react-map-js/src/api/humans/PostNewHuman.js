@@ -7,6 +7,7 @@ export const postNewHuman = async (humansType, ...post) => {
     // console.log("hello", ...post)
 
     try {
+        console.log("hello", post)
         // var request = {
         //     // username: post.username,
         //     clientUsername: post.clientUsername,
@@ -60,23 +61,23 @@ export const postNewHuman = async (humansType, ...post) => {
             // var resp = await axios.post(`http://localhost:8081/dao/client/`, {
 
 
-            ...request
+            // ...request
             // ...post
-            // clientUsername: "post.clientUsername",
-            // name: "post.name",
-            // addressAdd: {
-            //     city: "post.city",
-            //     street: "post.street",
-            //     building: "post.building",
-            //     lat: "post.lan",
-            //     lon: "post.lon"
+            clientUsername: post.clientUsername,
+            name: post.name,
+            addressAdd: {
+                city: post.city,
+                street: post.street,
+                building: post.building,
+                lat: post.lan,
+                lon: post.lon
 
-            //     // username: "hello",
-            //     // name: "lol",
-            // },
+                // username: "hello",
+                // name: "lol",
+            },
 
         },
-            console.log(humansType)
+            console.log("dontwork", ...post)
         );
 
 

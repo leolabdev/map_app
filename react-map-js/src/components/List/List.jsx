@@ -16,7 +16,12 @@ import { postNewHuman } from '../../api/humans/PostNewHuman';
 const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => {
 
     // Post form
-    const [post, setPost] = useState({ clientUsername: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+    // const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+    const [post, setPost] = useState({
+        username: '', name: '', addressAdd: {
+            city: '', street: '', building: '', lat: '', lon: ''
+        }
+    })
 
     function addNewPost(e) {
         // desabled autoupdating
@@ -27,7 +32,12 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
         postNewHuman(humansType, newPost)
         console.log(post)
         // createHuman(humansType, newPost)
-        setPost({ clientUsername: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+        // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+        setPost({
+            username: '', name: '', addressAdd: {
+                city: '', street: '', building: '', lat: '', lon: ''
+            }
+        })
         console.log(post)
     }
 
@@ -69,8 +79,8 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                             <div>
                                 <TextField
                                     // onChange={e => setTitle(e.target.value)}
-                                    onChange={e => setPost({ ...post, clientUsername: e.target.value })}
-                                    value={post.clientUsername}
+                                    onChange={e => setPost({ ...post, username: e.target.value })}
+                                    value={post.username}
                                     required
                                     id="outlined-required"
                                     // label="Username"
@@ -96,7 +106,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 <TextField
                                     required
                                     onChange={e => setPost({ ...post, city: e.target.value })}
-                                    value={post.city}
+                                    value={post.addressAdd.city}
 
                                     id="outlined-required"
                                     label="City"
@@ -104,7 +114,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 />
                                 <TextField
                                     onChange={e => setPost({ ...post, street: e.target.value })}
-                                    value={post.street}
+                                    value={post.addressAdd.street}
                                     required
                                     id="outlined-required"
                                     label="Street"
@@ -112,7 +122,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 />
                                 <TextField
                                     onChange={e => setPost({ ...post, building: e.target.value })}
-                                    value={post.building}
+                                    value={post.addressAdd.building}
                                     id="outlined-number"
                                     label="Building's number"
                                     // type="number"
@@ -123,7 +133,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 />
                                 <TextField
                                     onChange={e => setPost({ ...post, lat: e.target.value })}
-                                    value={post.lat}
+                                    value={post.addressAdd.lat}
                                     id="outlined-number"
                                     label="Lat"
                                     type="number"
@@ -134,7 +144,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 />
                                 <TextField
                                     onChange={e => setPost({ ...post, lon: e.target.value })}
-                                    value={post.lon}
+                                    value={post.addressAdd.lon}
                                     id="outlined-number"
                                     label="Lon"
                                     type="number"
