@@ -10,12 +10,13 @@ import DataTable from '../DataTable/DataTable';
 import useStyles from './styles.js';
 import classes1 from './List.module.css';
 import MyButton from '../../UI/button/MyButton';
+import { postNewHuman } from '../../api/humans/PostNewHuman';
 
 
 const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => {
 
     // Post form
-    const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+    const [post, setPost] = useState({ clientUsername: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
 
     function addNewPost(e) {
         // desabled autoupdating
@@ -23,19 +24,17 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
         const newPost = {
             ...post
         }
-        createHuman(humansType, ...newPost)
-        setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
+        postNewHuman(humansType, newPost)
+        console.log(post)
+        // createHuman(humansType, newPost)
+        setPost({ clientUsername: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
         console.log(post)
     }
 
 
 
+
     const classes = useStyles();
-
-
-
-
-
 
     return (
 
@@ -59,18 +58,19 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                         {/* <InputLabel>Post new human</InputLabel> */}
                         <Box
                             component="form"
+                            onSubmit={addNewPost}
                             sx={{
                                 '& .MuiTextField-root': { m: 2, width: '25ch' },
 
                             }}
                             noValidate
-                            autoComplete="off"
+                        // autoComplete="off"
                         >
                             <div>
                                 <TextField
                                     // onChange={e => setTitle(e.target.value)}
-                                    onChange={e => setPost({ ...post, username: e.target.value })}
-                                    value={post.username}
+                                    onChange={e => setPost({ ...post, clientUsername: e.target.value })}
+                                    value={post.clientUsername}
                                     required
                                     id="outlined-required"
                                     // label="Username"
@@ -94,10 +94,10 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     variant="filled"
                                 />
                                 <TextField
+                                    required
                                     onChange={e => setPost({ ...post, city: e.target.value })}
                                     value={post.city}
 
-                                    required
                                     id="outlined-required"
                                     label="City"
                                     helperText="example: 'Helsinki'"
@@ -143,7 +143,8 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     }}
                                     helperText="example: '24.9384'"
                                 />
-                                <button onClick={addNewPost}>Create new Human</button>
+                                {/* <button onClick={addNewPost}>Create new Human</button> */}
+                                <button type='submit'>Create new Human</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
 
                                 {/* <Button variant="contained" size="large">send</Button> */}
