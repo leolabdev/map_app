@@ -73,7 +73,8 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     value={post.username}
                                     required
                                     id="outlined-required"
-                                    label="Username"
+                                    // label="Username"
+                                    label={`${humansType}Username`}
                                     autoComplete="current-username"
                                 />
                                 <TextField
