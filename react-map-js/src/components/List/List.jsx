@@ -105,7 +105,13 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 />
                                 <TextField
                                     required
-                                    onChange={e => setPost({ ...post, city: e.target.value })}
+                                    // onChange={e => setPost({ ...post, city: e.target.value })}
+                                    onChange={e => setPost({
+                                        ...post, addressAdd: {
+                                            ...post.addressAdd,
+                                            city: e.target.value
+                                        }
+                                    })}
                                     value={post.addressAdd.city}
 
                                     id="outlined-required"
@@ -113,7 +119,13 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example: 'Helsinki'"
                                 />
                                 <TextField
-                                    onChange={e => setPost({ ...post, street: e.target.value })}
+                                    // onChange={e => setPost({ ...post, street: e.target.value })}
+                                    onChange={e => setPost({
+                                        ...post, addressAdd: {
+                                            ...post.addressAdd,
+                                            street: e.target.value
+                                        }
+                                    })}
                                     value={post.addressAdd.street}
                                     required
                                     id="outlined-required"
@@ -121,7 +133,13 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example:'Porvoonkatu'"
                                 />
                                 <TextField
-                                    onChange={e => setPost({ ...post, building: e.target.value })}
+                                    // onChange={e => setPost({ ...post, building: e.target.value })}
+                                    onChange={e => setPost({
+                                        ...post, addressAdd: {
+                                            ...post.addressAdd,
+                                            building: e.target.value
+                                        }
+                                    })}
                                     value={post.addressAdd.building}
                                     id="outlined-number"
                                     label="Building's number"
@@ -132,7 +150,13 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example: '1B'"
                                 />
                                 <TextField
-                                    onChange={e => setPost({ ...post, lat: e.target.value })}
+                                    // onChange={e => setPost({ ...post, lat: e.target.value })}
+                                    onChange={e => setPost({
+                                        ...post, addressAdd: {
+                                            ...post.addressAdd,
+                                            lat: e.target.value
+                                        }
+                                    })}
                                     value={post.addressAdd.lat}
                                     id="outlined-number"
                                     label="Lat"
@@ -143,7 +167,14 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                     helperText="example: '60.1699'"
                                 />
                                 <TextField
-                                    onChange={e => setPost({ ...post, lon: e.target.value })}
+                                    // onChange={e => setPost({ ...post, lon: e.target.value })}
+                                    onChange={e => setPost({
+                                        ...post, addressAdd: {
+                                            ...post.addressAdd,
+                                            lon: e.target.value
+                                        }
+                                    })}
+
                                     value={post.addressAdd.lon}
                                     id="outlined-number"
                                     label="Lon"

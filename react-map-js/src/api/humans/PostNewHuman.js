@@ -2,34 +2,21 @@
 import axios from 'axios';
 
 
-export const postNewHuman = async (humansType, ...post) => {
+export const postNewHuman = async (humansType, post) => {
 
     // console.log("hello", ...post)
 
     try {
-        console.log("hello", post)
-        // var request = {
-        //     // username: post.username,
-        //     clientUsername: post.clientUsername,
-        //     name: post.name,
-        //     addressAdd: {
-        //         city: post.city,
-        //         street: post.street,
-        //         building: post.building,
-        //         lat: post.lan,
-        //         lon: post.lon
-        //     }
-        // }
         var request = {
-            // username: post.username,
-            clientUsername: "post.dadclsientadasdUsername",
-            name: "post.naddsadaasdsame",
+            username: post.username,
+            // clientUsername: post.username,
+            name: post.name,
             addressAdd: {
-                city: "post.city",
-                street: "posst.street",
-                building: "possst.building",
-                lat: "post.lan",
-                lon: "post.lon"
+                city: post.addressAdd.city,
+                street: post.addressAdd.street,
+                building: post.addressAdd.building,
+                lat: post.addressAdd.lat,
+                lon: post.addressAdd.lon
             }
         }
 
@@ -55,29 +42,12 @@ export const postNewHuman = async (humansType, ...post) => {
             }
         }
 
+        console.log("our request:", request)
 
         // var resp = await axios.post(`http://localhost:3000/${humansType}/create`, {
         var resp = await axios.post(`http://localhost:8081/dao/${humansType}`, {
-            // var resp = await axios.post(`http://localhost:8081/dao/client/`, {
-
-
-            // ...request
-            // ...post
-            clientUsername: post.clientUsername,
-            name: post.name,
-            addressAdd: {
-                city: post.city,
-                street: post.street,
-                building: post.building,
-                lat: post.lan,
-                lon: post.lon
-
-                // username: "hello",
-                // name: "lol",
-            },
-
+            ...request
         },
-            console.log("dontwork", ...post)
         );
 
 
