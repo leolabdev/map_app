@@ -41,9 +41,9 @@ const List = ({ }) => {
         }
         postNewHuman(humansType, newPost)
 
-        console.log("humans:", humans)
-        console.log("post:", newPost)
-        setHumans(humans, newPost)
+        // console.log("humans:", humans)
+        // console.log("post:", newPost)
+        // setHumans(humans, newPost)
         setStatus(!status)
         console.log(post)
         // createHuman(humansType, newPost)
@@ -118,15 +118,7 @@ const List = ({ }) => {
                 </div>
             ) : (
                 <>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel>Humans's Type</InputLabel>
-                        <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
 
-                            <MenuItem value="client">Client</MenuItem>
-                            <MenuItem value="manufacturer">Manufacturer</MenuItem>
-
-                        </Select>
-                    </FormControl>
 
                     <FormControl>
                         {/* <InputLabel>Post new human</InputLabel> */}
@@ -134,13 +126,24 @@ const List = ({ }) => {
                             component="form"
                             onSubmit={addNewPost}
                             sx={{
-                                '& .MuiTextField-root': { m: 1, width: '50%' },
+                                '& .MuiTextField-root': { m: 1, width: '100%' },
 
                             }}
                         // noValidate
                         // autoComplete="off"
                         >
                             <div>
+
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel>Humans's Type</InputLabel>
+                                    <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
+
+                                        <MenuItem value="client">Client</MenuItem>
+                                        <MenuItem value="manufacturer">Manufacturer</MenuItem>
+
+                                    </Select>
+
+                                </FormControl>
                                 <TextField
                                     // onChange={e => setTitle(e.target.value)}
                                     onChange={e => setPost({ ...post, username: e.target.value })}
@@ -213,44 +216,11 @@ const List = ({ }) => {
                                     // }}
                                     helperText="example: '1B'"
                                 />
-                                <TextField
-                                    // onChange={e => setPost({ ...post, lat: e.target.value })}
-                                    onChange={e => setPost({
-                                        ...post, addressAdd: {
-                                            ...post.addressAdd,
-                                            lat: e.target.value
-                                        }
-                                    })}
-                                    value={post.addressAdd.lat}
-                                    id="outlined-number"
-                                    label="Lat"
-                                    type="number"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    helperText="example: '60.1699'"
-                                />
-                                <TextField
-                                    // onChange={e => setPost({ ...post, lon: e.target.value })}
-                                    onChange={e => setPost({
-                                        ...post, addressAdd: {
-                                            ...post.addressAdd,
-                                            lon: e.target.value
-                                        }
-                                    })}
 
-                                    value={post.addressAdd.lon}
-                                    id="outlined-number"
-                                    label="Lon"
-                                    type="number"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    helperText="example: '24.9384'"
-                                />
+
                                 {/* <button onClick={addNewPost}>Create new Human</button> */}
-                                <br />
-                                <button type='submit'>Create new {humansType}</button>
+
+                                <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
 
                                 {/* <Button variant="contained" size="large">send</Button> */}
@@ -305,7 +275,7 @@ const List = ({ }) => {
 
 
                                 </div>
-                                <button>update</button>
+                                {/* <button>update</button> */}
                             </div>
                         ))}
                     </div>
