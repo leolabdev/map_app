@@ -113,7 +113,15 @@ const List = ({ }) => {
                 </div>
             ) : (
                 <>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel>Humans's Type</InputLabel>
+                        <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
 
+                            <MenuItem value="client">Client</MenuItem>
+                            <MenuItem value="manufacturer">Manufacturer</MenuItem>
+
+                        </Select>
+                    </FormControl>
 
                     <FormControl>
                         {/* <InputLabel>Post new human</InputLabel> */}
@@ -121,7 +129,7 @@ const List = ({ }) => {
                             component="form"
                             onSubmit={addNewPost}
                             sx={{
-                                '& .MuiTextField-root': { m: 2, width: '25ch' },
+                                '& .MuiTextField-root': { m: 1, width: '150ch' },
 
                             }}
                         // noValidate
@@ -150,7 +158,7 @@ const List = ({ }) => {
 
                                     disabled
                                     id="filled-disabled"
-                                    label=" Give Address--------------------->"
+                                    label=" Give Address ↓"
                                     defaultValue="Address"
                                     variant="filled"
                                 />
@@ -236,6 +244,7 @@ const List = ({ }) => {
                                     helperText="example: '24.9384'"
                                 />
                                 {/* <button onClick={addNewPost}>Create new Human</button> */}
+                                <br />
                                 <button type='submit'>Create new Human</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
 
@@ -244,15 +253,7 @@ const List = ({ }) => {
                         </Box>
                     </FormControl>
 
-                    <FormControl className={classes.formControl}>
-                        <InputLabel>Humans's Type</InputLabel>
-                        <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
 
-                            <MenuItem value="client">Client</MenuItem>
-                            <MenuItem value="manufacturer">Manufacturer</MenuItem>
-
-                        </Select>
-                    </FormControl>
 
                     <div container className={classes.listcontainer}>
                         {/* only if we have humans over then map over them */}

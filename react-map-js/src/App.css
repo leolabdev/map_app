@@ -7,8 +7,7 @@
 .list{
     padding: 0px;
     display: flex;
-    /* margin: 0 auto; */
+    margin: 0 auto;
     justify-content: center;
     text-align: center;
-    justify-items: center;
 }
