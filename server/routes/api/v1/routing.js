@@ -23,11 +23,19 @@ let options = {
 /**
  * Sends api query to openrouteservice to calculate route. Uses openrouteservices directions service.
  *
+ * Post body 3 point routing example:
+ * {
+ *      "coordinates":[
+ *          [24.936707651023134,60.18226502577591],
+ *          [24.936707651023134,60.18226502577591],
+ *          [24.573798698987527,60.19074881467758]
+ *      ]
+ *  }
+ *
  * responses back geoJSON
  */
 router.post('/routing', async (req, res) => {
     let coordinates = req.body.coordinates;
-    console.log(coordinates);
     let data = JSON.stringify({
         coordinates:coordinates,
         alternative_routes:{
@@ -49,7 +57,6 @@ router.post('/routing', async (req, res) => {
         });
 
         response.on('end', () => {
-            console.log(JSON.parse(data));
             res.send(JSON.parse(data));
         });
 
