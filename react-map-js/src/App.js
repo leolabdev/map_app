@@ -18,7 +18,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import icon from "../src/components/constants"
 
 
-import { getHumansData } from './api/humans/GetHumansData'
+// import { getHumansData } from './api/humans/GetHumansData'
 import { postNewHuman } from "./api/humans/PostNewHuman";
 
 
@@ -42,9 +42,9 @@ function App() {
   const [result, setResult] = useState(0);
 
 
-  const [humans, setHumans] = useState([]);
-  const [humansType, setHumansType] = useState("client");
-  const [isLoading, setIsLoading] = useState(false)
+  // const [humans, setHumans] = useState([]);
+  // const [humansType, setHumansType] = useState("client");
+  // const [isLoading, setIsLoading] = useState(false)
 
   // const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
@@ -57,24 +57,22 @@ function App() {
   // let [currentLocation, setCurrentLocation] = useState()
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    setIsLoading(true)
+  //   setIsLoading(true)
 
-    getHumansData(humansType)
+  //   getHumansData(humansType)
 
 
-      .then((data) => {
-        //filter if there name
-        // setPlases(data?.filter((place) => place.name && place.num_reviews > 0))
-        setHumans(data)
-        // .filter((place) => place.name && place.num_reviews > 0))
-        // setFilteredPlaces([])
-        setIsLoading(false)
-      })
+  //     .then((data) => {
 
-    // if array is empty effect will work only when once when page is loaded
-  }, [humansType]);
+  //       setHumans(data)
+
+  //       setIsLoading(false)
+  //     })
+
+  //   // if array is empty effect will work only when once when page is loaded
+  // }, [humansType]);
 
 
 
@@ -219,10 +217,12 @@ function App() {
       <div className="list">
         <List
           createHuman={createHuman}
-          humans={humans}
-          isLoading={isLoading}
-          humansType={humansType}
-          setHumansType={setHumansType}
+        // humans={humans}
+        // isLoading={isLoading}
+        // setIsLoading={setIsLoading}
+        // humansType={humansType}
+        // setHumansType={setHumansType}
+        // getHumansData={getHumansData}
         />
       </div>
 

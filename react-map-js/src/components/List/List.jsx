@@ -11,9 +11,10 @@ import useStyles from './styles.js';
 import classes1 from './List.module.css';
 import MyButton from '../../UI/button/MyButton';
 import { postNewHuman } from '../../api/humans/PostNewHuman';
+import { getHumansData } from '../../api/humans/GetHumansData'
 
-
-const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => {
+// const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
+const List = ({ }) => {
 
     // Post form
     // const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -23,6 +24,11 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
         }
     })
 
+
+    const [humans, setHumans] = useState([]);
+    const [humansType, setHumansType] = useState("client");
+    const [isLoading, setIsLoading] = useState(false)
+
     function addNewPost(e) {
         // desabled autoupdating
         e.preventDefault()
@@ -30,6 +36,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
             ...post
         }
         postNewHuman(humansType, newPost)
+
         console.log(post)
         // createHuman(humansType, newPost)
         // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -41,6 +48,24 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
         console.log(post)
     }
 
+
+
+    useEffect(() => {
+
+        setIsLoading(true)
+
+        getHumansData(humansType)
+
+
+            .then((data) => {
+
+                setHumans(data)
+
+                setIsLoading(false)
+            })
+
+        // if array is empty effect will work only when once when page is loaded
+    }, [humansType]);
 
 
 
