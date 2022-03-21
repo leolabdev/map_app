@@ -15,8 +15,8 @@ export const postNewHuman = async (humansType, post) => {
                 city: post.addressAdd.city,
                 street: post.addressAdd.street,
                 building: post.addressAdd.building,
-                lat: post.addressAdd.lat,
-                lon: post.addressAdd.lon
+                // lat: post.addressAdd.lat,
+                // lon: post.addressAdd.lon
             }
         }
 
