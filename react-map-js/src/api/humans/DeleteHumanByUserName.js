@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-export const getHumansData = async (humansType, username) => {
+export const deleteHumanByUserName = async (humansType, username) => {
 
 
     try {

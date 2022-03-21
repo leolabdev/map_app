@@ -12,6 +12,7 @@ import classes1 from './List.module.css';
 import MyButton from '../../UI/button/MyButton';
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import { getHumansData } from '../../api/humans/GetHumansData'
+import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 
 // const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
 const List = ({ }) => {
@@ -29,7 +30,7 @@ const List = ({ }) => {
 
     const [status, setStatus] = useState(false)
 
-
+    const [username, setUsername] = useState("")
 
 
     function addNewPost(e) {
@@ -56,8 +57,12 @@ const List = ({ }) => {
     }
 
 
-    function removePost(human) {
-        setHumans(humans.filter(p => p.id !== human.id))
+    function removePost(e) {
+        e.preventDefault()
+        deleteHumanByUserName(humansType, username)
+        setStatus(!status)
+        setUsername("")
+        // setHumans(humans.filter(p => p.id !== human.id))
     }
 
 
@@ -245,7 +250,40 @@ const List = ({ }) => {
                                 />
                                 {/* <button onClick={addNewPost}>Create new Human</button> */}
                                 <br />
-                                <button type='submit'>Create new Human</button>
+                                <button type='submit'>Create new {humansType}</button>
+                                {/* <MyButton onClick={createHuman} >send</MyButton> */}
+
+                                {/* <Button variant="contained" size="large">send</Button> */}
+                            </div>
+                        </Box>
+                    </FormControl>
+                    <FormControl>
+                        {/* <InputLabel>Post new human</InputLabel> */}
+                        <Box
+                            component="form"
+                            onSubmit={removePost}
+                            sx={{
+                                '& .MuiTextField-root': { m: 1, width: '100%' },
+
+                            }}
+                        // noValidate
+                        // autoComplete="off"
+                        >
+                            <div>
+                                <TextField
+                                    // onChange={e => setTitle(e.target.value)}
+                                    onChange={e => setUsername(e.target.value)}
+                                    value={username}
+                                    required
+                                    id="outlined-required"
+                                    // label="Username"
+                                    label={`${humansType}Username`}
+                                // autoComplete="current-username"
+                                />
+
+                                {/* <button onClick={addNewPost}>Create new Human</button> */}
+                                <br />
+                                <button type='submit'>Delete {humansType} by username</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
 
                                 {/* <Button variant="contained" size="large">send</Button> */}
@@ -266,7 +304,7 @@ const List = ({ }) => {
 
 
                                 </div>
-                                <button>delete</button>
+                                <button>update</button>
                             </div>
                         ))}
                     </div>
