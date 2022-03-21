@@ -26,15 +26,8 @@ import { postNewHuman } from "./api/humans/PostNewHuman";
 
 function App() {
 
-  // const mapRef = useRef();
 
-  // useEffect(() => {
-  //   const map = mapRef.current
-  //   console.log(map)
-  // }, []);
 
-  // const [long, setLong] = useState(null);
-  // const [lat, setLat] = useState(null);
 
 
   const [value1, setValue1] = useState("");
@@ -216,7 +209,7 @@ function App() {
       />
       <div className="list">
         <List
-          createHuman={createHuman}
+        // createHuman={createHuman}
         // humans={humans}
         // isLoading={isLoading}
         // setIsLoading={setIsLoading}

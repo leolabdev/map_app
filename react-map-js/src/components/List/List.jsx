@@ -23,11 +23,14 @@ const List = ({ }) => {
             city: '', street: '', building: '', lat: '', lon: ''
         }
     })
-
-
     const [humans, setHumans] = useState([]);
     const [humansType, setHumansType] = useState("client");
     const [isLoading, setIsLoading] = useState(false)
+
+    const [status, setStatus] = useState(false)
+
+
+
 
     function addNewPost(e) {
         // desabled autoupdating
@@ -37,6 +40,10 @@ const List = ({ }) => {
         }
         postNewHuman(humansType, newPost)
 
+        console.log("humans:", humans)
+        console.log("post:", newPost)
+        setHumans(humans, newPost)
+        setStatus(!status)
         console.log(post)
         // createHuman(humansType, newPost)
         // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -65,7 +72,21 @@ const List = ({ }) => {
             })
 
         // if array is empty effect will work only when once when page is loaded
-    }, [humansType]);
+    }, [
+        humansType,
+        status
+    ]);
+
+    // useEffect(() => {
+
+    //     setHumans(...humans, post)
+
+    //     // if array is empty effect will work only when once when page is loaded
+    // }, [
+    //     //humansType,
+    //     status
+    // ]);
+
 
 
 
