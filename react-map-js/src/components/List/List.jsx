@@ -49,8 +49,6 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
     return (
 
 
-
-
         <div className={classes.container}>
             <h1 style={{ textAlign: 'center' }}>
                 First input
@@ -73,7 +71,7 @@ const List = ({ humans, isLoading, humansType, setHumansType, createHuman }) => 
                                 '& .MuiTextField-root': { m: 2, width: '25ch' },
 
                             }}
-                            noValidate
+                        // noValidate
                         // autoComplete="off"
                         >
                             <div>
