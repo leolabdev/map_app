@@ -129,7 +129,7 @@ const List = ({ }) => {
                             component="form"
                             onSubmit={addNewPost}
                             sx={{
-                                '& .MuiTextField-root': { m: 1, width: '150ch' },
+                                '& .MuiTextField-root': { m: 1, width: '50%' },
 
                             }}
                         // noValidate
