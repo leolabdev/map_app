@@ -56,6 +56,13 @@ const List = ({ }) => {
     }
 
 
+    function removePost(human) {
+        setHumans(humans.filter(p => p.id !== human.id))
+    }
+
+
+
+
 
     useEffect(() => {
 
@@ -262,6 +269,9 @@ const List = ({ }) => {
                             </div>
                         ))}
                     </div>
+
+
+                    <div></div>
 
                     <DataTable />
 
