@@ -3,6 +3,7 @@ import React, { useState, useEffect, createRef } from 'react'
 import { CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, Select, Button } from '@material-ui/core';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import DataTable from '../DataTable/DataTable';
 
@@ -28,9 +29,69 @@ const List = ({ }) => {
     const [humansType, setHumansType] = useState("client");
     const [isLoading, setIsLoading] = useState(false)
 
-    const [status, setStatus] = useState(false)
+    const [status, setStatus] = useState(false);
 
-    const [username, setUsername] = useState("")
+    const [username, setUsername] = useState("");
+
+    // orders logic 
+    const [clients, setClients] = useState([]);
+    const [manufacturers, setManufacturers] = useState([]);
+
+
+    // orders's autoinput
+    const clientsInputProps = {
+        options: clients,
+        getOptionLabel: (option) => option.clientUsername,
+    };
+    const manufacturersInputProps = {
+        options: manufacturers,
+        getOptionLabel: (option) => option.manufacturerUsername,
+    };
+
+    const [client, setClient] = useState(null);
+    const [manufacturer, setManufacturer] = useState(null);
+
+    const [chosenClients, setChosenClients] = useState([])
+
+
+
+    useEffect(() => {
+
+        setIsLoading(true)
+
+
+        getHumansData(humansType)
+
+
+            .then((data) => {
+
+                setHumans(data)
+
+                setIsLoading(false)
+            })
+
+
+        getHumansData("client").then((data) => {
+
+            setClients(data)
+
+        })
+
+        getHumansData("manufacturer").then((data) => {
+
+            setManufacturers(data)
+
+        })
+
+        // if array is empty effect will work only when once when page is loaded
+    }, [
+        humansType,
+        status
+    ]);
+
+
+
+
 
 
     function addNewPost(e) {
@@ -69,35 +130,8 @@ const List = ({ }) => {
 
 
 
-    useEffect(() => {
-
-        setIsLoading(true)
-
-        getHumansData(humansType)
 
 
-            .then((data) => {
-
-                setHumans(data)
-
-                setIsLoading(false)
-            })
-
-        // if array is empty effect will work only when once when page is loaded
-    }, [
-        humansType,
-        status
-    ]);
-
-    // useEffect(() => {
-
-    //     setHumans(...humans, post)
-
-    //     // if array is empty effect will work only when once when page is loaded
-    // }, [
-    //     //humansType,
-    //     status
-    // ]);
 
 
 
@@ -241,7 +275,6 @@ const List = ({ }) => {
                         >
                             <div>
                                 <TextField
-                                    // onChange={e => setTitle(e.target.value)}
                                     onChange={e => setUsername(e.target.value)}
                                     value={username}
                                     required
@@ -251,16 +284,17 @@ const List = ({ }) => {
                                 // autoComplete="current-username"
                                 />
 
-                                {/* <button onClick={addNewPost}>Create new Human</button> */}
                                 <br />
                                 <button type='submit'>Delete {humansType} by username</button>
-                                {/* <MyButton onClick={createHuman} >send</MyButton> */}
-
-                                {/* <Button variant="contained" size="large">send</Button> */}
                             </div>
                         </Box>
                     </FormControl>
                     <br />
+                    <br />
+
+
+
+
 
 
 
@@ -279,9 +313,91 @@ const List = ({ }) => {
                             </div>
                         ))}
                     </div>
+                    <br />
+
+                    <FormControl>
+                        {/* <InputLabel>Post</InputLabel> */}
+                        <Box
+                            component="form"
+                            onSubmit={removePost}
+                            sx={{
+                                '& .MuiTextField-root': { m: 1, width: '100%' },
+
+                            }}
+                        // noValidate
+                        // autoComplete="off"
+                        >
+                            {/* clientsInputProps */}
+
+                            <div>
+
+                                <Autocomplete
+                                    {...manufacturersInputProps}
+                                    id="client-autocomplete"
+                                    value={manufacturer}
+                                    onChange={(event, newManufacturer) => {
+                                        setManufacturer(newManufacturer);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Choose manufacturer" variant="standard" />
+                                    )}
+                                />
 
 
-                    <div></div>
+
+                                <Autocomplete
+                                    {...clientsInputProps}
+                                    id="client-autocomplete"
+                                    value={client}
+                                    onChange={(event, newClient) => {
+                                        setClient(newClient);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Choose client" variant="standard" />
+                                    )}
+                                />
+
+
+                                {/* template for multiple clients */}
+                                {/* <Autocomplete
+                                    multiple
+                                    id="client-autocomplete"
+                                    options={clients}
+
+                                    // onChange={(event, newClient) => {
+                                    //     setChosenClients(...chosenClients, newClient);
+                                    // }}
+                                    getOptionLabel={(option) => option.clientUsername}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Choose clients"
+                                        />
+                                    )}
+                                /> */}
+
+
+
+                                <TextField
+                                    onChange={e => setUsername(e.target.value)}
+                                    value={username}
+                                    required
+                                    id="outlined-required"
+                                    // label="Username"
+                                    label={`${humansType}Username`}
+                                // autoComplete="current-username"
+                                />
+
+                                <br />
+                                <button type='submit'>Create order</button>
+                            </div>
+                        </Box>
+                    </FormControl>
+
+                    <br /><br />
+
+
 
                     <DataTable />
 

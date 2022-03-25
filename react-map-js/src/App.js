@@ -186,13 +186,13 @@ function App() {
     <div className='App'>
       <CssBaseline />
       <Header />
-      <input value={value1} onChange={event => setValue1(event.target.value)} />
+      {/* <input value={value1} onChange={event => setValue1(event.target.value)} /> */}
 
-      <input value={value2} onChange={event => setValue2(event.target.value)} />
+      {/* <input value={value2} onChange={event => setValue2(event.target.value)} /> */}
 
-      <button onClick={() => setResult(Number(value1) + Number(value2))}>btn</button>
-      <input type="text" />
-      <p>result: {result}</p>
+      {/* <button onClick={() => setResult(Number(value1) + Number(value2))}>btn</button> */}
+      {/* <input type="text" /> */}
+      {/* <p>result: {result}</p> */}
       {/* <span>Where are you ?</span>  <Droplist /> <br /> */}
       {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
