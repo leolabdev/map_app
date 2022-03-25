@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import IconButton from "@mui/material/IconButton";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getOrdersData } from '../../api/orders/GetOrdersData';
 
 
 
 const DataTable = () => {
+
+    getOrdersData();
 
     const columns = [
         { field: 'id', headerName: 'ID' },
