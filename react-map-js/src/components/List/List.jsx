@@ -14,6 +14,7 @@ import MyButton from '../../UI/button/MyButton';
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
+import { getOrdersData } from '../../api/orders/GetOrdersData';
 
 // const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
 const List = ({ }) => {
@@ -48,14 +49,27 @@ const List = ({ }) => {
         getOptionLabel: (option) => option.manufacturerUsername,
     };
 
-    const [client, setClient] = useState(null);
-    const [manufacturer, setManufacturer] = useState(null);
 
-    const [chosenClients, setChosenClients] = useState([])
+    const [manufacturer, setManufacturer] = useState(null);
+    const [shipmentAddressId, setShipmentAddressId] = useState(null);
+
+    const [client, setClient] = useState(null);
+    const [deliveryAddressId, setDeliveryAddressId] = useState(null);
+
+    const [orders, setOrders] = useState([]);
+
+    // const [chosenClients, setChosenClients] = useState([]);
 
 
 
     useEffect(() => {
+
+        getOrdersData().then((data) => {
+
+            setOrders(data)
+            // console.log("helloti", orders)
+
+        })
 
         setIsLoading(true)
 
@@ -88,6 +102,23 @@ const List = ({ }) => {
         humansType,
         status
     ]);
+
+    // useEffect(() => {
+    //     getOrdersData().then((data) => {
+
+    //         setOrders(data)
+    //         console.log("helloti", orders)
+
+    //     })
+
+    //     // console.log("orders:", data)
+
+    //     // if array is empty effect will work only when once when page is loaded
+    // }, [
+
+
+    // ]);
+
 
 
 
@@ -399,7 +430,10 @@ const List = ({ }) => {
 
 
 
-                    <DataTable />
+                    <DataTable
+                        orders={orders}
+                        setOrders={setOrders}
+                    />
 
 
                 </>

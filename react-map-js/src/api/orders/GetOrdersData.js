@@ -9,7 +9,7 @@ export const getOrdersData = async () => {
 
         var data = await axios.get(`http://localhost:8081/dao/order`, {
         });
-        console.log(data.data.result)
+        // console.log("hello from orders", data.data.result) 
         return data.data.result;
 
     } catch (error) {
