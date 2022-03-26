@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import DataTable from '../DataTable/DataTable';
+import OrdersDataTable from '../DataTables/OrdersDataTable';
 
 
 import useStyles from './styles.js';
@@ -21,7 +21,7 @@ const List = ({ }) => {
 
     // Post form
     // const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
-    const [post, setPost] = useState({
+    const [humanPost, setHumanPost] = useState({
         username: '', name: '', addressAdd: {
             city: '', street: '', building: '', lat: '', lon: ''
         }
@@ -125,11 +125,11 @@ const List = ({ }) => {
 
 
 
-    function addNewPost(e) {
+    function addNewHuman(e) {
         // desabled autoupdating
         e.preventDefault()
         const newPost = {
-            ...post
+            ...humanPost
         }
         postNewHuman(humansType, newPost)
 
@@ -137,19 +137,19 @@ const List = ({ }) => {
         // console.log("post:", newPost)
         // setHumans(humans, newPost)
         setStatus(!status)
-        console.log(post)
+        console.log(humanPost)
         // createHuman(humansType, newPost)
         // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
-        setPost({
+        setHumanPost({
             username: '', name: '', addressAdd: {
                 city: '', street: '', building: '', lat: '', lon: ''
             }
         })
-        console.log(post)
+        console.log(humanPost)
     }
 
 
-    function removePost(e) {
+    function remove(e) {
         e.preventDefault()
         deleteHumanByUserName(humansType, username)
         setStatus(!status)
@@ -189,7 +189,7 @@ const List = ({ }) => {
                         {/* <InputLabel>Post new human</InputLabel> */}
                         <Box
                             component="form"
-                            onSubmit={addNewPost}
+                            onSubmit={addNewHuman}
                             sx={{
                                 '& .MuiTextField-root': { m: 1, width: '100%' },
 
@@ -211,8 +211,8 @@ const List = ({ }) => {
                                 </FormControl>
                                 <TextField
                                     // onChange={e => setTitle(e.target.value)}
-                                    onChange={e => setPost({ ...post, username: e.target.value })}
-                                    value={post.username}
+                                    onChange={e => setHumanPost({ ...humanPost, username: e.target.value })}
+                                    value={humanPost.username}
                                     required
                                     id="outlined-required"
                                     // label="Username"
@@ -220,8 +220,8 @@ const List = ({ }) => {
                                     autoComplete="current-username"
                                 />
                                 <TextField
-                                    onChange={e => setPost({ ...post, name: e.target.value })}
-                                    value={post.name}
+                                    onChange={e => setHumanPost({ ...humanPost, name: e.target.value })}
+                                    value={humanPost.name}
                                     required
                                     id="outlined-required"
                                     label="Name"
@@ -238,13 +238,13 @@ const List = ({ }) => {
                                 <TextField
                                     required
                                     // onChange={e => setPost({ ...post, city: e.target.value })}
-                                    onChange={e => setPost({
-                                        ...post, addressAdd: {
-                                            ...post.addressAdd,
+                                    onChange={e => setHumanPost({
+                                        ...humanPost, addressAdd: {
+                                            ...humanPost.addressAdd,
                                             city: e.target.value
                                         }
                                     })}
-                                    value={post.addressAdd.city}
+                                    value={humanPost.addressAdd.city}
 
                                     id="outlined-required"
                                     label="City"
@@ -252,13 +252,13 @@ const List = ({ }) => {
                                 />
                                 <TextField
                                     // onChange={e => setPost({ ...post, street: e.target.value })}
-                                    onChange={e => setPost({
-                                        ...post, addressAdd: {
-                                            ...post.addressAdd,
+                                    onChange={e => setHumanPost({
+                                        ...humanPost, addressAdd: {
+                                            ...humanPost.addressAdd,
                                             street: e.target.value
                                         }
                                     })}
-                                    value={post.addressAdd.street}
+                                    value={humanPost.addressAdd.street}
                                     required
                                     id="outlined-required"
                                     label="Street"
@@ -266,13 +266,13 @@ const List = ({ }) => {
                                 />
                                 <TextField
                                     // onChange={e => setPost({ ...post, building: e.target.value })}
-                                    onChange={e => setPost({
-                                        ...post, addressAdd: {
-                                            ...post.addressAdd,
+                                    onChange={e => setHumanPost({
+                                        ...humanPost, addressAdd: {
+                                            ...humanPost.addressAdd,
                                             building: e.target.value
                                         }
                                     })}
-                                    value={post.addressAdd.building}
+                                    value={humanPost.addressAdd.building}
                                     id="outlined-number"
                                     label="Building's number"
                                     // type="number"
@@ -283,7 +283,7 @@ const List = ({ }) => {
                                 />
 
 
-                                {/* <button onClick={addNewPost}>Create new Human</button> */}
+                                {/* <button onClick={addNewHuman}>Create new Human</button> */}
 
                                 <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button>
                                 {/* <MyButton onClick={createHuman} >send</MyButton> */}
@@ -296,7 +296,7 @@ const List = ({ }) => {
                         {/* <InputLabel>Post new human</InputLabel> */}
                         <Box
                             component="form"
-                            onSubmit={removePost}
+                            onSubmit={remove}
                             sx={{
                                 '& .MuiTextField-root': { m: 1, width: '100%' },
 
@@ -346,11 +346,15 @@ const List = ({ }) => {
                     </div>
                     <br />
 
+                    <h1 style={{ textAlign: 'center' }}>
+                        Second input
+                    </h1 >
+                    <Typography variant='h5'  >Order's Post form</Typography>
                     <FormControl>
                         {/* <InputLabel>Post</InputLabel> */}
                         <Box
                             component="form"
-                            onSubmit={removePost}
+                            onSubmit={remove}
                             sx={{
                                 '& .MuiTextField-root': { m: 1, width: '100%' },
 
@@ -430,7 +434,7 @@ const List = ({ }) => {
 
 
 
-                    <DataTable
+                    <OrdersDataTable
                         orders={orders}
                         setOrders={setOrders}
                     />
