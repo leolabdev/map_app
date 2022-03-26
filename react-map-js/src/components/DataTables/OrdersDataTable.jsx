@@ -37,14 +37,10 @@ const OrdersDataTable = ({ orders, setOrders }) => {
                             // you can call an API to delete the selected IDs
                             // and get the latest results after the deletion
                             // then call setRows() to update the data locally here
-                            // setTableData((r) => r.filter((x) => !selectedIDs.has(x.id)));
-                            // deleteOrderByOrderId((r) => r.find((x) => !selectedIDs.has(x.orderId)))
-                            // console.log(selectedIDs)
 
                             selectedIDs.forEach(s => deleteOrderByOrderId(s));
 
-                            // console.log((r) => r.filter((x) => selectedIDs.has(x.orderId)))
-                            // deleteOrderByOrderId((r) => r.filter((x) => !selectedIDs.has(x.orderId)))
+
 
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
                         }}
