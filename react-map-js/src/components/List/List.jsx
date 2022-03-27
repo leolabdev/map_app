@@ -49,6 +49,12 @@ const List = ({ }) => {
         getOptionLabel: (option) => option.manufacturerUsername,
     };
 
+    // let shipmentAddressIdInputProps = null;
+    // let deliveryAddressIdIdInputProps = null;
+
+
+    const [shipmentAddresses, setShipmentAddresses] = useState([])
+    const [deliveryAddresses, setDeliveryAddresses] = useState([])
 
     const [manufacturer, setManufacturer] = useState(null);
     const [shipmentAddressId, setShipmentAddressId] = useState(null);
@@ -96,31 +102,39 @@ const List = ({ }) => {
             setManufacturers(data)
 
         })
+        // console.log(orders)
+        // orders.map(order => console.log("hello", order.deliveryAddress))
+
+
 
         // if array is empty effect will work only when once when page is loaded
     }, [
         humansType,
-        status
+        status,
+        // manufacturer
     ]);
 
     // useEffect(() => {
-    //     getOrdersData().then((data) => {
 
-    //         setOrders(data)
-    //         console.log("helloti", orders)
 
-    //     })
+    //     // console.log("shipmentAddresses:", shipmentAddresses)
+    //     // shipmentAddressIdInputProps = {
+    //     //     options: manufacturer?.Addresses,
+    //     //     getOptionLabel: (option) => option.Addresses
+    //     // }
+    //     // deliveryAddressIdIdInputProps = {
+    //     //     options: client?.Addresses,
+    //     //     getOptionLabel: (option) => option.Addresses
+    //     // }
 
-    //     // console.log("orders:", data)
-
-    //     // if array is empty effect will work only when once when page is loaded
     // }, [
-
+    //     manufacturer, client
 
     // ]);
 
 
 
+    console.log("shipmentAddresses:", shipmentAddresses)
 
 
 
@@ -157,7 +171,12 @@ const List = ({ }) => {
         // setHumans(humans.filter(p => p.id !== human.id))
     }
 
-
+    function addNewOrder(e) {
+        alert("hello")
+        e.preventDefault()
+        setManufacturer(null)
+        setClient(null)
+    }
 
 
 
@@ -176,7 +195,7 @@ const List = ({ }) => {
             <h1 style={{ textAlign: 'center' }}>
                 First input
             </h1 >
-            <Typography variant='h5'  >User or Manufacturer Post form</Typography>
+            <Typography variant='h5'  >Client or Manufacturer Post form</Typography>
             {isLoading ? (
                 <div className={classes.loading}>
                     <CircularProgress size="5rem" />
@@ -354,7 +373,7 @@ const List = ({ }) => {
                         {/* <InputLabel>Post</InputLabel> */}
                         <Box
                             component="form"
-                            onSubmit={remove}
+                            onSubmit={addNewOrder}
                             sx={{
                                 '& .MuiTextField-root': { m: 1, width: '100%' },
 
@@ -372,12 +391,26 @@ const List = ({ }) => {
                                     value={manufacturer}
                                     onChange={(event, newManufacturer) => {
                                         setManufacturer(newManufacturer);
+                                        setShipmentAddresses((manufacturer) => manufacturer?.Addresses)
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="Choose manufacturer" variant="standard" />
                                     )}
                                 />
 
+
+                                {/* {manufacturer && manufacturer.Addresses} */}
+                                {/* <Autocomplete
+                                    {...shipmentAddressIdInputProps}
+                                    id="shipmentAddressId-autocomplete"
+                                    value={shipmentAddressId}
+                                    onChange={(event, newShipmentAddressId) => {
+                                        setShipmentAddressId(newShipmentAddressId);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="shipmentAddressId" variant="standard" />
+                                    )}
+                                /> */}
 
 
                                 <Autocomplete
@@ -392,6 +425,16 @@ const List = ({ }) => {
                                     )}
                                 />
 
+
+
+                                {/* const shipmentAddressIdInputProps = {
+                                    options: manufacturer.Addresses,
+                                getOptionLabel: (option) => option.Addresses
+    }
+                                const deliveryAddressIdIdInputProps = {
+                                    options: manufacturer.Addresses,
+                                     getOptionLabel: (option) => option.Addresses
+    } */}
 
                                 {/* template for multiple clients */}
                                 {/* <Autocomplete

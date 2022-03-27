@@ -6,12 +6,12 @@ import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
 
 
 
+
 const OrdersDataTable = ({ orders, setOrders }) => {
 
 
 
     // getOrdersData();
-
     const columns = [
         // { field: 'id', headerName: 'ID' },
         // { field: 'title', headerName: 'Title', width: 300 },
@@ -22,6 +22,7 @@ const OrdersDataTable = ({ orders, setOrders }) => {
         { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 400 },
         { field: 'clientUsername', headerName: 'clientUsername', width: 400 },
         { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 400 },
+        // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
         { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 400 },
 
         {
