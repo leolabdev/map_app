@@ -97,6 +97,9 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     var geojsonLayer;
     var map;
+    var latlng;
+    var startMarker;
+
 
 
 
@@ -130,9 +133,25 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         geojsonLayer.addTo(map);
     }
 
+    async function addStartMarker() {
+        map.removeLayer(startMarker)
+        latlng = L.latLng(23.7610, 61.4978);
+        startMarker = L.marker(latlng)
+        startMarker.addTo(map)
+    }
+
+    function addEndMarker() {
+        map.removeLayer()
+        let endMarker = new L.marker(50, 50)
+        endMarker.addTo(map)
+    }
+
+
+
     function MyCalculate() {
         map = useMapEvents({
             click: () => {
+                addStartMarker();
                 let data = {
                     coordinates: [
                         // [start.lng, start.lat],
@@ -141,6 +160,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                         [end.lon, end.lat],
                     ]
                 }
+
                 console.log(data)
                 fetch('http://localhost:8081/api/v1/routing', {
                     method: 'POST', // or 'PUT'
@@ -153,6 +173,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                     .then(data => {
                         console.log('Success:', data);
                         addRoute(data);
+
 
                     })
                     .catch((error) => {
