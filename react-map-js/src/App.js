@@ -209,6 +209,10 @@ function App() {
       />
       <div className="list">
         <List
+          start={start}
+          setStart={setStart}
+          end={end}
+          setEnd={setEnd}
         // createHuman={createHuman}
         // humans={humans}
         // isLoading={isLoading}

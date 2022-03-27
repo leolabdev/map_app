@@ -2,6 +2,7 @@ import React, { useState, useEffect, createRef } from 'react'
 // CircularProgress is loading icon 
 import { CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, Select, Button } from '@material-ui/core';
 import Box from '@mui/material/Box';
+import Stack from "@mui/material/Stack";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
@@ -17,7 +18,7 @@ import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 import { getOrdersData } from '../../api/orders/GetOrdersData';
 
 // const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
-const List = ({ }) => {
+const List = ({ start, setStart, end, setEnd }) => {
 
     // Post form
     // const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -75,7 +76,7 @@ const List = ({ }) => {
         getOrdersData().then((data) => {
 
             setOrders(data)
-            // console.log("helloti", orders)
+            console.log("helloti", orders)
 
         })
 
@@ -88,7 +89,6 @@ const List = ({ }) => {
             .then((data) => {
 
                 setHumans(data)
-
                 setIsLoading(false)
             })
 
@@ -102,7 +102,6 @@ const List = ({ }) => {
         getHumansData("manufacturer").then((data) => {
 
             setManufacturers(data)
-
         })
         // console.log(orders)
         // orders.map(order => console.log("hello", order.deliveryAddress))
@@ -389,11 +388,12 @@ const List = ({ }) => {
                     <Typography variant='h5'  >Order's Post form</Typography>
                     <FormControl>
                         {/* <InputLabel>Post</InputLabel> */}
-                        <Box
+                        {/* <Box */}
+                        <Stack
                             component="form"
                             onSubmit={addNewOrder}
                             sx={{
-                                '& .MuiTextField-root': { m: 1, width: '100%' },
+                                '& .MuiTextField-root': { m: 1, width: '250px' },
 
                             }}
                         // noValidate
@@ -404,6 +404,7 @@ const List = ({ }) => {
                             <div>
 
                                 <Autocomplete
+
                                     {...manufacturersInputProps}
                                     id="client-autocomplete"
                                     value={manufacturer}
@@ -499,7 +500,7 @@ const List = ({ }) => {
 
 
 
-                                <TextField
+                                {/* <TextField
                                     onChange={e => setUsername(e.target.value)}
                                     value={username}
                                     required
@@ -507,12 +508,15 @@ const List = ({ }) => {
                                     // label="Username"
                                     label={`${humansType}Username`}
                                 // autoComplete="current-username"
-                                />
+                                /> */}
+
+
 
                                 <br />
                                 <button type='submit'>Create order</button>
                             </div>
-                        </Box>
+                            {/* </Box> */}
+                        </Stack>
                     </FormControl>
 
                     <br /><br />
@@ -520,6 +524,11 @@ const List = ({ }) => {
 
 
                     <OrdersDataTable
+                        start={start}
+                        setStart={setStart}
+                        end={end}
+                        setEnd={setEnd}
+
                         orders={orders}
                         setOrders={setOrders}
                     />

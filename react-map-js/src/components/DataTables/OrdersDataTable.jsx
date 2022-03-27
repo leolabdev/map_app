@@ -2,13 +2,29 @@ import React, { useState, useEffect } from 'react'
 import IconButton from "@mui/material/IconButton";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
+import AltRouteIcon from '@mui/icons-material/AltRoute';
 import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
+import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
 
-const OrdersDataTable = ({ orders, setOrders }) => {
 
+const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) => {
+
+    // let [result, setResult] = useState(null)
+
+    // useEffect(() => {
+
+    //     console.log(start);
+    //     console.log(end)
+    //     // console.log(result)
+
+
+    // }, [
+    //     result
+
+    // ]);
 
 
     // getOrdersData();
@@ -19,15 +35,15 @@ const OrdersDataTable = ({ orders, setOrders }) => {
         // { field: 'body2', headerName: 'Body2', width: 600 },
         // { field: getRowId, headerName: 'hello' },
         { field: 'orderId', headerName: 'orderId' },
-        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 400 },
-        { field: 'clientUsername', headerName: 'clientUsername', width: 400 },
-        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 400 },
+        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 350 },
+        { field: 'clientUsername', headerName: 'clientUsername', width: 350 },
+        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 350 },
         // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
-        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 400 },
+        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 350 },
 
         {
             field: "delete",
-            width: 75,
+            width: 210,
             sortable: false,
             disableColumnMenu: true,
             renderHeader: () => {
@@ -35,6 +51,7 @@ const OrdersDataTable = ({ orders, setOrders }) => {
                     <IconButton
                         onClick={() => {
                             const selectedIDs = new Set(selectionModel);
+
                             // you can call an API to delete the selected IDs
                             // and get the latest results after the deletion
                             // then call setRows() to update the data locally here
@@ -47,6 +64,71 @@ const OrdersDataTable = ({ orders, setOrders }) => {
                         }}
                     >
                         <DeleteIcon />
+                    </IconButton>
+
+                );
+            }
+        },
+        {
+            field: "Get Route",
+            width: 75,
+            sortable: false,
+            disableColumnMenu: true,
+            renderHeader: () => {
+                return (
+                    <IconButton
+                        onClick={() => {
+                            const selectedIDs = new Array(selectionModel);
+
+                            // console.log(selectedIDs[0])
+                            // console.log(selectedIDs[0][0])
+                            // selectedIDs.forEach(s => deleteOrderByOrderId(s));
+                            // const hello = 
+                            getOrderByOrderId(selectedIDs[0][0]).then((data) => {
+                                console.log(data)
+                                // setResult(data)
+                                // setStart(data?.shipmentAddress?.lat, data?.shipmentAddress?.lon)
+                                setStart(prevState => ({
+                                    ...prevState,
+                                    lat: data.shipmentAddress.lon
+                                }));
+                                setStart(prevState => ({
+                                    ...prevState,
+                                    lon: data.shipmentAddress.lat
+                                }));
+
+                                setEnd(prevState => ({
+                                    ...prevState,
+                                    lat: data.deliveryAddress.lon
+                                }));
+                                setEnd(prevState => ({
+                                    ...prevState,
+                                    lon: data.deliveryAddress.lat
+                                }));
+
+
+                                // setStart("lol")
+                                // setEnd(data?.deliveryAddress?.lat, data?.deliveryAddress?.lon)
+                                console.log("shipmentAddress:", data.shipmentAddress.lat, data.shipmentAddress.lon, "deliveryAddress:", data.deliveryAddress.lat, data.deliveryAddress.lon)
+                            });
+
+                            // getOrdersData().then((data) => {
+
+                            //     setOrders(data)
+                            //     console.log("helloti", orders)
+
+                            // })
+                            // const hello = getOrderByOrderId(15);
+                            // setResult(hello);
+                            // console.log(result)
+
+                            // selectedIDs.forEach(s => getOrderByOrderId(s))
+
+
+                            // setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
+                        }}
+                    >
+                        <AltRouteIcon />
                     </IconButton>
 
                 );
@@ -66,6 +148,7 @@ const OrdersDataTable = ({ orders, setOrders }) => {
 
     // const [rows, setRows] = useState(_rows);
     const [selectionModel, setSelectionModel] = useState([]);
+    const [manufacturerUsernameModel, setManufacturerUsernameModel] = useState([])
     // const [tableData, setTableData] = useState([])
     // useEffect(() => {
     //     // fetch("https://jsonplaceholder.typicode.com/posts")

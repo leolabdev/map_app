@@ -81,6 +81,20 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     //     return null;
 
     // }
+
+    useEffect(() => {
+
+        console.log("heeeere", start, end)
+
+
+    }, [
+        start, end
+
+    ]);
+
+
+
+
     var geojsonLayer;
     var map;
 
@@ -127,6 +141,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                         [end.lon, end.lat],
                     ]
                 }
+                console.log(data)
                 fetch('http://localhost:8081/api/v1/routing', {
                     method: 'POST', // or 'PUT'
                     headers: {
@@ -149,7 +164,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             // },
         })
         return (
-            <MyButton>Calculate</MyButton>
+            <MyButton>Show Route</MyButton>
         )
     }
 
