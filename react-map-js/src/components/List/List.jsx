@@ -49,18 +49,20 @@ const List = ({ }) => {
         getOptionLabel: (option) => option.manufacturerUsername,
     };
 
-    // let shipmentAddressIdInputProps = null;
-    // let deliveryAddressIdIdInputProps = null;
+    let shipmentAddressInputProps = null;
+    let deliveryAddressInputProps = null;
 
 
-    const [shipmentAddresses, setShipmentAddresses] = useState([])
+    const [shipmentAddresses, setShipmentAddresses] = useState([{}])
     const [deliveryAddresses, setDeliveryAddresses] = useState([])
 
     const [manufacturer, setManufacturer] = useState(null);
-    const [shipmentAddressId, setShipmentAddressId] = useState(null);
+    // const [shipmentAddressId, setShipmentAddressId] = useState(null);
+    const [shipmentAddress, setShipmentAddress] = useState(null);
 
     const [client, setClient] = useState(null);
-    const [deliveryAddressId, setDeliveryAddressId] = useState(null);
+    // const [deliveryAddressId, setDeliveryAddressId] = useState(null);
+    const [deliveryAddress, setDeliveryAddress] = useState(null);
 
     const [orders, setOrders] = useState([]);
 
@@ -114,27 +116,43 @@ const List = ({ }) => {
         // manufacturer
     ]);
 
-    // useEffect(() => {
+    useEffect(() => {
+
+        console.log("hello from useeffect", manufacturer?.Addresses)
+        setShipmentAddresses(manufacturer && manufacturer?.Addresses)
+        setDeliveryAddresses(client && client?.Addresses)
+        // setShipmentAddresses(shipmentAddresses = manufacturer => manufacturer?.Addresses)
+        //  console.log(shipmentAddresses)
+        // setShipmentAddresses(shipmentAddresses => manufacturer?.Addresses.map)
+        // // console.log("shipmentAddresses:", shipmentAddresses)
 
 
-    //     // console.log("shipmentAddresses:", shipmentAddresses)
-    //     // shipmentAddressIdInputProps = {
-    //     //     options: manufacturer?.Addresses,
-    //     //     getOptionLabel: (option) => option.Addresses
-    //     // }
-    //     // deliveryAddressIdIdInputProps = {
-    //     //     options: client?.Addresses,
-    //     //     getOptionLabel: (option) => option.Addresses
-    //     // }
+    }, [
+        manufacturer, client
 
-    // }, [
-    //     manufacturer, client
+    ]);
 
-    // ]);
+    // when shipmentAddresses changed we use this effect
+    useEffect(() => {
+
+        shipmentAddressInputProps = {
+            options: shipmentAddresses,
+            getOptionLabel: (option) => option.shipmentAddresses
+        }
+        deliveryAddressInputProps = {
+            options: deliveryAddress,
+            getOptionLabel: (option) => option.deliveryAddress
+        }
+
+        console.log("shipmentAddresses:", shipmentAddresses)
+        console.log("deliveryAddress", deliveryAddress)
 
 
+    }, [
+        shipmentAddresses, deliveryAddress
 
-    console.log("shipmentAddresses:", shipmentAddresses)
+    ]);
+
 
 
 
@@ -391,7 +409,9 @@ const List = ({ }) => {
                                     value={manufacturer}
                                     onChange={(event, newManufacturer) => {
                                         setManufacturer(newManufacturer);
-                                        setShipmentAddresses((manufacturer) => manufacturer?.Addresses)
+                                        // console.log("our manufacturer is", newManufacturer)
+
+
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="Choose manufacturer" variant="standard" />
@@ -400,17 +420,17 @@ const List = ({ }) => {
 
 
                                 {/* {manufacturer && manufacturer.Addresses} */}
-                                {/* <Autocomplete
-                                    {...shipmentAddressIdInputProps}
-                                    id="shipmentAddressId-autocomplete"
-                                    value={shipmentAddressId}
-                                    onChange={(event, newShipmentAddressId) => {
-                                        setShipmentAddressId(newShipmentAddressId);
+                                <Autocomplete
+                                    {...shipmentAddressInputProps}
+                                    id="shipmentAddress-autocomplete"
+                                    value={shipmentAddress}
+                                    onChange={(event, newShipmentAddress) => {
+                                        setShipmentAddress(newShipmentAddress);
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label="shipmentAddressId" variant="standard" />
+                                        <TextField {...params} label="shipmentAddress" variant="standard" />
                                     )}
-                                /> */}
+                                />
 
 
                                 <Autocomplete
@@ -425,7 +445,29 @@ const List = ({ }) => {
                                     )}
                                 />
 
+                                <Autocomplete
+                                    {...shipmentAddressInputProps}
+                                    id="shipmentAddress-autocomplete"
+                                    value={shipmentAddress}
+                                    onChange={(event, newShipmentAddress) => {
+                                        setShipmentAddress(newShipmentAddress);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="deliveryAddresses" variant="standard" />
+                                    )}
+                                />
 
+                                {/* <Autocomplete
+                                    {...deliveryAddressInputProps}
+                                    id="deliveryAddresses-autocomplete"
+                                    value={deliveryAddresses}
+                                    onChange={(event, newDeleveryAddress) => {
+                                        setDeliveryAddress(newDeleveryAddress);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="deliveryAddresses" variant="standard" />
+                                    )}
+                                /> */}
 
                                 {/* const shipmentAddressIdInputProps = {
                                     options: manufacturer.Addresses,
