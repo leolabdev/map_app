@@ -169,15 +169,15 @@ function App() {
   }
 
 
-  const createHuman = (newHuman) => {
-    postNewHuman(newHuman)
-  }
+  // const createHuman = (newHuman) => {
+  //   postNewHuman(newHuman)
+  // }
 
 
-  // get post from children element
-  const removeHuman = (human) => {
+  // // get post from children element
+  // const removeHuman = (human) => {
 
-  }
+  // }
 
 
 

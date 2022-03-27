@@ -80,38 +80,44 @@ const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) =>
                         onClick={() => {
                             const selectedIDs = new Array(selectionModel);
 
-                            // console.log(selectedIDs[0])
-                            // console.log(selectedIDs[0][0])
-                            // selectedIDs.forEach(s => deleteOrderByOrderId(s));
-                            // const hello = 
-                            getOrderByOrderId(selectedIDs[0][0]).then((data) => {
-                                console.log(data)
-                                // setResult(data)
-                                // setStart(data?.shipmentAddress?.lat, data?.shipmentAddress?.lon)
-                                setStart(prevState => ({
-                                    ...prevState,
-                                    lat: data.shipmentAddress.lon
-                                }));
-                                setStart(prevState => ({
-                                    ...prevState,
-                                    lon: data.shipmentAddress.lat
-                                }));
-
-                                setEnd(prevState => ({
-                                    ...prevState,
-                                    lat: data.deliveryAddress.lon
-                                }));
-                                setEnd(prevState => ({
-                                    ...prevState,
-                                    lon: data.deliveryAddress.lat
-                                }));
+                            if (selectedIDs[0].length > 1) {
+                                alert("plz select only one")
+                            }
+                            else {
 
 
-                                // setStart("lol")
-                                // setEnd(data?.deliveryAddress?.lat, data?.deliveryAddress?.lon)
-                                console.log("shipmentAddress:", data.shipmentAddress.lat, data.shipmentAddress.lon, "deliveryAddress:", data.deliveryAddress.lat, data.deliveryAddress.lon)
-                            });
+                                // (selectedIDs[0][0].length) === 0 ? alert("sorry") : alert("ok")
+                                // console.log(selectedIDs[0])
+                                // selectedIDs.forEach(s => deleteOrderByOrderId(s));
+                                // const hello = 
+                                getOrderByOrderId(selectedIDs[0][0]).then((data) => {
+                                    console.log(data)
+                                    // setResult(data)
+                                    // setStart(data?.shipmentAddress?.lat, data?.shipmentAddress?.lon)
+                                    setStart(prevState => ({
+                                        ...prevState,
+                                        lat: data.shipmentAddress.lon
+                                    }));
+                                    setStart(prevState => ({
+                                        ...prevState,
+                                        lon: data.shipmentAddress.lat
+                                    }));
 
+                                    setEnd(prevState => ({
+                                        ...prevState,
+                                        lat: data.deliveryAddress.lon
+                                    }));
+                                    setEnd(prevState => ({
+                                        ...prevState,
+                                        lon: data.deliveryAddress.lat
+                                    }));
+                                    alert("Press Show route button on the map")
+
+                                    // setStart("lol")
+                                    // setEnd(data?.deliveryAddress?.lat, data?.deliveryAddress?.lon)
+                                    console.log("shipmentAddress:", data.shipmentAddress.lat, data.shipmentAddress.lon, "deliveryAddress:", data.deliveryAddress.lat, data.deliveryAddress.lon)
+                                });
+                            }
                             // getOrdersData().then((data) => {
 
                             //     setOrders(data)
