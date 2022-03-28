@@ -15,28 +15,13 @@ import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
 import MyButton from "../../UI/button/MyButton";
 
-
-
-// class CenterControl extends MapControl {  // note we're extending MapControl from react-leaflet, not Component from react
-
-//     componentWillMount() {
-//         const centerControl = L.control({ position: 'bottomright' });  // see http://leafletjs.com/reference.html#control-positions for other positions
-//         const jsx = (
-//             // PUT YOUR JSX FOR THE COMPONENT HERE:
-//             <div {...this.props}>
-//         // add your JSX
-//             </div>
-//         );
-
-//         centerControl.onAdd = function (map) {
-//             let div = L.DomUtil.create('div', '');
-//             return div;
-//         };
-
-//         this.leafletElement = centerControl;
-//     }
-// }
-
+const icon1 = L.icon({
+    iconSize: [25, 41],
+    iconAnchor: [10, 41],
+    popupAnchor: [2, -40],
+    iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png'
+});
 
 
 
@@ -45,6 +30,8 @@ import MyButton from "../../UI/button/MyButton";
 
 function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd }) {
 
+    // const map = useMap();
+    // const map = useMap();
     // function name(params) {
     //     const map = useMap();
 
@@ -82,7 +69,23 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     // }
 
+    // function LocationMarkers() {
+    //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
+    //     const [markers, setMarkers] = useState(initialMarkers);
 
+    //     const map = useMapEvents({
+    //         click(e) {
+    //             markers.push(e.latlng);
+    //             setMarkers((prevValue) => [...prevValue, e.latlng]);
+    //         }
+    //     });
+
+    //     return (
+    //         <React.Fragment>
+    //             {markers.map(marker => <Marker position={marker} ></Marker>)}
+    //         </React.Fragment>
+    //     );
+    // }
 
 
 
@@ -105,23 +108,43 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     var startMarker = new L.marker();
     var endMarker = new L.marker();
 
+    const layerGroup = L.layerGroup();
+
+    const [status, setStatus] = useState(false)
 
 
 
 
+    // const LayerGroupcomponent = () => {
+
+    //     const map1 = useMap();
+    //     let [printInfo, setPrintinfo] = useState('');
+
+    //     useEffect(() => {
 
 
-    // function MyCalculate() {
-    //     const map = useMapEvents({
-    //         click: () => {
-    //             map.removeLayer(geojsonLayer)
-    //         },
-    //         // locationfound: (location) => {
-    //         //     console.log('location found:', location)
-    //         // },
-    //     })
+
+    //         function hello() {
+
+    //             layerGroup.clearLayers();
+    //             // let latlng = e.geocode.center;
+    //             let latlon = L.latLng([23.7610, 61.4978]);
+    //             L.marker(latlon, { icon1 })
+    //                 .bindPopup("e.geocode.name")
+    //                 .openPopup()
+    //                 .addTo(layerGroup);
+
+    //             // map1.panTo(latlng);
+
+    //             setPrintinfo("e.geocode.name");
+    //             map1.addLayer(layerGroup)
+    //                 .addTo(map1);
+    //         }
+    //         hello()
+
+    //     }, [map1]);
     //     return (
-    //         <MyButton>Calculate</MyButton>
+    //         null
     //     )
     // }
 
@@ -140,6 +163,9 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         startMarker = new L.marker(latlon)
         startMarker.addTo(map)
     }
+
+
+
     function removeStartMarker() {
         map.removeLayer(startMarker)
     }
@@ -148,22 +174,46 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     }
 
     function addEndMarker(lat, lon) {
-        // console.log(lat, lon)
-        map.removeLayer(endMarker)
         let latlon = L.latLng([lat, lon]);
+        // let latlon = L.latLng([22.2666, 60.4518]);
         endMarker = new L.marker(latlon)
         endMarker.addTo(map)
     }
 
+    // function LocationMarkers() {
+    //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
+    //     const [markers, setMarkers] = useState(initialMarkers);
 
-    function MyComponent() {
+    //     const map = useMapEvents({
+    //         click(e) {
+    //             markers.push(e.latlng);
+    //             setMarkers((prevValue) => [...prevValue, e.latlng]);
+    //         }
+    //     });
+
+    //     return (
+    //         <React.Fragment>
+    //             {markers.map(marker => <Marker position={marker} ></Marker>)}
+    //         </React.Fragment>
+    //     );
+    // }
+
+
+    // by this we get access to using html DOM's map 
+    function MyMap() {
         map = useMap()
         // console.log('map center:', map.getCenter())
         geojsonLayer = L.geoJSON();
         // L.geoJSON(mapData).addTo(map)
         geojsonLayer.addTo(map)
+
+        layerGroup.addTo(map)
+
+        // addEndMarker(60.4518, 22.2666)
         return null
     }
+
+
 
     function ShowrouteButton() {
         return (
@@ -193,8 +243,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             .then(data => {
                 console.log('Success:', data);
                 addRoute(data);
-                removeStartMarker();
-                removeEndMarker();
+                // removeStartMarker();
+                // removeEndMarker();
                 addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
                 addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
             })
@@ -207,52 +257,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         )
     }
 
-    // function MyCalculate() {
-    //     map = useMapEvents({
-    //         click:
-    //             () => {
-
-    //                 let coordinatesData = {
-    //                     coordinates: [
-    //                         // [start.lng, start.lat],
-    //                         [start.lon, start.lat],
-    //                         // [end.lng, end.lat],
-    //                         [end.lon, end.lat],
-    //                     ]
-    //                 }
-
-    //                 console.log(coordinatesData)
-    //                 fetch('http://localhost:8081/api/v1/routing', {
-    //                     method: 'POST', // or 'PUT'
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-    //                     },
-    //                     body: JSON.stringify(coordinatesData),
-    //                 })
-    //                     .then(response => response.json())
-    //                     .then(data => {
-    //                         console.log('Success:', data);
-    //                         addRoute(data);
-    //                         removeStartMarker();
-    //                         removeEndMarker();
-    //                         addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
-    //                         addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.error('Error:', error);
-    //                     });
-    //             },
-    //         // locationfound: (location) => {
-    //         //     console.log('location found:', location)
-    //         // },
-    //     })
-    //     return (
-    //         <MyButton>Show Route</MyButton>
-    //     )
-    // }
-
-
-
 
 
 
@@ -261,7 +265,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
 
 
-    var [geo, setGeo] = useState("")
+    // var [geo, setGeo] = useState("")
 
 
 
@@ -294,6 +298,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
 
         <MapContainer
+
             // ref={mapRef}
             className={classes.mapContainer}
             // dragging={false}
@@ -302,7 +307,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             zoom={14}
             scrollWheelZoom={false}
             whenReady={() => {
-
                 console.log("we are ready")
             }}
         >
@@ -313,7 +317,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <LocationMarker />
-
+            {/* <LocationMarkers /> */}
 
             {/* <GeoL /> */}
 
@@ -347,7 +351,9 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 markerPosition={[20.27, -157]}
                 description="This is a custom description!"
             /> */}
-            <MyComponent />
+            <MyMap />
+
+            {/* <LayerGroupcomponent /> */}
 
 
 

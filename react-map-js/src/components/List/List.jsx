@@ -210,7 +210,7 @@ const List = ({ start, setStart, end, setEnd }) => {
 
         <div className={classes.container}>
             <h1 style={{ textAlign: 'center' }}>
-                First input
+                First Form
             </h1 >
             <Typography variant='h5'  >Client or Manufacturer Post form</Typography>
             {isLoading ? (
@@ -383,7 +383,7 @@ const List = ({ start, setStart, end, setEnd }) => {
                     <br />
 
                     <h1 style={{ textAlign: 'center' }}>
-                        Second input
+                        Second Form
                     </h1 >
                     <Typography variant='h5'  >Order's Post form</Typography>
                     <FormControl>
