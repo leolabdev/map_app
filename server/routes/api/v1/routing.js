@@ -38,11 +38,13 @@ router.post('/routing', async (req, res) => {
     let coordinates = req.body.coordinates;
     let data = JSON.stringify({
         coordinates:coordinates,
+        /*
         alternative_routes:{
             share_factor:0.6,
             target_count:3,
             weight_factor:2
         },
+        */
         continue_straight:true,
         instructions:true,
         units:"m"
