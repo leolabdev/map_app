@@ -344,8 +344,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             {/* <MyCalculate></MyCalculate> */}
             <ShowrouteButton />
             {/* <RoutingMachine /> */}
-            <LeafletgeoSearchStart />
-            <LeafletgeoSearchEnd />
+            {/* <LeafletgeoSearchStart /> */}
+            {/* <LeafletgeoSearchEnd /> */}
             {/* <Description
                 title={"My Button Title"}
                 markerPosition={[20.27, -157]}

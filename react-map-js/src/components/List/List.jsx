@@ -212,7 +212,7 @@ const List = ({ start, setStart, end, setEnd }) => {
             <h1 style={{ textAlign: 'center' }}>
                 First Form
             </h1 >
-            <Typography variant='h5'  >Client or Manufacturer Post form</Typography>
+            <Typography variant='h5'  >Client or Manufacturer CRUD form</Typography>
             {isLoading ? (
                 <div className={classes.loading}>
                     <CircularProgress size="5rem" />
@@ -385,7 +385,7 @@ const List = ({ start, setStart, end, setEnd }) => {
                     <h1 style={{ textAlign: 'center' }}>
                         Second Form
                     </h1 >
-                    <Typography variant='h5'  >Order's Post form</Typography>
+                    <Typography variant='h5'  >Order's CRUD form</Typography>
                     <FormControl>
                         {/* <InputLabel>Post</InputLabel> */}
                         {/* <Box */}
