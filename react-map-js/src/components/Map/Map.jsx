@@ -108,14 +108,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
 
 
-    function MyComponent() {
-        map = useMap()
-        // console.log('map center:', map.getCenter())
-        geojsonLayer = L.geoJSON();
-        // L.geoJSON(mapData).addTo(map)
-        geojsonLayer.addTo(map)
-        return null
-    }
+
 
 
     // function MyCalculate() {
@@ -163,50 +156,100 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     }
 
 
+    function MyComponent() {
+        map = useMap()
+        // console.log('map center:', map.getCenter())
+        geojsonLayer = L.geoJSON();
+        // L.geoJSON(mapData).addTo(map)
+        geojsonLayer.addTo(map)
+        return null
+    }
 
-    function MyCalculate() {
-        map = useMapEvents({
-            click:
-                () => {
-
-                    let coordinatesData = {
-                        coordinates: [
-                            // [start.lng, start.lat],
-                            [start.lon, start.lat],
-                            // [end.lng, end.lat],
-                            [end.lon, end.lat],
-                        ]
-                    }
-
-                    console.log(coordinatesData)
-                    fetch('http://localhost:8081/api/v1/routing', {
-                        method: 'POST', // or 'PUT'
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(coordinatesData),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Success:', data);
-                            addRoute(data);
-                            removeStartMarker();
-                            removeEndMarker();
-                            addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
-                            addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
-                },
-            // locationfound: (location) => {
-            //     console.log('location found:', location)
-            // },
-        })
+    function ShowrouteButton() {
         return (
-            <MyButton>Show Route</MyButton>
+            <MyButton onClick={showRoute}>Show Route</MyButton>
         )
     }
+
+    function showRoute() {
+        // map = useMap()
+        let coordinatesData = {
+            coordinates: [
+                // [start.lng, start.lat],
+                [start.lon, start.lat],
+                // [end.lng, end.lat],
+                [end.lon, end.lat],
+            ]
+        }
+        console.log(coordinatesData)
+        fetch('http://localhost:8081/api/v1/routing', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(coordinatesData),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                addRoute(data);
+                removeStartMarker();
+                removeEndMarker();
+                addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
+                addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+        return (
+            null
+        )
+    }
+
+    // function MyCalculate() {
+    //     map = useMapEvents({
+    //         click:
+    //             () => {
+
+    //                 let coordinatesData = {
+    //                     coordinates: [
+    //                         // [start.lng, start.lat],
+    //                         [start.lon, start.lat],
+    //                         // [end.lng, end.lat],
+    //                         [end.lon, end.lat],
+    //                     ]
+    //                 }
+
+    //                 console.log(coordinatesData)
+    //                 fetch('http://localhost:8081/api/v1/routing', {
+    //                     method: 'POST', // or 'PUT'
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                     },
+    //                     body: JSON.stringify(coordinatesData),
+    //                 })
+    //                     .then(response => response.json())
+    //                     .then(data => {
+    //                         console.log('Success:', data);
+    //                         addRoute(data);
+    //                         removeStartMarker();
+    //                         removeEndMarker();
+    //                         addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
+    //                         addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error('Error:', error);
+    //                     });
+    //             },
+    //         // locationfound: (location) => {
+    //         //     console.log('location found:', location)
+    //         // },
+    //     })
+    //     return (
+    //         <MyButton>Show Route</MyButton>
+    //     )
+    // }
 
 
 
@@ -294,7 +337,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             </Marker> */}
             {/* <button className={classes.button} onClick={Calculate}>Calculate</button> */}
             {/* <MyButton className={classes.button} onClick={Calculate}> Calculate</MyButton> */}
-            <MyCalculate></MyCalculate>
+            {/* <MyCalculate></MyCalculate> */}
+            <ShowrouteButton />
             {/* <RoutingMachine /> */}
             <LeafletgeoSearchStart />
             <LeafletgeoSearchEnd />
