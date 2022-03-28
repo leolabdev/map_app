@@ -82,6 +82,10 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     // }
 
+
+
+
+
     useEffect(() => {
 
         console.log("heeeere", start, end)
@@ -97,8 +101,9 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     var geojsonLayer;
     var map;
-    var latlng;
-    var startMarker;
+    // var latlng;
+    var startMarker = new L.marker();
+    var endMarker = new L.marker();
 
 
 
@@ -133,16 +138,27 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         geojsonLayer.addTo(map);
     }
 
-    async function addStartMarker() {
-        map.removeLayer(startMarker)
-        latlng = L.latLng(23.7610, 61.4978);
-        startMarker = L.marker(latlng)
+    function addStartMarker(lat, lon) {
+        // map.removeLayer(startMarker)
+        // console.log(lat, lon)
+        // map.removeLayer(startMarker)
+        // let latlon = L.latLng([23.7610, 61.4978]);
+        let latlon = L.latLng([lat, lon]);
+        startMarker = new L.marker(latlon)
         startMarker.addTo(map)
     }
+    function removeStartMarker() {
+        map.removeLayer(startMarker)
+    }
+    function removeEndMarker() {
+        map.removeLayer(endMarker)
+    }
 
-    function addEndMarker() {
-        map.removeLayer()
-        let endMarker = new L.marker(50, 50)
+    function addEndMarker(lat, lon) {
+        // console.log(lat, lon)
+        map.removeLayer(endMarker)
+        let latlon = L.latLng([lat, lon]);
+        endMarker = new L.marker(latlon)
         endMarker.addTo(map)
     }
 
@@ -150,36 +166,39 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     function MyCalculate() {
         map = useMapEvents({
-            click: () => {
-                addStartMarker();
-                let data = {
-                    coordinates: [
-                        // [start.lng, start.lat],
-                        [start.lon, start.lat],
-                        // [end.lng, end.lat],
-                        [end.lon, end.lat],
-                    ]
-                }
+            click:
+                () => {
 
-                console.log(data)
-                fetch('http://localhost:8081/api/v1/routing', {
-                    method: 'POST', // or 'PUT'
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                        addRoute(data);
+                    let coordinatesData = {
+                        coordinates: [
+                            // [start.lng, start.lat],
+                            [start.lon, start.lat],
+                            // [end.lng, end.lat],
+                            [end.lon, end.lat],
+                        ]
+                    }
 
-
+                    console.log(coordinatesData)
+                    fetch('http://localhost:8081/api/v1/routing', {
+                        method: 'POST', // or 'PUT'
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(coordinatesData),
                     })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-            },
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            addRoute(data);
+                            removeStartMarker();
+                            removeEndMarker();
+                            addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
+                            addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                },
             // locationfound: (location) => {
             //     console.log('location found:', location)
             // },
@@ -240,11 +259,12 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             zoom={14}
             scrollWheelZoom={false}
             whenReady={() => {
+
                 console.log("we are ready")
             }}
         >
 
-            <LocationMarker />
+            {/* <LocationMarker /> */}
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -259,8 +279,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 <Popup>
                     A pretty CSS3 popup. <br /> Easily customizable.
                 </Popup>
-            </Marker>
-
+            </Marker> */}
+            {/*
             <Marker position={[61.169, 25.938]}>
                 <Popup>
                     hello MiKhkail. <br /> Easily customizable.
