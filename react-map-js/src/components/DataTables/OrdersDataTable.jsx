@@ -194,13 +194,13 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
 
 
         <div style={{ height: 700, width: '100%' }}>
-            {/* {isLoading ? ( */}
-                {/* <div 
+            {/* {isLoading ? (
+                <div 
                 // className={classes.loading}
                 >
                     <CircularProgress size="5rem" />
-                </div> */}
-            {/* ) : ( */}
+                </div>
+            ) : ( */}
         
             <DataGrid
                 getRowId={(row) => row.orderId}
@@ -213,7 +213,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
                 }}
                 components={{ Toolbar: GridToolbar }}
             />
-            )
+            {/* ) */}
         {/* } */}
         </div>
     )

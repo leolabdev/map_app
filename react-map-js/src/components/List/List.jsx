@@ -164,10 +164,11 @@ const List = ({ start, setStart, end, setEnd }) => {
 
             setOrders(data)
             console.log("helloti", orders)
-            setIsLoading(false)
+            setTimeout(() => {   setIsLoadingOrders(false) }, 1000);
+            // setIsLoadingOrders(false)
         })
         // console.log(result)
-        setIsLoading(true)
+        // setIsLoading(true)
 
     }, [
        
@@ -188,7 +189,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         // console.log("humans:", humans)
         // console.log("post:", newPost)
         // setHumans(humans, newPost)
-        setTimeout(() => {   setStatus(!status) }, 1000);
+        setTimeout(() => {   setStatus(!status) }, 500);
         console.log(humanPost)
         // createHuman(humansType, newPost)
         // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -542,8 +543,14 @@ const List = ({ start, setStart, end, setEnd }) => {
 
                     <br /><br />
 
-
-
+                
+                    {isLoadingOrders ? (
+                <div 
+                // className={classes.loading}
+                >
+                    <CircularProgress size="5rem" />
+                </div>
+            ) : (
                     <OrdersDataTable
                         start={start}
                         setStart={setStart}
@@ -553,7 +560,7 @@ const List = ({ start, setStart, end, setEnd }) => {
                         orders={orders}
                         setOrders={setOrders}
                     />
-
+            )}
 
                 </>
             )}
