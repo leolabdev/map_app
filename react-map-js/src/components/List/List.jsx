@@ -167,7 +167,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         // console.log("humans:", humans)
         // console.log("post:", newPost)
         // setHumans(humans, newPost)
-        setStatus(!status)
+        setTimeout(() => {   setStatus(!status) }, 1000);
         console.log(humanPost)
         // createHuman(humansType, newPost)
         // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
