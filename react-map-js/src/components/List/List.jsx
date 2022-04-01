@@ -39,67 +39,55 @@ const List = ({ start, setStart, end, setEnd }) => {
     // orders logic 
     const [clients, setClients] = useState([]);
     const [manufacturers, setManufacturers] = useState([]);
-
-
-    // orders's autoinput
-    const clientsInputProps = {
-        options: clients,
-        getOptionLabel: (option) => option.clientUsername,
-    };
-    const manufacturersInputProps = {
-        options: manufacturers,
-        getOptionLabel: (option) => option.manufacturerUsername,
-    };
-
-    let shipmentAddressInputProps = null;
-    let deliveryAddressInputProps = null;
-
-
-    const [shipmentAddresses, setShipmentAddresses] = useState([{}])
+    const [shipmentAddresses, setShipmentAddresses] = useState([])
     const [deliveryAddresses, setDeliveryAddresses] = useState([])
 
+    // orders's autoinput
     const [manufacturer, setManufacturer] = useState(null);
-    // const [shipmentAddressId, setShipmentAddressId] = useState(null);
+    //const [shipmentAddressId, setShipmentAddressId] = useState(null);
     const [shipmentAddress, setShipmentAddress] = useState(null);
 
     const [client, setClient] = useState(null);
-    // const [deliveryAddressId, setDeliveryAddressId] = useState(null);
+    //const [deliveryAddressId, setDeliveryAddressId] = useState(null);
     const [deliveryAddress, setDeliveryAddress] = useState(null);
 
     const [orders, setOrders] = useState([]);
-    
+
+
+    const clientsInputProps = {
+        options: clients,
+        getOptionLabel: (option) => option.clientUsername,
+    }
+    const manufacturersInputProps = {
+        options: manufacturers,
+        getOptionLabel: (option) => option.manufacturerUsername,
+    }
+
+    let shipmentAddressInputProps = {
+        options: shipmentAddresses,
+        getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
+    }
+    let deliveryAddressInputProps = {
+        options: deliveryAddresses,
+        getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
+    };
+
     // const [chosenClients, setChosenClients] = useState([]);
 
-
-
-   
-
-
     useEffect(() => {
-
-       
-         
-         setIsLoading(true)
-
+        setIsLoading(true)
 
         getHumansData(humansType)
-
-
             .then((data) => {
-
                 setHumans(data)
                 setIsLoading(false)
             })
 
-
         getHumansData("client").then((data) => {
-
             setClients(data)
-
         })
 
         getHumansData("manufacturer").then((data) => {
-
             setManufacturers(data)
         })
         // console.log(orders)
@@ -119,46 +107,29 @@ const List = ({ start, setStart, end, setEnd }) => {
         // manufacturer
     ]);
 
-    useEffect(() => {
-
-        console.log("hello from useeffect", manufacturer?.Addresses)
-        setShipmentAddresses(manufacturer && manufacturer?.Addresses)
-        setDeliveryAddresses(client && client?.Addresses)
-        // setShipmentAddresses(shipmentAddresses = manufacturer => manufacturer?.Addresses)
-        //  console.log(shipmentAddresses)
-        // setShipmentAddresses(shipmentAddresses => manufacturer?.Addresses.map)
-        // // console.log("shipmentAddresses:", shipmentAddresses)
-
-
-    }, [
-        manufacturer, client
-
-    ]);
-
-    // when shipmentAddresses changed we use this effect
-    useEffect(() => {
-
-        shipmentAddressInputProps = {
-            options: shipmentAddresses,
-            getOptionLabel: (option) => option.shipmentAddresses
+    useEffect( () => {
+        try{
+            setShipmentAddress(null);
+            setShipmentAddresses(manufacturer?.Addresses);
+        }catch (e){
+            console.log(e);
         }
-        deliveryAddressInputProps = {
-            options: deliveryAddress,
-            getOptionLabel: (option) => option.deliveryAddress
-        }
-
-        console.log("shipmentAddresses:", shipmentAddresses)
-        console.log("deliveryAddress", deliveryAddress)
-
-
     }, [
-        shipmentAddresses, deliveryAddress
-
+        manufacturer
     ]);
 
     useEffect(() => {
+        try{
+            setDeliveryAddress(null);
+            setDeliveryAddresses(client && client?.Addresses)
+        }catch (e){
+            console.log(e);
+        }
+    }, [
+        client
+    ]);
 
-
+    useEffect(() => {
         setIsLoadingOrders(true)
         getOrdersData().then((data) => {
 
@@ -169,12 +140,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         // console.log(result)
         setIsLoading(true)
 
-    }, [
-       
-
-    ]);
-
-
+    }, []);
 
 
     function addNewHuman(e) {
@@ -215,14 +181,6 @@ const List = ({ start, setStart, end, setEnd }) => {
         setManufacturer(null)
         setClient(null)
     }
-
-
-
-
-
-
-
-
 
     const classes = useStyles();
 
@@ -381,11 +339,6 @@ const List = ({ start, setStart, end, setEnd }) => {
                     <br />
 
 
-
-
-
-
-
                     <div container className={classes.listcontainer}>
                         {/* only if we have humans over then map over them */}
                         {humans?.map((human, index) => (
@@ -425,7 +378,6 @@ const List = ({ start, setStart, end, setEnd }) => {
                             <div>
 
                                 <Autocomplete
-
                                     {...manufacturersInputProps}
                                     id="client-autocomplete"
                                     value={manufacturer}
@@ -446,7 +398,7 @@ const List = ({ start, setStart, end, setEnd }) => {
                                     {...shipmentAddressInputProps}
                                     id="shipmentAddress-autocomplete"
                                     value={shipmentAddress}
-                                    onChange={(event, newShipmentAddress) => {
+                                    onChange={(event, newShipmentAddress ) => {
                                         setShipmentAddress(newShipmentAddress);
                                     }}
                                     renderInput={(params) => (
@@ -468,28 +420,16 @@ const List = ({ start, setStart, end, setEnd }) => {
                                 />
 
                                 <Autocomplete
-                                    {...shipmentAddressInputProps}
-                                    id="shipmentAddress-autocomplete"
-                                    value={shipmentAddress}
-                                    onChange={(event, newShipmentAddress) => {
-                                        setShipmentAddress(newShipmentAddress);
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="deliveryAddresses" variant="standard" />
-                                    )}
-                                />
-
-                                {/* <Autocomplete
                                     {...deliveryAddressInputProps}
                                     id="deliveryAddresses-autocomplete"
-                                    value={deliveryAddresses}
+                                    value={deliveryAddress}
                                     onChange={(event, newDeleveryAddress) => {
                                         setDeliveryAddress(newDeleveryAddress);
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="deliveryAddresses" variant="standard" />
                                     )}
-                                /> */}
+                                />
 
                                 {/* const shipmentAddressIdInputProps = {
                                     options: manufacturer.Addresses,
