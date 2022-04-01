@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import IconButton from "@mui/material/IconButton";
+import { CircularProgress } from '@material-ui/core';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
 import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
 import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
+import { getOrdersData } from '../../api/orders/GetOrdersData';
 
 
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) => {
+const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
 
+    // const [orders, setOrders] = useState([]);
+    // const [isLoading, setIsLoading] = useState(false)
     // let [result, setResult] = useState(null)
 
     // useEffect(() => {
@@ -26,9 +30,24 @@ const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) =>
 
     // ]);
 
+    //  useEffect(() => {
 
-    // getOrdersData();
-    const columns = [
+    //     getOrdersData().then((data) => {
+
+    //         setOrders(data)
+    //         console.log("helloti", orders)
+    //         setIsLoading(false)
+    //     })
+    //     // console.log(result)
+    //     setIsLoading(true)
+
+    // }, [
+       
+
+    // ]);
+
+
+        const columns = [
         // { field: 'id', headerName: 'ID' },
         // { field: 'title', headerName: 'Title', width: 300 },
         // { field: 'body', headerName: 'Body', width: 600 },
@@ -172,7 +191,17 @@ const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) =>
     // console.log(tableData)
 
     return (
+
+
         <div style={{ height: 700, width: '100%' }}>
+            {/* {isLoading ? ( */}
+                {/* <div 
+                // className={classes.loading}
+                >
+                    <CircularProgress size="5rem" />
+                </div> */}
+            {/* ) : ( */}
+        
             <DataGrid
                 getRowId={(row) => row.orderId}
                 rows={orders}
@@ -184,6 +213,8 @@ const OrdersDataTable = ({ start, setStart, end, setEnd, orders, setOrders }) =>
                 }}
                 components={{ Toolbar: GridToolbar }}
             />
+            )
+        {/* } */}
         </div>
     )
 }

@@ -12,7 +12,8 @@ const orderDataDAO = new OrderDataDAO();
  * The post request must have all the fields (except orderId).
  *
  * return (in response.data.result object) created order object (= all client data, which was provided in the request object) or null if operation was not successful
- *
+ * Example of the get query path:
+ * http://localhost:8081/dao/order
  * Example of a valid request object (= request body):
  * 1. {
  *      manufacturerUsername: 'john',
@@ -20,6 +21,7 @@ const orderDataDAO = new OrderDataDAO();
  *      shipmentAddressId: 1,
  *      deliveryAddressId: 2
  *    }
+ *
  */
 router.post("/", async(req, res) => {
     const result = await orderDataDAO.create(req.body);

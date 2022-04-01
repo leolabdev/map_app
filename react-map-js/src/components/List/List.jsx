@@ -30,6 +30,7 @@ const List = ({ start, setStart, end, setEnd }) => {
     const [humans, setHumans] = useState([]);
     const [humansType, setHumansType] = useState("client");
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingOrders, setIsLoadingOrders] = useState(false)
 
     const [status, setStatus] = useState(false);
 
@@ -66,21 +67,19 @@ const List = ({ start, setStart, end, setEnd }) => {
     const [deliveryAddress, setDeliveryAddress] = useState(null);
 
     const [orders, setOrders] = useState([]);
-
+    
     // const [chosenClients, setChosenClients] = useState([]);
 
 
 
+   
+
+
     useEffect(() => {
 
-        getOrdersData().then((data) => {
-
-            setOrders(data)
-            console.log("helloti", orders)
-
-        })
-
-        setIsLoading(true)
+       
+         
+         setIsLoading(true)
 
 
         getHumansData(humansType)
@@ -106,7 +105,12 @@ const List = ({ start, setStart, end, setEnd }) => {
         // console.log(orders)
         // orders.map(order => console.log("hello", order.deliveryAddress))
 
+        // getOrdersData().then((data) => {
 
+        //     setOrders(data)
+        //     console.log("helloti", orders)
+        //     // setIsLoading(true)
+        // })
 
         // if array is empty effect will work only when once when page is loaded
     }, [
@@ -152,6 +156,23 @@ const List = ({ start, setStart, end, setEnd }) => {
 
     ]);
 
+    useEffect(() => {
+
+
+        setIsLoadingOrders(true)
+        getOrdersData().then((data) => {
+
+            setOrders(data)
+            console.log("helloti", orders)
+            setIsLoading(false)
+        })
+        // console.log(result)
+        setIsLoading(true)
+
+    }, [
+       
+
+    ]);
 
 
 
