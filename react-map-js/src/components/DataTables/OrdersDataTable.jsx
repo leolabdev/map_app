@@ -100,6 +100,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
 
                             if (selectedIDs[0].length > 1) {
                                 alert("plz select only one")
+                                 selectedIDs = new Array();
                             }
                             else {
 
