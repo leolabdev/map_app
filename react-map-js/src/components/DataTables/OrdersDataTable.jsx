@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
+const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints}) => {
 
     // const [orders, setOrders] = useState([]);
     // const [isLoading, setIsLoading] = useState(false)
@@ -44,6 +44,10 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
        
 
     // ]);
+    const [flag,setFlag] = useState(false)
+    
+
+    
 
 
         const columns = [
@@ -96,61 +100,48 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
                 return (
                     <IconButton
                         onClick={() => {
-                            const selectedIDs = new Array(selectionModel);
 
-                            if (selectedIDs[0].length > 1) {
-                                alert("plz select only one")
+                                
+                                // const emptyArray = new Array();
+                                setFlag(!flag)
+
+                            
+                            const selectedIDs = new Array(selectionModel);
+                            if (selectedIDs[0].length > 10) {
+                                alert("plz select max 10 orders")
                                  selectedIDs = new Array();
                             }
-                            else {
+                            else{ 
+                                
+                                // console.log("selectedIDs",selectedIDs[0])
+                                // console.log(selectedIDs)
+                                for (let i = 0; i<selectedIDs[0].length; i++ ){
+                                    // console.log("selectedIDs[0][i])",selectedIDs[0][i])
 
+                                    getOrderByOrderId(selectedIDs[0][i]).then((data) => {
+                                        // console.log("suka",data.shipmentAddress.lon)
+                                        // console.log(data)
+                                        
+                                        let newOrderPoints =  orderPoints;
+                                        newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
+                                        newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
+                                       
+                                         setOrderPoints(newOrderPoints);
 
-                                // (selectedIDs[0][0].length) === 0 ? alert("sorry") : alert("ok")
-                                // console.log(selectedIDs[0])
-                                // selectedIDs.forEach(s => deleteOrderByOrderId(s));
-                                // const hello = 
-                                getOrderByOrderId(selectedIDs[0][0]).then((data) => {
-                                    console.log(data)
-                                    // setResult(data)
-                                    // setStart(data?.shipmentAddress?.lat, data?.shipmentAddress?.lon)
-                                    setStart(prevState => ({
-                                        ...prevState,
-                                        lat: data.shipmentAddress.lon
-                                    }));
-                                    setStart(prevState => ({
-                                        ...prevState,
-                                        lon: data.shipmentAddress.lat
-                                    }));
-
-                                    setEnd(prevState => ({
-                                        ...prevState,
-                                        lat: data.deliveryAddress.lon
-                                    }));
-                                    setEnd(prevState => ({
-                                        ...prevState,
-                                        lon: data.deliveryAddress.lat
-                                    }));
-                                    alert("Press Show route button on the map")
-
-                                    // setStart("lol")
-                                    // setEnd(data?.deliveryAddress?.lat, data?.deliveryAddress?.lon)
-                                    console.log("shipmentAddress:", data.shipmentAddress.lat, data.shipmentAddress.lon, "deliveryAddress:", data.deliveryAddress.lat, data.deliveryAddress.lon)
-                                });
+                                         newOrderPoints=null;
+                                            
+                                         return data
+                                        
+                                    })
+                                }
+                                // setTimeout(() => {
+                                    console.log(orderPoints)
+                                // }, 5000);
+                               
+                               
+                                
                             }
-                            // getOrdersData().then((data) => {
-
-                            //     setOrders(data)
-                            //     console.log("helloti", orders)
-
-                            // })
-                            // const hello = getOrderByOrderId(15);
-                            // setResult(hello);
-                            // console.log(result)
-
-                            // selectedIDs.forEach(s => getOrderByOrderId(s))
-
-
-                            // setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
+                           
                         }}
                     >
                         <AltRouteIcon />
@@ -167,7 +158,16 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
 
     ]
 
-
+    useEffect( () => {
+        try{
+            // setOrderPoints([[100.936707651023134,600.18226502577591]])
+        }catch (e){
+            console.log(e);
+        }
+    }, [
+        flag
+    ]);
+   
 
 
 
@@ -187,7 +187,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
     // }, [])
 
     // console.log(" hello from tabledata from tableData", tableData)
-    console.log(" hello from tabledata from orders", orders)
+    // console.log(" hello from tabledata from orders", orders)
     // console.log(tableData)
 
     return (
@@ -208,7 +208,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
                 onRowsUpdate={""}
                 columns={columns}
                 checkboxSelection
-                pageSize={12}
+                pageSize={15}
                 // onCellClick={setOrders(...orders)}
                 onSelectionModelChange={(ids) => {
                     setSelectionModel(ids);
@@ -217,7 +217,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
             />
             {/* ) */}
         {/* } */}
-        </div>
+        </div>  
     )
 }
 
