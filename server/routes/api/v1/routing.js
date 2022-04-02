@@ -20,8 +20,21 @@ let options = {
         'Content-Type': 'application/json',
     }
 };
+
+/**
+ * Calculates fuel consumption in route based on route lenght
+ * @param lenght of route in (m)
+ * @param fuelusage of vehicle (L/100Km)
+ * @returns {number} fuel consumption in route
+ */
+function calcFuel(lenght, fuelusage) {
+    lenght = lenght / 1000.0;
+    lenght = lenght / 100.0;
+    return lenght * fuelusage;
+}
 /**
  * Sends api query to openrouteservice to calculate route. Uses openrouteservices directions service.
+ * Fuelusage default is 8.9
  *
  * Post body 3 point routing example:
  * {
@@ -31,11 +44,23 @@ let options = {
  *          [24.573798698987527,60.19074881467758]
  *      ]
  *  }
+ * Post body 2 point routing example and avarege fuel useage of vehicle (L/100Km):
+ * {
+ *      "coordinates":[
+ *          [24.936707651023134,60.18226502577591],
+ *          [24.573798698987527,60.19074881467758]
+ *      ],
+ *      "fuelusage": 8.9
+ *  }
  *
  * responses back geoJSON
  */
 router.post('/routing', async (req, res) => {
     let coordinates = req.body.coordinates;
+    let fuelusage = req.body.fuelusage;
+    if(fuelusage == null){
+        fuelusage = 8.9;
+    }
     let data = JSON.stringify({
         coordinates:coordinates,
         /*
@@ -59,7 +84,9 @@ router.post('/routing', async (req, res) => {
         });
 
         response.on('end', () => {
-            res.send(JSON.parse(data));
+            let JsonData = JSON.parse(data);
+            JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
+            res.send(JsonData);
         });
 
     }).on("error", (err) => {
