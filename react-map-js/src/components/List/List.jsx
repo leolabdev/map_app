@@ -16,6 +16,7 @@ import { postNewHuman } from '../../api/humans/PostNewHuman';
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 import { getOrdersData } from '../../api/orders/GetOrdersData';
+import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 // const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
 const List = ({ start, setStart, end, setEnd }) => {
@@ -37,6 +38,13 @@ const List = ({ start, setStart, end, setEnd }) => {
     const [username, setUsername] = useState("");
 
     // orders logic 
+
+    const [orderPost, setOrderPost] = useState({
+        manufacturerUsername: '', clientUsername: '', shipmentAddressId:'',
+        deliveryAddressId: ''
+    })
+
+
     const [clients, setClients] = useState([]);
     const [manufacturers, setManufacturers] = useState([]);
     const [shipmentAddresses, setShipmentAddresses] = useState([])
@@ -177,10 +185,25 @@ const List = ({ start, setStart, end, setEnd }) => {
     }
 
     function addNewOrder(e) {
-        alert("hello")
         e.preventDefault()
-        setManufacturer(null)
-        setClient(null)
+        setIsLoadingOrders(true)
+        const newOrderPost = {
+            ...orderPost
+        }
+        postNewOrder(newOrderPost)
+        // need repair to autoupdate
+        alert("post created, plz update page to get it")
+        setOrderPost({
+            manufacturerUsername: '', clientUsername: '', shipmentAddressId:'',
+            deliveryAddressId: ''
+        })
+        setManufacturer(null);
+        setClient(null);
+        setShipmentAddress(null);
+        setDeliveryAddress(null);
+        setTimeout(() => {
+            setIsLoadingOrders(false)
+        }, 1000);
     }
 
     const classes = useStyles();
@@ -377,13 +400,18 @@ const List = ({ start, setStart, end, setEnd }) => {
                             {/* clientsInputProps */}
 
                             <div>
-
+                            {/* onChange={e => setHumanPost({ ...humanPost, name: e.target.value })} */}
                                 <Autocomplete
                                     {...manufacturersInputProps}
                                     id="client-autocomplete"
                                     value={manufacturer}
-                                    onChange={(event, newManufacturer) => {
+                                    onChange={ (event, newManufacturer) => {
+                                        
                                         setManufacturer(newManufacturer);
+                                        setOrderPost({...orderPost, manufacturerUsername: newManufacturer.manufacturerUsername});
+                                        // setHumanPost({ ...humanPost, name: e.target.value })
+                                        //  setTimeout(() => {   console.log("here is manuf",orderPost) }, 2000);
+                                        
                                         // console.log("our manufacturer is", newManufacturer)
 
 
@@ -401,6 +429,8 @@ const List = ({ start, setStart, end, setEnd }) => {
                                     value={shipmentAddress}
                                     onChange={(event, newShipmentAddress ) => {
                                         setShipmentAddress(newShipmentAddress);
+                                        setOrderPost({...orderPost, shipmentAddressId: newShipmentAddress.addressId});
+                                        // console.log(orderPost)
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="shipmentAddress" variant="standard" />
@@ -414,6 +444,8 @@ const List = ({ start, setStart, end, setEnd }) => {
                                     value={client}
                                     onChange={(event, newClient) => {
                                         setClient(newClient);
+                                        setOrderPost({...orderPost, clientUsername: newClient.clientUsername});
+                                         
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="Choose client" variant="standard" />
@@ -426,6 +458,8 @@ const List = ({ start, setStart, end, setEnd }) => {
                                     value={deliveryAddress}
                                     onChange={(event, newDeleveryAddress) => {
                                         setDeliveryAddress(newDeleveryAddress);
+                                        setOrderPost({...orderPost, deliveryAddressId: newDeleveryAddress.addressId});
+                                        
                                     }}
                                     renderInput={(params) => (
                                         <TextField {...params} label="deliveryAddresses" variant="standard" />

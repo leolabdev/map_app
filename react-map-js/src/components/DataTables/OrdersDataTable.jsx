@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import IconButton from "@mui/material/IconButton";
-import { CircularProgress } from '@material-ui/core';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
 import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
 import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
-import { getOrdersData } from '../../api/orders/GetOrdersData';
+
 
 
 
@@ -201,13 +200,14 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
                     <CircularProgress size="5rem" />
                 </div>
             ) : ( */}
-        
+            
             <DataGrid
                 getRowId={(row) => row.orderId}
                 rows={orders}
                 columns={columns}
                 checkboxSelection
                 pageSize={12}
+                // onCellClick={setOrders(...orders)}
                 onSelectionModelChange={(ids) => {
                     setSelectionModel(ids);
                 }}
