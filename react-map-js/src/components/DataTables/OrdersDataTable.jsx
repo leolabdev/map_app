@@ -204,6 +204,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders}) => {
             <DataGrid
                 getRowId={(row) => row.orderId}
                 rows={orders}
+                onRowsUpdate={""}
                 columns={columns}
                 checkboxSelection
                 pageSize={12}

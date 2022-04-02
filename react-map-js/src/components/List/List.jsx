@@ -32,6 +32,7 @@ const List = ({ start, setStart, end, setEnd }) => {
     const [humansType, setHumansType] = useState("client");
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingOrders, setIsLoadingOrders] = useState(false)
+    const [isLoadingOrdersFlag, setIsLoadingOrdersFlag] = useState(false)
 
     const [status, setStatus] = useState(false);
 
@@ -149,7 +150,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         // console.log(result)
         // setIsLoading(true)
 
-    }, []);
+    }, [isLoadingOrdersFlag]);
 
 
     function addNewHuman(e) {
@@ -186,13 +187,12 @@ const List = ({ start, setStart, end, setEnd }) => {
 
     function addNewOrder(e) {
         e.preventDefault()
-        setIsLoadingOrders(true)
+        
         const newOrderPost = {
             ...orderPost
         }
         postNewOrder(newOrderPost)
         // need repair to autoupdate
-        alert("post created, plz update page to get it")
         setOrderPost({
             manufacturerUsername: '', clientUsername: '', shipmentAddressId:'',
             deliveryAddressId: ''
@@ -201,9 +201,10 @@ const List = ({ start, setStart, end, setEnd }) => {
         setClient(null);
         setShipmentAddress(null);
         setDeliveryAddress(null);
-        setTimeout(() => {
-            setIsLoadingOrders(false)
-        }, 1000);
+        setIsLoadingOrdersFlag(!isLoadingOrdersFlag)
+        // setTimeout(() => {
+        //     setIsLoadingOrdersFlag(!isLoadingOrdersFlag)
+        // }, 100);
     }
 
     const classes = useStyles();
