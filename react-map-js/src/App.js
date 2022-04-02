@@ -46,7 +46,7 @@ function App() {
   const [start, setStart] = useState({ lat: 60.98267, lon: 25.66151 });
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
   const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
-
+  const [orderPoints, setOrderPoints] = useState([]);
   // let [currentLocation, setCurrentLocation] = useState()
 
 
@@ -204,6 +204,8 @@ function App() {
         LocationMarker={LocationMarker}
         LeafletgeoSearchStart={LeafletgeoSearchStart}
         LeafletgeoSearchEnd={LeafletgeoSearchEnd}
+        orderPoints={orderPoints}
+        setOrderPoints={setOrderPoints}
 
 
       />
@@ -213,6 +215,9 @@ function App() {
           setStart={setStart}
           end={end}
           setEnd={setEnd}
+          orderPoints={orderPoints}
+          setOrderPoints={setOrderPoints}
+          
         // createHuman={createHuman}
         // humans={humans}
         // isLoading={isLoading}

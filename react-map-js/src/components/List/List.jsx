@@ -19,7 +19,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 // const List = ({ humans, isLoading, setIsLoading, humansType, setHumansType, getHumansData, setHumans, }) => {
-const List = ({ start, setStart, end, setEnd }) => {
+const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
 
     // Post form
     // const [post, setPost] = useState({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
@@ -48,7 +48,23 @@ const List = ({ start, setStart, end, setEnd }) => {
 
     const [clients, setClients] = useState([]);
     const [manufacturers, setManufacturers] = useState([]);
-    const [shipmentAddresses, setShipmentAddresses] = useState([])
+    const [shipmentAddresses, setShipmentAddresses] = useState([
+
+        {
+            addressId: 0,
+            city: 'lahti',
+            street: 'alekskatu',
+            building: '2',
+            flat: null,
+            lon: 60.2,
+            lat: 40.3,
+            AsShipmentAddress: {
+                manufacturerUsername: 'hello',
+                addressId: 0
+            }
+        }
+
+    ])
     const [deliveryAddresses, setDeliveryAddresses] = useState([])
 
     // orders's autoinput
@@ -71,7 +87,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         options: manufacturers,
         getOptionLabel: (option) => option.manufacturerUsername,
     }
-
+    
     let shipmentAddressInputProps = {
         options: shipmentAddresses,
         getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
@@ -81,6 +97,8 @@ const List = ({ start, setStart, end, setEnd }) => {
         getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
     };
 
+    
+    
     // const [chosenClients, setChosenClients] = useState([]);
 
     useEffect(() => {
@@ -116,10 +134,14 @@ const List = ({ start, setStart, end, setEnd }) => {
         // manufacturer
     ]);
 
+    
+
+
     useEffect( () => {
         try{
             setShipmentAddress(null);
             setShipmentAddresses(manufacturer?.Addresses);
+            console.log("heer222e",shipmentAddresses)
         }catch (e){
             console.log(e);
         }
@@ -206,7 +228,7 @@ const List = ({ start, setStart, end, setEnd }) => {
         //     setIsLoadingOrdersFlag(!isLoadingOrdersFlag)
         // }, 100);
     }
-
+    
     const classes = useStyles();
 
     return (
@@ -434,7 +456,7 @@ const List = ({ start, setStart, end, setEnd }) => {
                                         // console.log(orderPost)
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label="shipmentAddress" variant="standard" />
+                                        <TextField {...params} label="Shipment Address" variant="standard" />
                                     )}
                                 />
 
@@ -463,9 +485,11 @@ const List = ({ start, setStart, end, setEnd }) => {
                                         
                                     }}
                                     renderInput={(params) => (
-                                        <TextField {...params} label="deliveryAddresses" variant="standard" />
+                                        <TextField {...params} label="Delivery Addresses" variant="standard" />
                                     )}
                                 />
+                               
+
 
                                 {/* const shipmentAddressIdInputProps = {
                                     options: manufacturer.Addresses,
@@ -534,6 +558,9 @@ const List = ({ start, setStart, end, setEnd }) => {
 
                         orders={orders}
                         setOrders={setOrders}
+
+                        orderPoints={orderPoints}
+                        setOrderPoints={setOrderPoints}
                     />
             )}
 

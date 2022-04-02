@@ -28,9 +28,9 @@ const icon1 = L.icon({
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd }) {
+function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints},setOrderPoints) {
 
-    // const map = useMap();
+    // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
     // const map = useMap();
     // function name(params) {
     //     const map = useMap();
@@ -41,7 +41,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     //     }, []);
     //     return null;
     // }
-
+   
 
     // function GeoL() {
 
@@ -225,10 +225,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         // map = useMap()
         let coordinatesData = {
             coordinates: [
+                ...orderPoints
                 // [start.lng, start.lat],
-                [start.lon, start.lat],
-                // [end.lng, end.lat],
-                [end.lon, end.lat],
+                // [start.lon, start.lat],
+                // // [end.lng, end.lat],
+                // [end.lon, end.lat],
             ]
         }
         console.log(coordinatesData)

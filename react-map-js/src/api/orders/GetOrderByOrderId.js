@@ -10,7 +10,7 @@ export const getOrderByOrderId = async (orderId) => {
 
 
         });
-        console.log(data.data.result)
+        // console.log(data.data.result)
         return data.data.result;
 
     } catch (error) {
