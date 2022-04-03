@@ -155,7 +155,7 @@ function App() {
         if (!executed) {
           executed = true;
           setPosition(e.latlng);
-          map.flyTo(e.latlng, map.getZoom());
+          // map.flyTo(e.latlng, map.getZoom());
         }
 
       },
