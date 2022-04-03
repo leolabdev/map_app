@@ -103,89 +103,107 @@ function fuelPriceJSON(country) {
  * responses back geoJSON
  */
 router.post('/routing', async (req, res) => {
-    let coordinates = req.body.coordinates;
-    let fuelusage = req.body.fuelusage;
-    if(fuelusage == null){
-        fuelusage = 8.9;
+    try{
+        let coordinates = req.body.coordinates;
+        let fuelusage = req.body.fuelusage;
+        if(fuelusage == null){
+            fuelusage = 8.9;
+        }
+        let data = JSON.stringify({
+            coordinates:coordinates,
+            /*
+            alternative_routes:{
+                share_factor:0.6,
+                target_count:3,
+                weight_factor:2
+            },
+            */
+            continue_straight:true,
+            instructions:true,
+            units:"m"
+        });
+        options.headers["Content-Length"] = data.length;
+
+        const request = await https.request(options, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                let JsonData;
+                try {
+                    JsonData = JSON.parse(data);
+                    JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
+                    res.send(JsonData);
+                }catch (err) {
+                    res.send(JsonData);
+                }
+            });
+
+        }).on("error", (err) => {
+            console.log("Error: ", err.message);
+        });
+
+        request.write(data);
+        request.end();
+    }catch (err){
+        console.log(err);
     }
-    let data = JSON.stringify({
-        coordinates:coordinates,
-        /*
-        alternative_routes:{
-            share_factor:0.6,
-            target_count:3,
-            weight_factor:2
-        },
-        */
-        continue_straight:true,
-        instructions:true,
-        units:"m"
-    });
-    options.headers["Content-Length"] = data.length;
-
-    const request = await https.request(options, (response) => {
-        let data = '';
-
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        response.on('end', () => {
-            let JsonData = JSON.parse(data);
-            JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
-            res.send(JsonData);
-        });
-
-    }).on("error", (err) => {
-        console.log("Error: ", err.message);
-    });
-
-    request.write(data);
-    request.end();
 });
 //TODO will be removed when database can strore fuel prices
 router.post('/routingwithprices', async (req, res) => {
-    let coordinates = req.body.coordinates;
-    let fuelusage = req.body.fuelusage;
-    if(fuelusage == null){
-        fuelusage = 8.9;
+    try{
+        let coordinates = req.body.coordinates;
+        let fuelusage = req.body.fuelusage;
+        if(fuelusage == null){
+            fuelusage = 8.9;
+        }
+        let data = JSON.stringify({
+            coordinates:coordinates,
+            /*
+            alternative_routes:{
+                share_factor:0.6,
+                target_count:3,
+                weight_factor:2
+            },
+            */
+            continue_straight:true,
+            instructions:true,
+            units:"m"
+        });
+        options.headers["Content-Length"] = data.length;
+        let price = await fuelPriceJSON("finland");
+
+        const request = await https.request(options, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                let JsonData;
+                try {
+                    JsonData = JSON.parse(data);
+                    JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
+                    JsonData.features[0].properties.summary.pricedata = price;
+                    res.send(JsonData);
+                }catch (err) {
+                    res.send(JsonData);
+                }
+            });
+
+        }).on("error", (err) => {
+            console.log("Error: ", err.message);
+        });
+
+        request.write(data);
+        request.end();
+    }catch (err){
+        console.log(err);
     }
-    let data = JSON.stringify({
-        coordinates:coordinates,
-        /*
-        alternative_routes:{
-            share_factor:0.6,
-            target_count:3,
-            weight_factor:2
-        },
-        */
-        continue_straight:true,
-        instructions:true,
-        units:"m"
-    });
-    options.headers["Content-Length"] = data.length;
-    let price = await fuelPriceJSON("finland");
-
-    const request = await https.request(options, (response) => {
-        let data = '';
-
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        response.on('end', () => {
-            let JsonData = JSON.parse(data);
-            JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
-            JsonData.features[0].properties.summary.pricedata = price;
-            res.send(JsonData);
-        });
-
-    }).on("error", (err) => {
-        console.log("Error: ", err.message);
-    });
-
-    request.write(data);
-    request.end();
 });
 
 module.exports = router;
