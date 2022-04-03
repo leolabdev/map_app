@@ -180,6 +180,12 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         endMarker.addTo(map)
     }
 
+    function addOrderMarker(lat,lon){
+        let latlon = L.latLng([lat, lon]);
+        let orderMarker = new L.marker(latlon)
+        orderMarker.addTo(map)
+    }
+
     // function LocationMarkers() {
     //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
     //     const [markers, setMarkers] = useState(initialMarkers);
@@ -223,7 +229,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     function showRoute() {
         // map = useMap()
-        console.log(coordinates)
+        console.log(orderPoints)
         let coordinatesData = {
             coordinates: [
                 ...orderPoints
@@ -233,7 +239,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 // [end.lon, end.lat],
             ]
         }
-        console.log(coordinatesData)
+         console.log(coordinatesData)
         fetch('http://localhost:8081/api/v1/routing', {
             method: 'POST', // or 'PUT'
             headers: {
@@ -247,8 +253,10 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 addRoute(data);
                 // removeStartMarker();
                 // removeEndMarker();
-                addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
-                addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+                 coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
+
+                // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
+                // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
             })
             .catch((error) => {
                 console.error('Error:', error);

@@ -124,9 +124,6 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                          newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
                                          newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
                                         setOrderPoints(newOrderPoints);
-                                        
-                                        
-                                        
                                         // console.log(newOrderPoints) 
                                         // setOrderPoints(null)
                                         
@@ -136,6 +133,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                 })
                                 
                                     newOrderPoints=[];
+                                    // console.log(orderPoints)
                                 //  setTimeout(() => {
                                 //     newOrderPoints= null;
                                 // }, 1000);
