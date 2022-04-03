@@ -46,7 +46,7 @@ function App() {
   const [start, setStart] = useState({ lat: 60.98267, lon: 25.66151 });
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
   const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
-  const [orderPoints, setOrderPoints] = useState([]);
+  let [orderPoints, setOrderPoints] = useState([]);
   // let [currentLocation, setCurrentLocation] = useState()
 
 
@@ -155,7 +155,7 @@ function App() {
         if (!executed) {
           executed = true;
           setPosition(e.latlng);
-          map.flyTo(e.latlng, map.getZoom());
+          // map.flyTo(e.latlng, map.getZoom());
         }
 
       },

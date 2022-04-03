@@ -223,6 +223,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     function showRoute() {
         // map = useMap()
+        console.log(coordinates)
         let coordinatesData = {
             coordinates: [
                 ...orderPoints

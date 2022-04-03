@@ -79,6 +79,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                             // then call setRows() to update the data locally here
 
                             selectedIDs.forEach(s => deleteOrderByOrderId(s));
+                            
 
 
 
@@ -101,10 +102,10 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                     <IconButton
                         onClick={() => {
 
-                                
+                            
                                 // const emptyArray = new Array();
-                                setFlag(!flag)
-
+                                // setFlag(!flag)
+                                // setOrderPoints([[252.04533, 600.290486]]);
                             
                             const selectedIDs = new Array(selectionModel);
                             if (selectedIDs[0].length > 10) {
@@ -112,36 +113,62 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                  selectedIDs = new Array();
                             }
                             else{ 
-                                
-                                // console.log("selectedIDs",selectedIDs[0])
-                                // console.log(selectedIDs)
-                                for (let i = 0; i<selectedIDs[0].length; i++ ){
-                                    // console.log("selectedIDs[0][i])",selectedIDs[0][i])
-
-                                    getOrderByOrderId(selectedIDs[0][i]).then((data) => {
-                                        // console.log("suka",data.shipmentAddress.lon)
+                                var newOrderPoints =  orderPoints;
+                                selectedIDs[0].map(idx => {
+                                    
+                                    getOrderByOrderId(idx).then((data)=>{
+                                        // console.log(idx)
                                         // console.log(data)
                                         
-                                        let newOrderPoints =  orderPoints;
-                                        newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
-                                        newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
                                        
-                                         setOrderPoints(newOrderPoints);
-
-                                         newOrderPoints=null;
-                                            
-                                         return data
+                                         newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
+                                         newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
+                                        setOrderPoints(newOrderPoints);
+                                        
+                                        
+                                        
+                                        // console.log(newOrderPoints) 
+                                        // setOrderPoints(null)
                                         
                                     })
-                                }
+                                    
+                                   
+                                })
+                                
+                                    newOrderPoints=[];
+                                //  setTimeout(() => {
+                                //     newOrderPoints= null;
+                                // }, 1000);
+                               
+                                ;
+                                // console.log("selectedIDs",selectedIDs[0])
+                                // console.log(selectedIDs)
+
+
+                                // for (let i = 0; i<selectedIDs[0].length; i++ ){
+                                    // console.log("selectedIDs[0][i])",selectedIDs[0][i])
+                                   
+                                    // getOrderByOrderId(selectedIDs[0][i]).then((data) => {
+                                    //     // console.log("suka",data.shipmentAddress.lon)
+                                    //     // console.log(data)
+                                        
+                                    //     let newOrderPoints =  orderPoints;
+                                    //     newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
+                                    //     newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
+                                    //      setOrderPoints(newOrderPoints);
+                                         
+
+                                    //     //  newOrderPoints=null;
+                                            
+                                    //      return data
+                                        
+                                    // })
+                                // }
                                 // setTimeout(() => {
-                                    console.log(orderPoints)
+                                    // console.log(orderPoints)
                                 // }, 5000);
-                               
-                               
                                 
                             }
-                           
                         }}
                     >
                         <AltRouteIcon />
@@ -161,6 +188,10 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
     useEffect( () => {
         try{
             // setOrderPoints([[100.936707651023134,600.18226502577591]])
+            const emptyArray = new Array() 
+            // setMarkers((prevValue) => [...prevValue, e.latlng]);
+
+            // setOrderPoints(null)
         }catch (e){
             console.log(e);
         }
