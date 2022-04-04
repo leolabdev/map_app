@@ -59,3 +59,10 @@ CREATE TABLE AsDeliveryAddress
     FOREIGN KEY (addressId) REFERENCES Address(addressId),
     FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername)
 );
+
+CREATE TABLE DATA
+(
+    name VARCHAR(255) NOT NULL PRIMARY KEY,
+    value VARCHAR(255),
+    lastUpdated DATETIME DEFAULT NOW() ON UPDATE NOW()
+);

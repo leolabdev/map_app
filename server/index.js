@@ -18,6 +18,7 @@ const manufacturer = require('./routes/dao/manufacturer');
 const client = require('./routes/dao/client');
 const address_dao = require('./routes/dao/address');
 const order = require('./routes/dao/order');
+const data = require('./routes/dao/data');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/dao/manufacturer', manufacturer);
 app.use('/dao/client', client);
 app.use('/dao/address', address_dao);
 app.use('/dao/order', order);
+app.use('/dao/data', data);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const port = process.env.PORT || 8081;
