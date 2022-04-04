@@ -66,3 +66,7 @@ CREATE TABLE DATA
     value VARCHAR(255),
     lastUpdated DATETIME DEFAULT NOW() ON UPDATE NOW()
 );
+
+INSERT INTO DATA (name, value) VALUES ('gasoline', '2.1');
+INSERT INTO DATA (name, value) VALUES ('diesel', '2.2');
+INSERT INTO DATA (name, value) VALUES ('lpg', '1.9');
