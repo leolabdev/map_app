@@ -172,13 +172,20 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     function removeEndMarker() {
         map.removeLayer(endMarker)
     }
-
-    function addEndMarker(lat, lon) {
-        let latlon = L.latLng([lat, lon]);
-        // let latlon = L.latLng([22.2666, 60.4518]);
-        endMarker = new L.marker(latlon)
-        endMarker.addTo(map)
+    function removeOrderMarker() {
+        map.removeLayer(endMarker)
     }
+
+    // function addEndMarker(lat, lon) {
+    //     let latlon = L.latLng([lat, lon]);
+    //     // let latlon = L.latLng([22.2666, 60.4518]);
+    //     endMarker = new L.marker(latlon)
+    //     endMarker.addTo(map)
+    // }
+    // const testarray = [];
+    // const hello = "hello";
+    // // hello.addTo(testarray)
+    // console.log(testarray)
 
     function addOrderMarker(lat,lon){
         let latlon = L.latLng([lat, lon]);
@@ -239,33 +246,42 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                 // [end.lon, end.lat],
             ]
         }
-         console.log(coordinatesData)
-        fetch('http://localhost:8081/api/v1/routing', {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(coordinatesData),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                addRoute(data);
-                // removeStartMarker();
-                // removeEndMarker();
-                 coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-
-                // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
-                // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+        console.log(coordinatesData)
+        if (coordinatesData.coordinates.length !== 0) {
+            fetch('http://localhost:8081/api/v1/routing', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(coordinatesData),
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
-        return (
-            null
-        )
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    addRoute(data);
+                    // removeStartMarker();
+                    // removeEndMarker();
+                     coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
+    
+                    // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
+                    // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+    
+            return (
+                null
+            )
+        }
+        else{
+            alert("plz select a order/orders")
+            return (null)
+        }
     }
+
+        
+       
 
 
 
