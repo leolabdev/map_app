@@ -172,13 +172,20 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     function removeEndMarker() {
         map.removeLayer(endMarker)
     }
-
-    function addEndMarker(lat, lon) {
-        let latlon = L.latLng([lat, lon]);
-        // let latlon = L.latLng([22.2666, 60.4518]);
-        endMarker = new L.marker(latlon)
-        endMarker.addTo(map)
+    function removeOrderMarker() {
+        map.removeLayer(endMarker)
     }
+
+    // function addEndMarker(lat, lon) {
+    //     let latlon = L.latLng([lat, lon]);
+    //     // let latlon = L.latLng([22.2666, 60.4518]);
+    //     endMarker = new L.marker(latlon)
+    //     endMarker.addTo(map)
+    // }
+    // const testarray = [];
+    // const hello = "hello";
+    // // hello.addTo(testarray)
+    // console.log(testarray)
 
     function addOrderMarker(lat,lon){
         let latlon = L.latLng([lat, lon]);
@@ -268,7 +275,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             )
         }
         else{
-            alert("plz select a order")
+            alert("plz select a order/orders")
             return (null)
         }
     }
