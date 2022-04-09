@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CssBaseline} from '@material-ui/core'
 //import logo from './logo.svg';
-import '.././App.css';
-import Header from "../components/Header/Header";
+// import '.././App.css';
+// import Navbar from "../components/Navbar/Navbar";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
 
 import Map from "../components/Map/Map";
@@ -16,7 +16,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 // import icon from ".././src/components/constants"
 import icon  from "../components/constants"
 
-import { postNewHuman } from "../api/humans/PostNewHuman";
+
 
 
 
@@ -182,8 +182,7 @@ function MapPage() {
 
   return (
     <div className='App'>
-      <CssBaseline />
-      <Header />
+     
       {/* <input value={value1} onChange={event => setValue1(event.target.value)} /> */}
 
       {/* <input value={value2} onChange={event => setValue2(event.target.value)} /> */}
