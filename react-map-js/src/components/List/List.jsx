@@ -132,7 +132,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
                 setHumans(data)
                 setIsLoading(false)
             })
-
+            
         getHumansData("client").then((data) => {
             setClients(data)
         })
@@ -149,7 +149,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
         try{
             setShipmentAddress(null);
             setShipmentAddresses(manufacturer?.Addresses);
-            console.log("heer222e",shipmentAddresses)
+            // console.log("heer222e",shipmentAddresses)
         }catch (e){
             console.log(e);
         }
@@ -173,7 +173,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
         getOrdersData().then((data) => {
 
             setOrders(data)
-            console.log("helloti", orders)
+            // console.log("helloti", orders)
             setTimeout(() => {   setIsLoadingOrders(false) }, 1000);
             // setIsLoadingOrders(false)
         })

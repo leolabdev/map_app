@@ -1,0 +1,41 @@
+.container {
+    height: '25rem';
+    overflow: auto;
+    width: auto;
+    margin: 0 auto;
+    justify-content: center;
+    text-align: center;
+}
+
+.loading {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.humansContainer{
+    /* height: 25rem; */
+    /* overflow: auto; */
+    width: auto;
+    max-width: 98%;
+    /* display: grid; */
+    margin: 0 auto;
+    justify-content: center;
+    text-align: center;
+    /* justify-content: grid; */
+}
+
+.humanItem{
+    display: flex;
+       padding: 0px 0px;
+       max-width: 100%;
+       border:2px solid teal;
+       margin: 0 auto;
+       margin-top: 15px;
+       justify-content: left       ;
+       /* gap: 2%; */
+       align-items: left;
+       text-align: left;
+   }
+   
