@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 // CircularProgress is loading icon 
 import { CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, Select, Button } from '@material-ui/core';
 import Box from '@mui/material/Box';
@@ -101,7 +101,30 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
     
     // const [chosenClients, setChosenClients] = useState([]);
 
-    useEffect(() => {
+    // useEffect(() => {
+    //     setIsLoading(true)
+
+    //     getHumansData(humansType)
+    //         .then((data) => {
+    //             setHumans(data)
+    //             setIsLoading(false)
+    //         })
+
+    //     getHumansData("client").then((data) => {
+    //         setClients(data)
+    //     })
+
+    //     getHumansData("manufacturer").then((data) => {
+    //         setManufacturers(data)
+    //     })
+    // }, [
+    //     humansType,
+    //     status,
+    //     // manufacturer
+    // ]);
+
+    useMemo(() => {
+        console.log("hello")
         setIsLoading(true)
 
         getHumansData(humansType)
@@ -117,22 +140,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
         getHumansData("manufacturer").then((data) => {
             setManufacturers(data)
         })
-        // console.log(orders)
-        // orders.map(order => console.log("hello", order.deliveryAddress))
-
-        // getOrdersData().then((data) => {
-
-        //     setOrders(data)
-        //     console.log("helloti", orders)
-        //     // setIsLoading(true)
-        // })
-
-        // if array is empty effect will work only when once when page is loaded
-    }, [
-        humansType,
-        status,
-        // manufacturer
-    ]);
+    }, [humansType,status])
 
     
 
@@ -204,7 +212,6 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
         deleteHumanByUserName(humansType, username)
         setStatus(!status)
         setUsername("")
-        // setHumans(humans.filter(p => p.id !== human.id))
     }
 
     function addNewOrder(e) {
@@ -354,6 +361,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
                             </div>
                         </Box>
                     </FormControl>
+
                     <FormControl>
                         {/* <InputLabel>Post new human</InputLabel> */}
                         <Box
@@ -402,7 +410,7 @@ const List = ({ start, setStart, end, setEnd ,orderPoints, setOrderPoints}) => {
                         ))}
                     </div>
                     <br />
-
+                            {/* second starts */}
                     <h1 style={{ textAlign: 'center' }}>
                         Second Form
                     </h1 >
