@@ -13,37 +13,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints}) => {
 
-    // const [orders, setOrders] = useState([]);
-    // const [isLoading, setIsLoading] = useState(false)
-    // let [result, setResult] = useState(null)
-
-    // useEffect(() => {
-
-    //     console.log(start);
-    //     console.log(end)
-    //     // console.log(result)
-
-
-    // }, [
-    //     result
-
-    // ]);
-
-    //  useEffect(() => {
-
-    //     getOrdersData().then((data) => {
-
-    //         setOrders(data)
-    //         console.log("helloti", orders)
-    //         setIsLoading(false)
-    //     })
-    //     // console.log(result)
-    //     setIsLoading(true)
-
-    // }, [
-       
-
-    // ]);
+    
     const [flag,setFlag] = useState(false)
     
 

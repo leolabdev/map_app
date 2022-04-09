@@ -4,7 +4,6 @@ import { Paper, Typography, useMediaQuery } from '@material-ui/core';
 import useStyles from './styles';
 
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
-import Description from "./Description";
 import icon from "../constants";
 
 import mapData from "../../data/customgeo.json"
