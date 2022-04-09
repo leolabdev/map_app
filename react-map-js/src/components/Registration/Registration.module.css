@@ -15,15 +15,13 @@
 }
 
 .humansContainer{
-    /* height: 25rem; */
-    /* overflow: auto; */
+    height: 25rem;
+    overflow: auto;
     width: auto;
     max-width: 98%;
-    /* display: grid; */
     margin: 0 auto;
     justify-content: center;
     text-align: center;
-    /* justify-content: grid; */
 }
 
 .humanItem{
