@@ -27,11 +27,11 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
         // { field: 'body2', headerName: 'Body2', width: 600 },
         // { field: getRowId, headerName: 'hello' },
         { field: 'orderId', headerName: 'orderId' },
-        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 350 },
-        { field: 'clientUsername', headerName: 'clientUsername', width: 350 },
-        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 350 },
+        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250 },
+        { field: 'clientUsername', headerName: 'clientUsername', width: 250 },
+        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 250 },
         // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
-        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 350 },
+        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250 },
 
         {
             field: "delete",

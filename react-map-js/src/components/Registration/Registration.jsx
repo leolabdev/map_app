@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState ,useEffect} from 'react'
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import { CircularProgress, Typography, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
@@ -22,12 +22,12 @@ const Registration = () => {
     const [humansType, setHumansType] = useState("client");
     const [isLoading, setIsLoading] = useState(false);
     const [humans, setHumans] = useState([]);
-    const [clients, setClients] = useState([]);
-    const [manufacturers, setManufacturers] = useState([]);
+    // const [clients, setClients] = useState([]);
+    // const [manufacturers, setManufacturers] = useState([]);
     const [status, setStatus] = useState(false);
     const [username, setUsername] = useState("");
 
-    useMemo(() => {
+    useEffect(() => {
         // console.log("hello")
         setIsLoading(true)
         getHumansData(humansType)
@@ -36,13 +36,13 @@ const Registration = () => {
                 setIsLoading(false)
             })
 
-        getHumansData("client").then((data) => {
-            setClients(data)
-        })
+        // getHumansData("client").then((data) => {
+        //     setClients(data)
+        // })
 
-        getHumansData("manufacturer").then((data) => {
-            setManufacturers(data)
-        })
+        // getHumansData("manufacturer").then((data) => {
+        //     setManufacturers(data)
+        // })
     }, [humansType, status])
 
 
