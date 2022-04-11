@@ -113,42 +113,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
 
 
-
-    // const LayerGroupcomponent = () => {
-
-    //     const map1 = useMap();
-    //     let [printInfo, setPrintinfo] = useState('');
-
-    //     useEffect(() => {
-
-
-
-    //         function hello() {
-
-    //             layerGroup.clearLayers();
-    //             // let latlng = e.geocode.center;
-    //             let latlon = L.latLng([23.7610, 61.4978]);
-    //             L.marker(latlon, { icon1 })
-    //                 .bindPopup("e.geocode.name")
-    //                 .openPopup()
-    //                 .addTo(layerGroup);
-
-    //             // map1.panTo(latlng);
-
-    //             setPrintinfo("e.geocode.name");
-    //             map1.addLayer(layerGroup)
-    //                 .addTo(map1);
-    //         }
-    //         hello()
-
-    //     }, [map1]);
-    //     return (
-    //         null
-    //     )
-    // }
-
     function addRoute(geoJSON) {
-        map.removeLayer(geojsonLayer);
+        // map.removeLayer(geojsonLayer);
         geojsonLayer = L.geoJSON(geoJSON);
         geojsonLayer.addTo(map);
     }
@@ -192,26 +158,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
         orderMarker.addTo(map)
     }
 
-    // function LocationMarkers() {
-    //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
-    //     const [markers, setMarkers] = useState(initialMarkers);
-
-    //     const map = useMapEvents({
-    //         click(e) {
-    //             markers.push(e.latlng);
-    //             setMarkers((prevValue) => [...prevValue, e.latlng]);
-    //         }
-    //     });
-
-    //     return (
-    //         <React.Fragment>
-    //             {markers.map(marker => <Marker position={marker} ></Marker>)}
-    //         </React.Fragment>
-    //     );
-    // }
-
-
-    // by this we get access to using html DOM's map 
+   
     function MyMap() {
         map = useMap()
         // console.log('map center:', map.getCenter())
@@ -234,7 +181,15 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     }
 
     function showRoute() {
-        // map = useMap()
+        map.eachLayer(function (layer) {
+            // layer._url == null  ?  map.removeLayer(layer) ;
+
+            if (layer._url == null){
+                map.removeLayer(layer)
+            }
+
+            // console.log(layer._url)
+          });
         console.log(orderPoints)
         let coordinatesData = {
             coordinates: [
@@ -292,24 +247,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     // var [geo, setGeo] = useState("")
 
-
-
-
-    // const RoutingMachine = createControlComponent(() => {
-    //     const instance = L.Routing.control({
-    //         waypoints: [
-    //             L.latLng(start.lat, start.lng),
-    //             L.latLng(end.lat, end.lng),
-    //         ],
-    //         lineOptions: {
-    //             styles: [{ color: "red", weight: 4 }]
-    //         },
-    //     });
-
-    //     return instance;
-    // })
-
-    // const RoutingMachine = createControlComponent(mapData3)
 
 
 
@@ -379,7 +316,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             <MyMap />
 
             {/* <LayerGroupcomponent /> */}
-
 
 
 
