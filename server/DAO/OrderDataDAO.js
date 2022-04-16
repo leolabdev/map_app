@@ -1,5 +1,5 @@
+const { Op } = require("sequelize");
 const { OrderData } = require("../model/OrderData");
-
 const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const daoUtil = new DaoUtil();
@@ -28,6 +28,30 @@ class OrderDataDAO {
             try {
                 const resp = await OrderData.findByPk(primaryKey, { include: [{ all: true }] });
                 return resp != null ? resp.dataValues : null;
+            } catch (e) {
+                console.log("OrderDataDAO: Could not execute the query");
+                console.log(e);
+                return null;
+            }
+        } else {
+            console.error("OrderDataDAO: Wrong parameter provided");
+            return null;
+        }
+    }
+
+    async readByIds(primaryKeys) {
+        if (primaryKeys != null) {
+            try {
+                let resp = await OrderData.findAll( {
+                    where:{
+                        orderId:{
+                            [Op.or] : primaryKeys
+                        }
+                    },
+                    include: [{ all: true }]
+                });
+
+                return daoUtil.unpackOrderResp(resp);
             } catch (e) {
                 console.log("OrderDataDAO: Could not execute the query");
                 console.log(e);
