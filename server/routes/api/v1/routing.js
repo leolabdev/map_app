@@ -277,10 +277,12 @@ router.post('/routing', async (req, res) => {
  * orderIds ids of the orders
  * start car start point, where car is at the start of the travel, not required (if no start provided, random shipment address will be the start point)
  * end car end point, where car should end the travel, not required (if no end provided, end will be the last address of the built travel)
+ * fuelusage fuel usage of the car per 100 km, not required
  * {
  *     orderIds: [1,2], (int)
  *     start : [24.573798698987527,60.19074881467758], (lon, lat)
  *     end : [24.573798698987527,60.19074881467758], (lon, lat)
+ *     fuelusage: 5.7
  *  }
  */
 router.post('/routing/orders', async (req, res) => {
