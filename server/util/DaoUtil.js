@@ -16,6 +16,29 @@ class DaoUtil{
         }
     }
 
+    unpackOrderResp(orderResp){
+        if(orderResp != null){
+            let result = [];
+            for(let i=0; i<orderResp.length; i++){
+                let orderData =  orderResp[i].dataValues;
+                const manufacturer = orderData.Manufacturer.dataValues;
+                const client = orderData.Client.dataValues;
+                const shipmentAddress = orderData.shipmentAddress.dataValues;
+                const deliveryAddress = orderData.deliveryAddress.dataValues;
+
+                orderData.Manufacturer = manufacturer;
+                orderData.Client = client;
+                orderData.shipmentAddress = shipmentAddress;
+                orderData.deliveryAddress = deliveryAddress;
+
+                result[i] = orderData;
+            }
+            return result;
+        } else {
+            return null;
+        }
+    }
+
     async getAddressData(street, building, city) {
         if(street != null && building != null && city != null){
             const address = street + " " + building + ", " + city;

@@ -2,14 +2,17 @@ const express = require('express');
 const https = require('https');
 const {ValuesDateChecker} = require("../../../util/ValuesDateChecker");
 const {DataDAO} = require("../../../DAO/Data");
+const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
 const {OptimizationUtil} = require("../../../util/OptimizationUtil");
-const axios = require("axios");
+const {ResponseUtil} = require("../../../util/ResponseUtil");
 
 const router = express.Router();
 
 const valuesDateChecker = new ValuesDateChecker();
 const dataDAO = new DataDAO();
+const orderDataDAO = new OrderDataDAO();
 const optimizationUtil = new OptimizationUtil();
+const responseUtil = new ResponseUtil();
 
 /**
  * Default options for https request.
@@ -119,51 +122,120 @@ async function getOptimizedRoute(coordinates) {
     try{
         return new Promise(async function (resolve, reject) {
             const reqBody = optimizationUtil.getVROOMRequestObject(coordinates);
-            if(reqBody != null){
-                let data = JSON.stringify(reqBody);
-
-                const options1 = {
-                    protocol: 'https:',
-                    hostname: 'api.openrouteservice.org',
-                    port: 443,
-                    path: '/optimization',
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-                        'Authorization': process.env.ORS_API_KEY,
-                        'Content-Type': 'application/json',
-                    }
-                }
-
-                options1.headers["Content-Length"] = data.length;
-
-                const request = await https.request(options1, (response) => {
-                    let data = '';
-
-                    response.on('data', (chunk) => {
-                        data += chunk;
-                    });
-
-                    response.on('end', () => {
-                        let JsonData;
-                        try {
-                            JsonData = JSON.parse(data);
-                            resolve(JsonData);
-                        }catch (err) {
-                            console.log(err);
-                        }
-                    });
-
-                }).on("error", (err) => {
-                    console.log("Error: ", err.message);
-                });
-
-                request.write(data);
-                request.end();
-            }
+            makeOptimizationRequest(reqBody, resolve);
         });
     }catch (err){
         console.log(err);
+    }
+}
+
+async function getOptimizedShipmentDelivery(orderArr, start, end) {
+    try{
+        return new Promise(async function (resolve, reject) {
+            const reqBody = optimizationUtil.getShipmentDeliveryRequestBody(orderArr, start, end);
+            makeOptimizationRequest(reqBody, resolve);
+        });
+    }catch (err){
+        console.log(err);
+    }
+}
+
+async function makeOptimizationRequest(reqBody, resolve) {
+    if (reqBody != null) {
+        let data = JSON.stringify(reqBody);
+
+        const options1 = {
+            protocol: 'https:',
+            hostname: 'api.openrouteservice.org',
+            port: 443,
+            path: '/optimization',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+                'Authorization': process.env.ORS_API_KEY,
+                'Content-Type': 'application/json',
+            }
+        }
+
+        options1.headers["Content-Length"] = data.length;
+
+        const request = await https.request(options1, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                let JsonData;
+                try {
+                    JsonData = JSON.parse(data);
+                    resolve(JsonData);
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+
+        }).on("error", (err) => {
+            console.log("Error: ", err.message);
+        });
+
+        request.write(data);
+        request.end();
+    } else {
+        return null;
+    }
+}
+
+async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
+    if(coordinates != null && coordinates.length > 0){
+        let fuelusage = req.body.fuelusage;
+        if(fuelusage == null){
+            fuelusage = 8.9;
+        }
+        let data = JSON.stringify({
+            coordinates:coordinates,
+            continue_straight:true,
+            instructions:true,
+            units:"m"
+        });
+        options.headers["Content-Length"] = data.length;
+        const price = await fuelPriceJSON("finland");
+
+        const request = await https.request(options, (response) => {
+            let data = '';
+
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                let JsonData;
+                try {
+                    JsonData = JSON.parse(data);
+                    JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
+                    JsonData.features[0].properties.summary.pricedata = price;
+
+                    if(additionalDataObj != null){
+                        for(const property in additionalDataObj){
+                            JsonData.features[0].properties.summary[property] = additionalDataObj[property];
+                        }
+                    }
+
+                    res.send(JsonData);
+                }catch (err) {
+                    res.send(JsonData);
+                }
+            });
+
+        }).on("error", (err) => {
+            console.log("Error: ", err.message);
+        });
+
+        request.write(data);
+        request.end();
+    } else {
+        return null;
     }
 }
 
@@ -195,59 +267,38 @@ router.post('/routing', async (req, res) => {
         let coordinates = req.body.coordinates;
         const optimizationResp = await getOptimizedRoute(coordinates);
         coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
-
-        if(coordinates != null){
-            let fuelusage = req.body.fuelusage;
-            if(fuelusage == null){
-                fuelusage = 8.9;
-            }
-            let data = JSON.stringify({
-                coordinates:coordinates,
-                /*
-                alternative_routes:{
-                    share_factor:0.6,
-                    target_count:3,
-                    weight_factor:2
-                },
-                */
-                continue_straight:true,
-                instructions:true,
-                units:"m"
-            });
-            options.headers["Content-Length"] = data.length;
-            const price = await fuelPriceJSON("finland");
-
-            const request = await https.request(options, (response) => {
-                let data = '';
-
-                response.on('data', (chunk) => {
-                    data += chunk;
-                });
-
-                response.on('end', () => {
-                    let JsonData;
-                    try {
-                        JsonData = JSON.parse(data);
-                        JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
-                        JsonData.features[0].properties.summary.pricedata = price;
-                        res.send(JsonData);
-                    }catch (err) {
-                        res.send(JsonData);
-                    }
-                });
-
-            }).on("error", (err) => {
-                console.log("Error: ", err.message);
-            });
-
-            request.write(data);
-            request.end();
-        }
+        makeRoutingRequest(coordinates, req, res);
     }catch (err){
         console.log(err);
     }
 });
 
+/**
+ * orderIds ids of the orders
+ * start car start point, where car is at the start of the travel, not required (if no start provided, random shipment address will be the start point)
+ * end car end point, where car should end the travel, not required (if no end provided, end will be the last address of the built travel)
+ * {
+ *     orderIds: [1,2], (int)
+ *     start : [24.573798698987527,60.19074881467758], (lon, lat)
+ *     end : [24.573798698987527,60.19074881467758], (lon, lat)
+ *  }
+ */
+router.post('/routing/orders', async (req, res) => {
+    try{
+        const orderIds = req.body.orderIds;
+        const start = req.body.start;
+        const end = req.body.end;
+        const queriedOrders = await orderDataDAO.readByIds(orderIds);
+
+        const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, start, end);
+        const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
+        const respOrders = responseUtil.sortOrdersByShipmentAddress(queriedOrders);
+
+        makeRoutingRequest(coordinates, req, res, { orders: respOrders });
+    }catch (err){
+        console.log(err);
+    }
+});
 
 
 module.exports = router;

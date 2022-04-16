@@ -119,8 +119,8 @@ function parseAddressFromORS(geojson) {
             region : places.properties.region,
             label : places.properties.label,
             coordinates : {
-                lat : places.geometry.coordinates[0],
-                lon : places.geometry.coordinates[1],
+                lon : places.geometry.coordinates[0],
+                lat : places.geometry.coordinates[1],
             },
         });
     });
