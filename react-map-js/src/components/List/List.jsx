@@ -19,9 +19,9 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints }) => {
+const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , ordersIdForRoutes,setOrdersIdForRoutes}) => {
 
-   
+    
     
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingOrders, setIsLoadingOrders] = useState(false)
@@ -380,9 +380,12 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints }) => 
 
                             orders={orders}
                             setOrders={setOrders}
-
+                            
                             orderPoints={orderPoints}
                             setOrderPoints={setOrderPoints}
+
+                            ordersIdForRoutes={ordersIdForRoutes}
+                            setOrdersIdForRoutes={setOrdersIdForRoutes}
                         />
                     )}
 

@@ -45,6 +45,7 @@ function MapPage() {
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
   const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
+  let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
   // let [currentLocation, setCurrentLocation] = useState()
 
 
@@ -203,6 +204,8 @@ function MapPage() {
         LeafletgeoSearchEnd={LeafletgeoSearchEnd}
         orderPoints={orderPoints}
         setOrderPoints={setOrderPoints}
+        ordersIdForRoutes={ordersIdForRoutes}
+        setOrdersIdForRoutes={setOrdersIdForRoutes}
 
 
       />
@@ -214,6 +217,8 @@ function MapPage() {
           setEnd={setEnd}
           orderPoints={orderPoints}
           setOrderPoints={setOrderPoints}
+          ordersIdForRoutes={ordersIdForRoutes}
+          setOrdersIdForRoutes={setOrdersIdForRoutes}
           
         // createHuman={createHuman}
         // humans={humans}
