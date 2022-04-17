@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 
 import classes from './Registration.module.css';
+import MyButton from '../UI/Button/MyButton';
 
 const Registration = () => {
 
@@ -177,8 +178,8 @@ const Registration = () => {
                                 />
 
 
-
-                                <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button>
+                                    <MyButton type='submit'> Create new {humansType} </MyButton>
+                                {/* <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button> */}
                             </div>
                         </Box>
                     </FormControl>
@@ -193,7 +194,9 @@ const Registration = () => {
                             }}
                         // noValidate
                         // autoComplete="off"
+                        
                         >
+                            <br />
                             <div>
                                 <TextField
                                     onChange={e => setUsername(e.target.value)}
@@ -205,8 +208,10 @@ const Registration = () => {
                                 // autoComplete="current-username"
                                 />
 
+                                
                                 <br />
-                                <button type='submit'>Delete {humansType} by username</button>
+                                <MyButton type='submit'>Delete {humansType} by username</MyButton>
+                                {/* <button type='submit'>Delete {humansType} by username</button> */}
                             </div>
                         </Box>
                     </FormControl>
