@@ -19,6 +19,16 @@ export default makeStyles(() => ({
              left: "10px",
              top: "170px",
              backgroundColor: "white"
+    },
+    summaryOutput:{
+        zIndex: 999,
+            position: "absolute",
+             left: "10px",
+             top: "210px",
+             backgroundColor: "white",
+             minHeight:"100px",
+             minWidth: "100px"
+
     }
 
     // button: {
