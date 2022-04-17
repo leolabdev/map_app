@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 
 import classes from './Registration.module.css';
-import MyButton from '../UI/Button/MyButton';
+import MyButton from '../UI/button/MyButton';
 
 const Registration = () => {
 

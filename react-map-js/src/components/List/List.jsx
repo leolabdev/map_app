@@ -11,7 +11,8 @@ import OrdersDataTable from '../DataTables/OrdersDataTable';
 
 import useStyles from './styles.js';
 import classes1 from './List.module.css';
-import MyButton from '../UI/Button/MyButton';
+// import MyButton from '../UI/Button/MyButton';
+import MyButton from '../UI/button/MyButton';
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';

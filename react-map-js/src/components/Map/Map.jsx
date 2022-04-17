@@ -145,6 +145,14 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     //     )
     // }
     function addRoute(geoJSON) {
+        map.eachLayer(function (layer) {
+            // layer._url == null  ?  map.removeLayer(layer) ;
+    
+            if (layer._url == null){
+                map.removeLayer(layer)
+            }
+            // console.log(layer._url)
+          });
         map.removeLayer(geojsonLayer);
         geojsonLayer = L.geoJSON(geoJSON);
         geojsonLayer.addTo(map);
