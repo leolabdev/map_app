@@ -280,9 +280,9 @@ router.post('/routing', async (req, res) => {
  * fuelusage fuel usage of the car per 100 km, not required
  * {
  *     orderIds: [1,2], (int)
- *     start : [24.573798698987527,60.19074881467758], (lon, lat)
- *     end : [24.573798698987527,60.19074881467758], (lon, lat)
- *     fuelusage: 5.7
+ *     *optional start : [24.573798698987527,60.19074881467758], (lon, lat)
+ *     *optional end : [24.573798698987527,60.19074881467758], (lon, lat)
+     *     fuelusage: 5.7
  *  }
  */
 router.post('/routing/orders', async (req, res) => {

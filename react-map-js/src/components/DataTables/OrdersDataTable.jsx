@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints}) => {
+const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) => {
 
     
     const [flag,setFlag] = useState(false)
@@ -83,58 +83,35 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                  selectedIDs = new Array();
                             }
                             else{ 
-                                var newOrderPoints =  orderPoints;
-                                selectedIDs[0].map(idx => {
+
+                                // var newOrderPoints =  orderPoints;
+                                // console.log(selectedIDs[0])
+                                setOrdersIdForRoutes([...selectedIDs[0]])
+                                
+
+                                // selectedIDs[0].map(idx => {
                                     
-                                    getOrderByOrderId(idx).then((data)=>{
-                                        // console.log(idx)
-                                        // console.log(data)
+                                //     getOrderByOrderId(idx).then((data)=>{
+                                //         // console.log(idx)
+                                //         // console.log(data)
                                         
                                        
-                                         newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
-                                         newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
-                                        setOrderPoints(newOrderPoints);
-                                        // console.log(newOrderPoints) 
-                                        // setOrderPoints(null)
+                                //          newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
+                                //          newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
+                                //         setOrderPoints(newOrderPoints);
+                                //         // console.log(newOrderPoints) 
+                                //         // setOrderPoints(null)
                                         
-                                    })
+                                //     })
                                     
                                    
-                                })
+                                // })
                                 
-                                    newOrderPoints=[];
-                                    // console.log(orderPoints)
-                                //  setTimeout(() => {
-                                //     newOrderPoints= null;
-                                // }, 1000);
-                               
-                                ;
-                                // console.log("selectedIDs",selectedIDs[0])
-                                // console.log(selectedIDs)
+                                //     newOrderPoints=[];
+                                  
 
 
-                                // for (let i = 0; i<selectedIDs[0].length; i++ ){
-                                    // console.log("selectedIDs[0][i])",selectedIDs[0][i])
-                                   
-                                    // getOrderByOrderId(selectedIDs[0][i]).then((data) => {
-                                    //     // console.log("suka",data.shipmentAddress.lon)
-                                    //     // console.log(data)
-                                        
-                                    //     let newOrderPoints =  orderPoints;
-                                    //     newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
-                                    //     newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
-                                    //      setOrderPoints(newOrderPoints);
-                                         
-
-                                    //     //  newOrderPoints=null;
-                                            
-                                    //      return data
-                                        
-                                    // })
-                                // }
-                                // setTimeout(() => {
-                                    // console.log(orderPoints)
-                                // }, 5000);
+                           
                                 
                             }
                         }}
