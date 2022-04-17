@@ -28,7 +28,7 @@ const icon1 = L.icon({
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) {
+function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart, setEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) {
 
     // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
     // const map = useMap();
@@ -87,7 +87,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     // }
 
 
+
     const [modal, setModal] = useState(false);
+    const [fuelUsage, setFuelUsage] = useState(5.7);
+
+ 
 
     useEffect(() => {
 
@@ -395,7 +399,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             <MyButton
             onClick={()=>setModal(true)}
             >
-            Show Route1
+            Show Route
             </MyButton>
             </div>
             {/* <button onClick={showRoute} >Show Route</button> */}
@@ -403,6 +407,13 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
+            start={start}
+            setStart={setStart}
+            end={end}
+            setEnd={setEnd}
+            fuelUsage={fuelUsage}
+            setFuelUsage={setFuelUsage}
+       
             ordersIdForRoutes={ordersIdForRoutes}
             addRoute={addRoute}
             addOrderMarker={addOrderMarker}

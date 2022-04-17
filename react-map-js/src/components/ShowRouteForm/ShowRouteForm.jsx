@@ -1,27 +1,38 @@
-import React from 'react'
+import { TextField } from '@mui/material'
+import React, { useState, useEffect } from 'react'
 // import MyButton from '../UI/button/MyButton'
 import MyButton from '../UI/button/MyButton'
 
 
 import classes from './ShowRouteForm.module.css'
 
-const ShowRouteForm = ({ordersIdForRoutes,addRoute,addOrderMarker}) => {
+const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage ,start,setStart,end,setEnd}) => {
 
-    console.log("gg",addRoute)
+
+
+
+
 
     function showRoute() {
 
-        
+
+
+
+
+        setFuelUsage(7)
+
+
 
         console.log("orders id in  map request", ordersIdForRoutes)
 
-        let sendOrdersIdForRoutesData={
+        let sendOrdersIdForRoutesData = {
             orderIds: [
                 ...ordersIdForRoutes
             ],
-            fuelusage: 5.7
+            start: [start.lon,start.lat],
+            end: [end.lon,end.lat],
+            fuelusage: fuelUsage
         }
-
         console.log(sendOrdersIdForRoutesData)
         if (sendOrdersIdForRoutesData.orderIds.length !== 0) {
             fetch('http://localhost:8081/api/v1/routing/orders', {
@@ -34,51 +45,54 @@ const ShowRouteForm = ({ordersIdForRoutes,addRoute,addOrderMarker}) => {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    
+
                     addRoute(data);
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
                     console.log(data.features[0].properties.summary.orders[2])
                     data.features[0].properties.summary.orders[2].forEach(
-                        (o)=>{
-                            addOrderMarker(o.deliveryAddress.lat,o.deliveryAddress.lon)
-                            addOrderMarker(o.shipmentAddress.lat,o.shipmentAddress.lon)
+                        (o) => {
+                            addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon)
+                            addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon)
                             console.log(o.orderId)
                         }
                     )
+                    addOrderMarker(start.lat,start.lon);
+                    addOrderMarker(end.lat,end.lon);
+
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-    
+
                     // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
                     // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
-                })  
+                })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-    
+
             return (
                 null
             )
         }
-        else{
+        else {
             alert("plz select a order/orders")
             return (null)
         }
     }
 
-        
+
     function ShowrouteButton() {
         return (
             <div >
-            <MyButton
-            onClick={showRoute}
-            >
-            Finally Show Route
-            </MyButton>
-            {/* <button onClick={showRoute} >Show Route</button> */}
+                <MyButton
+                    onClick={showRoute}
+                >
+                    Finally Show Route
+                </MyButton>
+                {/* <button onClick={showRoute} >Show Route</button> */}
             </div>
         )
-    } 
+    }
 
 
 
@@ -86,15 +100,28 @@ const ShowRouteForm = ({ordersIdForRoutes,addRoute,addOrderMarker}) => {
 
 
 
-  return (
-    <div>
-        "hello" <br />
-        "there"
-        {/* <button>hello</button> */}
-        <ShowrouteButton/>
+    return (
+        <div className={classes.formContainer} >
 
-    </div>
-  )
+            <TextField
+                onChange={e => setFuelUsage(e.target.value)}
+                value={fuelUsage}
+                required
+                id="outlined-required"
+                label={`CarFuel_Usage`}
+            /> 
+             <TextField
+                onChange={e => setFuelUsage(e.target.value)}
+                value={fuelUsage}
+                required
+                id="outlined-required"
+                label={`FuelUsage`}
+            /> 
+            {/* <button>hello</button> */}
+            <ShowrouteButton />
+
+        </div>
+    )
 }
 
 export default ShowRouteForm

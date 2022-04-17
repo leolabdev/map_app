@@ -196,6 +196,8 @@ function MapPage() {
       <Map
         // ref={mapRef}
         start={start}
+        setStart={setStart}
+        setEnd={setEnd}
         end={end}
         coordinates={coordinates}
         setCoordinates={setCoordinates}

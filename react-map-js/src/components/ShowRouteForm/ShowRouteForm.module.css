@@ -1,7 +1,6 @@
-.showRouteButton{
-        background-color: white;
-        position: absolute;
-        z-index:  999;
-        left: 10px;
-        top: 170px
+.formContainer{
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
 }
