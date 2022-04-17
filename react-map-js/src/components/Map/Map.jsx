@@ -6,8 +6,7 @@ import useStyles from './styles';
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import icon from "../constants";
 
-import mapData from "../../data/customgeo.json"
-import mapData3 from "../../data/customgeo3.json"
+
 
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
@@ -229,7 +228,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
     function ShowrouteButton() {
         return (
-            <MyButton onClick={showRoute}>Show Route</MyButton>
+            <MyButton onClick={showRoute} >Show Route</MyButton>
         )
     }
 

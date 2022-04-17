@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
+import React from "react";
 import classes from './MyButton.module.css';
 
 {/* we take value(Create post) by using children from <MyButton>Create post</MyButton> */ }
