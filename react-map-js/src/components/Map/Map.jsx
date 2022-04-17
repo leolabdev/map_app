@@ -6,7 +6,9 @@ import useStyles from './styles';
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import icon from "../constants";
 
+import MyModal from "../UI/Modal/MyModal"
 
+import MyButton from "../UI/button/MyButton";
 
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
@@ -85,6 +87,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     // }
 
 
+    const [modal, setModal] = useState(false);
 
     useEffect(() => {
 
@@ -382,11 +385,36 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             {/* <button className={classes.button} onClick={Calculate}>Calculate</button> */}
             {/* <MyButton className={classes.button} onClick={Calculate}> Calculate</MyButton> */}
             {/* <MyCalculate></MyCalculate> */}
+
+    
+            {/* <MyButton style={{ marginTop: '20px' }} onClick={() => setModal(true)}>
+             Create User
+             </MyButton> */}
+
+             <div className={classes.showRouteButton}>
+            <MyButton
+            onClick={()=>setModal(true)}
+            >
+            Show Route1
+            </MyButton>
+            </div>
+            {/* <button onClick={showRoute} >Show Route</button> */}
+            
+
+            <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
             ordersIdForRoutes={ordersIdForRoutes}
             addRoute={addRoute}
             addOrderMarker={addOrderMarker}
             />
+            </MyModal>
+
+            {/* <ShowRouteForm
+            ordersIdForRoutes={ordersIdForRoutes}
+            addRoute={addRoute}
+            addOrderMarker={addOrderMarker}
+            /> */}
+
             {/* <ShowrouteButton /> */}
             {/* <RoutingMachine /> */}
             {/* <LeafletgeoSearchStart /> */}
