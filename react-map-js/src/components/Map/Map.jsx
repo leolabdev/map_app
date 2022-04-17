@@ -26,7 +26,7 @@ const icon1 = L.icon({
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints},setOrderPoints) {
+function Map({ coordinates, setCoordinates, LocationMarker, start, end, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) {
 
     // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
     // const map = useMap();
@@ -39,7 +39,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     //     }, []);
     //     return null;
     // }
-   
 
     // function GeoL() {
 
@@ -145,7 +144,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     //         null
     //     )
     // }
-
     function addRoute(geoJSON) {
         map.removeLayer(geojsonLayer);
         geojsonLayer = L.geoJSON(geoJSON);
@@ -163,16 +161,6 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     }
 
 
-
-    function removeStartMarker() {
-        map.removeLayer(startMarker)
-    }
-    function removeEndMarker() {
-        map.removeLayer(endMarker)
-    }
-    function removeOrderMarker() {
-        map.removeLayer(endMarker)
-    }
 
     // function addEndMarker(lat, lon) {
     //     let latlon = L.latLng([lat, lon]);
@@ -235,23 +223,34 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
     function showRoute() {
         // map = useMap()
         console.log(orderPoints)
-        let coordinatesData = {
-            coordinates: [
-                ...orderPoints
-                // [start.lng, start.lat],
-                // [start.lon, start.lat],
-                // // [end.lng, end.lat],
-                // [end.lon, end.lat],
-            ]
+
+        console.log("orders id in  map request", ordersIdForRoutes)
+
+        let sendOrdersIdForRoutesData={
+            orderIds: [
+                ...ordersIdForRoutes
+            ],
+            fuelusage: 5.7
         }
-        console.log(coordinatesData)
-        if (coordinatesData.coordinates.length !== 0) {
-            fetch('http://localhost:8081/api/v1/routing', {
+
+        // let coordinatesData = {
+        //     coordinates: [
+        //         ...orderPoints
+        //         // [start.lng, start.lat],
+        //         // [start.lon, start.lat],
+        //         // // [end.lng, end.lat],
+        //         // [end.lon, end.lat],
+        //     ]
+        // }
+        // console.log(coordinatesData)
+        console.log(sendOrdersIdForRoutesData)
+        if (sendOrdersIdForRoutesData.orderIds.length !== 0) {
+            fetch('http://localhost:8081/api/v1/routing/orders', {
                 method: 'POST', // or 'PUT'
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(coordinatesData),
+                body: JSON.stringify(sendOrdersIdForRoutesData),
             })
                 .then(response => response.json())
                 .then(data => {
@@ -259,11 +258,20 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
                     addRoute(data);
                     // removeStartMarker();
                     // removeEndMarker();
-                     coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
+                    // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
+                    console.log(data.features[0].properties.summary.orders[2])
+                    data.features[0].properties.summary.orders[2].forEach(
+                        (o)=>{
+                            addOrderMarker(o.deliveryAddress.lat,o.deliveryAddress.lon)
+                            addOrderMarker(o.shipmentAddress.lat,o.shipmentAddress.lon)
+                            console.log(o.orderId)
+                        }
+                    )
+                    // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
     
                     // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
                     // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
-                })
+                })  
                 .catch((error) => {
                     console.error('Error:', error);
                 });
