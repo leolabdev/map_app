@@ -6,7 +6,7 @@ import MyButton from '../UI/button/MyButton'
 
 import classes from './ShowRouteForm.module.css'
 
-const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage ,start,setStart,end,setEnd}) => {
+const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd }) => {
 
 
 
@@ -19,8 +19,6 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
 
 
 
-        setFuelUsage(7)
-
 
 
         console.log("orders id in  map request", ordersIdForRoutes)
@@ -29,8 +27,8 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
             orderIds: [
                 ...ordersIdForRoutes
             ],
-            start: [start.lon,start.lat],
-            end: [end.lon,end.lat],
+            start: [start.lon, start.lat],
+            end: [end.lon, end.lat],
             fuelusage: fuelUsage
         }
         console.log(sendOrdersIdForRoutesData)
@@ -58,8 +56,8 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(start.lat,start.lon);
-                    addOrderMarker(end.lat,end.lon);
+                    addOrderMarker(start.lat, start.lon);
+                    addOrderMarker(end.lat, end.lon);
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
@@ -109,14 +107,44 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                 required
                 id="outlined-required"
                 label={`CarFuel_Usage`}
-            /> 
-             <TextField
-                onChange={e => setFuelUsage(e.target.value)}
-                value={fuelUsage}
+            />
+
+            <TextField
+                onChange={e => setStart({ ...start, lat: e.target.value })}
+                value={start.lat}
                 required
                 id="outlined-required"
-                label={`FuelUsage`}
-            /> 
+                type="number"
+                label={`start lat`}
+            />
+
+            <TextField
+                onChange={e => setStart({ ...start, lon: e.target.value })}
+                value={start.lon}
+                required
+                id="outlined-required"
+                type="number"
+                label={`start lon`}
+            />
+
+            <TextField
+                onChange={e => setEnd({ ...end, lat: e.target.value })}
+                value={end.lat}
+                required
+                id="outlined-required"
+                type="number"
+                label={`end lat`}
+            />
+
+            <TextField
+                onChange={e => setEnd({ ...end, lon: e.target.value })}
+                value={end.lon}
+                required
+                id="outlined-required"
+                type="number"
+                label={`end lon`}
+            />
+
             {/* <button>hello</button> */}
             <ShowrouteButton />
 
