@@ -11,7 +11,7 @@ import icon from "../constants";
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
-import MyButton from "../../UI/button/MyButton";
+import ShowRouteForm from "../ShowRouteForm/ShowRouteForm";
 
 const icon1 = L.icon({
     iconSize: [25, 41],
@@ -226,11 +226,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
 
 
 
-    function ShowrouteButton() {
-        return (
-            <MyButton onClick={showRoute} >Show Route</MyButton>
-        )
-    }
+    // function ShowrouteButton() {
+    //     return (
+    //         <MyButton onClick={showRoute} >Show Route</MyButton>
+    //     )
+    // }
 
     function showRoute() {
         // map = useMap()
@@ -366,7 +366,12 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end, Leafletg
             {/* <button className={classes.button} onClick={Calculate}>Calculate</button> */}
             {/* <MyButton className={classes.button} onClick={Calculate}> Calculate</MyButton> */}
             {/* <MyCalculate></MyCalculate> */}
-            <ShowrouteButton />
+            <ShowRouteForm
+            ordersIdForRoutes={ordersIdForRoutes}
+            addRoute={addRoute}
+            addOrderMarker={addOrderMarker}
+            />
+            {/* <ShowrouteButton /> */}
             {/* <RoutingMachine /> */}
             {/* <LeafletgeoSearchStart /> */}
             {/* <LeafletgeoSearchEnd /> */}
