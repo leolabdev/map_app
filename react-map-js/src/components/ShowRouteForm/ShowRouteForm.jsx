@@ -6,7 +6,7 @@ import MyButton from '../UI/button/MyButton'
 
 import classes from './ShowRouteForm.module.css'
 
-const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd }) => {
+const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd ,setRouteData, routeData}) => {
 
 
 
@@ -45,6 +45,8 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                     console.log('Success:', data);
 
                     addRoute(data);
+                    setRouteData(data.features[0].properties.summary);
+                    console.log(routeData)
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))

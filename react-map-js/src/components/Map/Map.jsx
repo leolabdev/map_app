@@ -14,6 +14,7 @@ import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
 import ShowRouteForm from "../ShowRouteForm/ShowRouteForm";
+import secToHours from "../../functions/secToHours";
 
 const icon1 = L.icon({
     iconSize: [25, 41],
@@ -90,6 +91,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
     const [modal, setModal] = useState(false);
     const [fuelUsage, setFuelUsage] = useState(5.7);
+    let [routeData,setRouteData] = useState({});
 
  
 
@@ -403,8 +405,20 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
             </MyButton>
             </div>
             {/* <button onClick={showRoute} >Show Route</button> */}
+            {/* // console.log(routeData.features[0].properties.summary); */}
             <div className={classes.summaryOutput}>
-                <button></button>
+                 {/* {routeData} */}
+                 {routeData !== null ?  
+                 (          <>
+                           <div> <b>Distance: </b>{(routeData?.distance/1000)?.toFixed(2)} <i>kms</i> </div>
+                           <div><b>Duration: </b> {secToHours((routeData?.duration))}  </div>
+                           <div><b>Fuelusage: </b>{(routeData?.fuelusage)?.toFixed(2)} <i>litres</i> </div>
+                           </>
+                        //    <div>{routeData.distance}</div>
+                        //    <div>{routeData.distance}</div>
+                        )
+                    :(<div>hello</div>)
+                    }
             </div>
 
             <MyModal visible={modal} setVisible={setModal}>
@@ -415,7 +429,9 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
             setEnd={setEnd}
             fuelUsage={fuelUsage}
             setFuelUsage={setFuelUsage}
-       
+            setRouteData={setRouteData}
+            routeData={routeData}
+
             ordersIdForRoutes={ordersIdForRoutes}
             addRoute={addRoute}
             addOrderMarker={addOrderMarker}
