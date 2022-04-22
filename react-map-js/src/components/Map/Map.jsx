@@ -34,7 +34,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
     // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
     // const map = useMap();
     // function name(params) {
-    //     const map = useMap();
+    //     const map = useMap();    
 
     //     useEffect(() => {
 
@@ -153,10 +153,13 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
     //         null
     //     )
     // }
+    
+    
+
     function addRoute(geoJSON) {
         map.eachLayer(function (layer) {
             // layer._url == null  ?  map.removeLayer(layer) ;
-    
+            
             if (layer._url == null){
                 map.removeLayer(layer)
             }
@@ -190,29 +193,14 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
     // // hello.addTo(testarray)
     // console.log(testarray)
 
-    function addOrderMarker(lat,lon){
+    function addOrderMarker(lat,lon,popUp){
         let latlon = L.latLng([lat, lon]);
-        let orderMarker = new L.marker(latlon)
-        orderMarker.addTo(map)
+        let orderMarker = new L.marker(latlon);
+        orderMarker.bindPopup(popUp).openPopup();
+        orderMarker.addTo(map);
     }
 
-    // function LocationMarkers() {
-    //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
-    //     const [markers, setMarkers] = useState(initialMarkers);
-
-    //     const map = useMapEvents({
-    //         click(e) {
-    //             markers.push(e.latlng);
-    //             setMarkers((prevValue) => [...prevValue, e.latlng]);
-    //         }
-    //     });
-
-    //     return (
-    //         <React.Fragment>
-    //             {markers.map(marker => <Marker position={marker} ></Marker>)}
-    //         </React.Fragment>
-    //     );
-    // }
+  
 
 
     // by this we get access to using html DOM's map 
@@ -220,127 +208,19 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
         map = useMap()
         // console.log('map center:', map.getCenter())
         geojsonLayer = L.geoJSON();
-        // L.geoJSON(mapData).addTo(map)
+     
         geojsonLayer.addTo(map)
 
         layerGroup.addTo(map)
 
-        // addEndMarker(60.4518, 22.2666)
+       
         return null
     }
 
 
-
-    // function ShowrouteButton() {
-    //     return (
-    //         <MyButton onClick={showRoute} >Show Route</MyButton>
-    //     )
-    // }
-
-    // function showRoute() {
-    //     // map = useMap()
-    //     console.log(orderPoints)
-
-    //     console.log("orders id in  map request", ordersIdForRoutes)
-
-    //     let sendOrdersIdForRoutesData={
-    //         orderIds: [
-    //             ...ordersIdForRoutes
-    //         ],
-    //         fuelusage: 5.7
-    //     }
-
-    //     // let coordinatesData = {
-    //     //     coordinates: [
-    //     //         ...orderPoints
-    //     //         // [start.lng, start.lat],
-    //     //         // [start.lon, start.lat],
-    //     //         // // [end.lng, end.lat],
-    //     //         // [end.lon, end.lat],
-    //     //     ]
-    //     // }
-    //     // console.log(coordinatesData)
-    //     console.log(sendOrdersIdForRoutesData)
-    //     if (sendOrdersIdForRoutesData.orderIds.length !== 0) {
-    //         fetch('http://localhost:8081/api/v1/routing/orders', {
-    //             method: 'POST', // or 'PUT'
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(sendOrdersIdForRoutesData),
-    //         })
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 console.log('Success:', data);
-    //                 addRoute(data);
-    //                 // removeStartMarker();
-    //                 // removeEndMarker();
-    //                 // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-    //                 console.log(data.features[0].properties.summary.orders[2])
-    //                 data.features[0].properties.summary.orders[2].forEach(
-    //                     (o)=>{
-    //                         addOrderMarker(o.deliveryAddress.lat,o.deliveryAddress.lon)
-    //                         addOrderMarker(o.shipmentAddress.lat,o.shipmentAddress.lon)
-    //                         console.log(o.orderId)
-    //                     }
-    //                 )
-    //                 // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-    
-    //                 // addStartMarker(coordinatesData.coordinates[0][1], coordinatesData.coordinates[0][0]);
-    //                 // addEndMarker(coordinatesData.coordinates[1][1], coordinatesData.coordinates[1][0]);
-    //             })  
-    //             .catch((error) => {
-    //                 console.error('Error:', error);
-    //             });
-    
-    //         return (
-    //             null
-    //         )
-    //     }
-    //     else{
-    //         alert("plz select a order/orders")
-    //         return (null)
-    //     }
-    // }
-
-        
-       
-
-
-
-
     const classes = useStyles();
     const isDesktop = useMediaQuery('(min-width:600px)')
-
-
-
-    // var [geo, setGeo] = useState("")
-
-
-
-
-    // const RoutingMachine = createControlComponent(() => {
-    //     const instance = L.Routing.control({
-    //         waypoints: [
-    //             L.latLng(start.lat, start.lng),
-    //             L.latLng(end.lat, end.lng),
-    //         ],
-    //         lineOptions: {
-    //             styles: [{ color: "red", weight: 4 }]
-    //         },
-    //     });
-
-    //     return instance;
-    // })
-
-    // const RoutingMachine = createControlComponent(mapData3)
-
-
-
-
-
-
-
+    
 
     return (
 
@@ -412,7 +292,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
                  (          <>
                            <div> <b>Distance: </b>{(routeData?.distance/1000)?.toFixed(2)} <i>kms</i> </div>
                            <div><b>Duration: </b> {secToHours((routeData?.duration))}  </div>
-                           <div><b>Fuelusage: </b>{(routeData?.fuelusage)?.toFixed(2)} <i>litres</i> </div>
+                           <div><b>Fuel usage: </b>{(routeData?.fuelusage)?.toFixed(2)} <i>litres</i> </div>
                            </>
                         //    <div>{routeData.distance}</div>
                         //    <div>{routeData.distance}</div>

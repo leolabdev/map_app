@@ -6,7 +6,7 @@ import MyButton from '../UI/button/MyButton'
 
 import classes from './ShowRouteForm.module.css'
 
-const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd ,setRouteData, routeData}) => {
+const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
 
 
 
@@ -50,16 +50,33 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-                    console.log(data.features[0].properties.summary.orders[2])
+                    console.log(data.features[0].properties.summary.orders)
                     data.features[0].properties.summary.orders[2].forEach(
                         (o) => {
-                            addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon)
-                            addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon)
+                            addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
+                                `<b style="color:red">Client</b><br />
+                                <b>${o.Client.name}</b><br />
+                                 AddressId:${o.deliveryAddress.addressId}<br /> 
+                                 City:     ${o.deliveryAddress.city}<br /> 
+                                 Street: ${o.deliveryAddress.street}<br />
+                                 Building: ${o.deliveryAddress.building}<br />
+                                 Flat: ${o.deliveryAddress.flat}<br /> 
+                                  `)
+
+                            addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
+                                `<b style="color:blue">Manufacturer</b><br />
+                                <b>${o.Manufacturer.name}</b><br />
+                                 AddressId:${o.shipmentAddress.addressId}<br /> 
+                                 City:     ${o.shipmentAddress.city}<br /> 
+                                 Street: ${o.shipmentAddress.street}<br />
+                                 Building: ${o.shipmentAddress.building}<br />
+                                 Flat: ${o.shipmentAddress.flat}<br /> 
+                                  `)
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(start.lat, start.lon);
-                    addOrderMarker(end.lat, end.lon);
+                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`);
+                    addOrderMarker(end.lat, end.lon,`<b style="color:purple">End</b><br />`);
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
