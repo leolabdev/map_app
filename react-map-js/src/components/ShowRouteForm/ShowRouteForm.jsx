@@ -54,7 +54,7 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                     data.features[0].properties.summary.orders[2].forEach(
                         (o) => {
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
-                                `<b style="blue:red">Client</b><br />
+                                `<b style="color:blue">Client</b><br />
                                 <b>${o.Client.name}</b><br />
                                  AddressId:${o.deliveryAddress.addressId}<br /> 
                                  City:     ${o.deliveryAddress.city}<br /> 
