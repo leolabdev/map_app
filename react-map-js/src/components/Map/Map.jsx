@@ -191,7 +191,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
         let markerColor;
         let markerIcon;
         if(markerType==="Manufacturer") markerColor="orange";
-        else if(markerType==="Client") markerColor="blue";
+        else if(markerType==="Client") markerColor="red";
         else if(markerType==="Start") markerColor="green";
         else if(markerType==="End") markerColor="red";
         else markerColor="black";
@@ -238,6 +238,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
             center={coordinates}
             setCoordinates={setCoordinates}
             zoom={14}
+            minZoom={7}
             scrollWheelZoom={false}
             whenReady={() => {
                 console.log("we are ready")
