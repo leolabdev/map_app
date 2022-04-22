@@ -54,7 +54,7 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                     data.features[0].properties.summary.orders[2].forEach(
                         (o) => {
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
-                                `<b style="color:red">Client</b><br />
+                                `<b style="blue:red">Client</b><br />
                                 <b>${o.Client.name}</b><br />
                                  AddressId:${o.deliveryAddress.addressId}<br /> 
                                  City:     ${o.deliveryAddress.city}<br /> 
@@ -66,7 +66,7 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                                   )
 
                             addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
-                                `<b style="color:blue">Manufacturer</b><br />
+                                `<b style="color:orange">Manufacturer</b><br />
                                 <b>${o.Manufacturer.name}</b><br />
                                  AddressId:${o.shipmentAddress.addressId}<br /> 
                                  City:     ${o.shipmentAddress.city}<br /> 
@@ -80,7 +80,7 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                         }
                     )
                     addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`,"Start");
-                    addOrderMarker(end.lat, end.lon,`<b style="color:purple">End</b><br />`,"End");
+                    addOrderMarker(end.lat, end.lon,`<b style="color:red">End</b><br />`,"End");
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
