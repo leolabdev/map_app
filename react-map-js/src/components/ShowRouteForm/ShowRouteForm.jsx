@@ -61,7 +61,9 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                                  Street: ${o.deliveryAddress.street}<br />
                                  Building: ${o.deliveryAddress.building}<br />
                                  Flat: ${o.deliveryAddress.flat}<br /> 
-                                  `)
+                                  `,
+                                  "Client"
+                                  )
 
                             addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
                                 `<b style="color:blue">Manufacturer</b><br />
@@ -71,12 +73,14 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
                                  Street: ${o.shipmentAddress.street}<br />
                                  Building: ${o.shipmentAddress.building}<br />
                                  Flat: ${o.shipmentAddress.flat}<br /> 
-                                  `)
+                                  `,
+                                  "Manufacturer"
+                                  )
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`);
-                    addOrderMarker(end.lat, end.lon,`<b style="color:purple">End</b><br />`);
+                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`,"Start");
+                    addOrderMarker(end.lat, end.lon,`<b style="color:purple">End</b><br />`,"End");
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 

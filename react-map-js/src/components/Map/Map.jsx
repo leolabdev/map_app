@@ -11,18 +11,12 @@ import MyModal from "../UI/Modal/MyModal"
 import MyButton from "../UI/button/MyButton";
 
 import L from "leaflet";
-import { createControlComponent } from "@react-leaflet/core";
 import "leaflet-routing-machine";
 import ShowRouteForm from "../ShowRouteForm/ShowRouteForm";
 import secToHours from "../../functions/secToHours";
+import getMarkerIcon from "../../functions/getMarkerIcon";
 
-const icon1 = L.icon({
-    iconSize: [25, 41],
-    iconAnchor: [10, 41],
-    popupAnchor: [2, -40],
-    iconUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png'
-});
+
 
 
 
@@ -193,9 +187,19 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
     // // hello.addTo(testarray)
     // console.log(testarray)
 
-    function addOrderMarker(lat,lon,popUp){
+    function addOrderMarker(lat,lon,popUp,markerType){
+        let markerColor;
+        let markerIcon;
+        if(markerType==="Manufacturer") markerColor="blue";
+        else if(markerType==="Client") markerColor="red";
+        else if(markerType==="Start") markerColor="green";
+        else if(markerType==="End") markerColor="violet";
+        else markerColor="black";
+
+        markerIcon = getMarkerIcon(markerColor);
+
         let latlon = L.latLng([lat, lon]);
-        let orderMarker = new L.marker(latlon);
+        let orderMarker = new L.marker(latlon,{icon : markerIcon});
         orderMarker.bindPopup(popUp).openPopup();
         orderMarker.addTo(map);
     }
