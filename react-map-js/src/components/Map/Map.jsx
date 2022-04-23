@@ -191,7 +191,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
         let markerColor;
         let markerIcon;
         if(markerType==="Manufacturer") markerColor="orange";
-        else if(markerType==="Client") markerColor="red";
+        else if(markerType==="Client") markerColor="blue";
         else if(markerType==="Start") markerColor="green";
         else if(markerType==="End") markerColor="red";
         else markerColor="black";
