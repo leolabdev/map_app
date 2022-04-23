@@ -27,15 +27,7 @@ function MapPage() {
 
 
 
-
-  // const [value1, setValue1] = useState("");
-  // const [value2, setValue2] = useState("");
-  // const [result, setResult] = useState(0);
-
-
-  // const [humans, setHumans] = useState([]);
-  // const [humansType, setHumansType] = useState("client");
-  // const [isLoading, setIsLoading] = useState(false)
+  const [modal, setModal] = useState(false);
 
   // const [coordinates, setCoordinates] = useState({ lat: 60.1699, lng: 24.9384 });
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
@@ -46,27 +38,7 @@ function MapPage() {
   const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
-  // let [currentLocation, setCurrentLocation] = useState()
-
-
-  // useEffect(() => {
-
-  //   setIsLoading(true)
-
-  //   getHumansData(humansType)
-
-
-  //     .then((data) => {
-
-  //       setHumans(data)
-
-  //       setIsLoading(false)
-  //     })
-
-  //   // if array is empty effect will work only when once when page is loaded
-  // }, [humansType]);
-
-
+  
 
 
 
@@ -195,6 +167,8 @@ function MapPage() {
       {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
         // ref={mapRef}
+        modal={modal}
+        setModal={setModal}
         start={start}
         setStart={setStart}
         setEnd={setEnd}
@@ -213,6 +187,8 @@ function MapPage() {
       />
       <div className="list">
         <List
+          modal={modal}
+          setModal={setModal}
           start={start}
           setStart={setStart}
           end={end}

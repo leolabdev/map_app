@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) => {
+const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
 
     
     const [flag,setFlag] = useState(false)
@@ -87,7 +87,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                 // var newOrderPoints =  orderPoints;
                                 // console.log(selectedIDs[0])
                                 setOrdersIdForRoutes([...selectedIDs[0]])
-                                
+                                setModal(!modal)
 
                                 // selectedIDs[0].map(idx => {
                                     

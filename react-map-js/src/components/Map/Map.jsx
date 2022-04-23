@@ -23,7 +23,7 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart, setEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes}) {
+function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart, setEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) {
 
     // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
     // const map = useMap();
@@ -83,7 +83,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
 
 
-    const [modal, setModal] = useState(false);
+   // const [modal, setModal] = useState(false);
     const [fuelUsage, setFuelUsage] = useState(5.7);
     let [routeData,setRouteData] = useState({});
 

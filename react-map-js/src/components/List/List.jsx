@@ -20,7 +20,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , ordersIdForRoutes,setOrdersIdForRoutes}) => {
+const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
 
     
     
@@ -155,36 +155,7 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
     }, [isLoadingOrdersFlag]);
 
 
-    // function addNewHuman(e) {
-    //     // desabled autoupdating
-    //     e.preventDefault()
-    //     const newPost = {
-    //         ...humanPost
-    //     }
-    //     postNewHuman(humansType, newPost)
-
-    //     // console.log("humans:", humans)
-    //     // console.log("post:", newPost)
-    //     // setHumans(humans, newPost)
-    //     setTimeout(() => { setStatus(!status) }, 500);
-    //     console.log(humanPost)
-    //     // createHuman(humansType, newPost)
-    //     // setPost({ username: '', name: '', city: '', street: '', building: '', lat: '', lon: '' })
-    //     setHumanPost({
-    //         username: '', name: '', addressAdd: {
-    //             city: '', street: '', building: '', lat: '', lon: ''
-    //         }
-    //     })
-    //     console.log(humanPost)
-    // }
-
-
-    // function remove(e) {
-    //     e.preventDefault()
-    //     deleteHumanByUserName(humansType, username)
-    //     setStatus(!status)
-    //     setUsername("")
-    // }
+   
 
     function addNewOrder(e) {
         e.preventDefault()
@@ -312,49 +283,6 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
                                 />
 
 
-
-                                {/* const shipmentAddressIdInputProps = {
-                                    options: manufacturer.Addresses,
-                                getOptionLabel: (option) => option.Addresses
-    }
-                                const deliveryAddressIdIdInputProps = {
-                                    options: manufacturer.Addresses,
-                                     getOptionLabel: (option) => option.Addresses
-    } */}
-
-                                {/* template for multiple clients */}
-                                {/* <Autocomplete
-                                    multiple
-                                    id="client-autocomplete"
-                                    options={clients}
-
-                                    // onChange={(event, newClient) => {
-                                    //     setChosenClients(...chosenClients, newClient);
-                                    // }}
-                                    getOptionLabel={(option) => option.clientUsername}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant="standard"
-                                            label="Choose clients"
-                                        />
-                                    )}
-                                /> */}
-
-
-
-                                {/* <TextField
-                                    onChange={e => setUsername(e.target.value)}
-                                    value={username}
-                                    required
-                                    id="outlined-required"
-                                    // label="Username"
-                                    label={`${humansType}Username`}
-                                // autoComplete="current-username"
-                                /> */}
-
-
-
                                 <br />
                                 <MyButton type='submit'>Create order</MyButton>
                                 {/* <button type='submit'>Create order</button> */}
@@ -375,6 +303,8 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
                     ) : (
 
                         <OrdersDataTable
+                            modal={modal}
+                            setModal={setModal}
                             start={start}
                             setStart={setStart}
                             end={end}
