@@ -54,6 +54,23 @@ function calcFuel(length, fuelUsage) {
     length = length / 100.0;
     return length * fuelUsage;
 }
+/**
+ * Calculates your CO2 emission of route
+ *
+ * Fuel combustion emissions can be calculated using the emissions factor of 2.33 kg CO2e/litre.
+ * If your car average 8 L/100 km then you multiply this by 2.33 and divide by 100 to give 186 g CO2e/km
+ * for combustion emissions.
+ *
+ * @param length of route in (m)
+ * @param fuelUsage of vehicle (L/100Km)
+ * @returns {number} C02 emission from route. eg. 4.1kg CO2e (unit is kg CO2e)
+ */
+function calcCO2(length, fuelUsage) {
+    const CO2 = 2.33; // kg CO2e/litre
+    // Convert m to km
+    length = length / 1000.0;
+    return ((fuelUsage*CO2)/100)*length;
+}
 
 /**
  * Get fuel price by country
@@ -215,6 +232,7 @@ async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
                     JsonData = JSON.parse(data);
                     JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
                     JsonData.features[0].properties.summary.pricedata = price;
+                    JsonData.features[0].properties.summary.co2 = calcCO2(JsonData.features[0].properties.summary.distance, fuelusage);
 
                     if(additionalDataObj != null){
                         for(const property in additionalDataObj){
