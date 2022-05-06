@@ -321,6 +321,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
             ordersIdForRoutes={ordersIdForRoutes}
             addRoute={addRoute}
             addOrderMarker={addOrderMarker}
+
+            setVisible={setModal}
             />
             </MyModal>
 

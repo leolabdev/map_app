@@ -6,7 +6,7 @@ import MyButton from '../UI/button/MyButton'
 
 import classes from './ShowRouteForm.module.css'
 
-const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
+const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
 
 
 
@@ -19,7 +19,7 @@ const ShowRouteForm = ({ ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage,
 
 
 
-
+        setVisible(false);
 
         console.log("orders id in  map request", ordersIdForRoutes)
 
