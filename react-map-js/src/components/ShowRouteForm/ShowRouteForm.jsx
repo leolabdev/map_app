@@ -20,6 +20,15 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
 
 
         setVisible(false);
+        window.scrollTo({
+           top: 0,
+           behavior:"smooth"
+        }); 
+        // window.scrollBy({
+        //     top: 1000,
+        //     left: 270,
+        //     behavior: 'smooth'
+        // });
 
         console.log("orders id in  map request", ordersIdForRoutes)
 
@@ -44,6 +53,7 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                 .then(data => {
                     console.log('Success:', data);
 
+                    
                     addRoute(data);
                     setRouteData(data.features[0].properties.summary);
                     console.log(routeData)
@@ -96,6 +106,10 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
             )
         }
         else {
+            window.scrollTo({
+                top: 1000,
+                behavior:"smooth"
+             }); 
             alert("plz select a order/orders")
             return (null)
         }
