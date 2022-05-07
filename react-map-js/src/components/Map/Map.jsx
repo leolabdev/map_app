@@ -23,7 +23,7 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart, setEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) {
+function Map({ coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) {
 
     
     const [fuelUsage, setFuelUsage] = useState(5.7);
@@ -33,11 +33,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
     useEffect(() => {
 
-        console.log("heeeere", start, end)
+        console.log("heeeere", ourStart, ourEnd)
 
 
     }, [
-        start, end
+        ourStart, ourEnd
 
     ]);
 
@@ -180,10 +180,10 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
-            start={start}
-            setStart={setStart}
-            end={end}
-            setEnd={setEnd}
+            ourStart={ourStart}
+            setOurStart={setOurStart}
+            ourEnd={ourEnd}
+            setOurEnd={setOurEnd}
             fuelUsage={fuelUsage}
             setFuelUsage={setFuelUsage}
             setRouteData={setRouteData}

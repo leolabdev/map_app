@@ -33,9 +33,9 @@ function MapPage() {
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
 
   // const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
-  const [start, setStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  let [ourStart, setOurStart] = useState({ lat: 60.98267, lon: 25.66151 });
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
-  const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
+  let [ourEnd, setOurEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
   
@@ -102,10 +102,10 @@ function MapPage() {
         // ref={mapRef}
         modal={modal}
         setModal={setModal}
-        start={start}
-        setStart={setStart}
-        setEnd={setEnd}
-        end={end}
+        ourStart={ourStart}
+        setOurStart={setOurStart}
+        ourEnd={ourEnd}
+        setOurEnd={setOurEnd}
         coordinates={coordinates}
         setCoordinates={setCoordinates}
         LocationMarker={LocationMarker}
@@ -122,10 +122,10 @@ function MapPage() {
         <List
           modal={modal}
           setModal={setModal}
-          start={start}
-          setStart={setStart}
-          end={end}
-          setEnd={setEnd}
+          ourStart={ourStart}
+          setOurStart={setOurStart}
+          ourEnd={ourEnd}
+          setOurEnd={setOurEnd}
           orderPoints={orderPoints}
           setOrderPoints={setOrderPoints}
           ordersIdForRoutes={ordersIdForRoutes}

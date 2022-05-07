@@ -12,7 +12,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getHumansData } from "../../api/humans/GetHumansData";
 // import { valueToPercent } from '@mui/base';
 
-const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
+const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData }) => {
 
     let [firstmanufacturer, setManufacturer] = useState({});
     let [client, setClient] = useState({});
@@ -98,8 +98,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
             orderIds: [
                 ...ordersIdForRoutes
             ],
-            start: [start.lon, start.lat],
-            end: [end.lon, end.lat],
+            start: [ourStart.lon, ourStart.lat],
+            end: [ourEnd.lon, ourEnd.lat],
             fuelusage: fuelUsage
         }
         console.log(sendOrdersIdForRoutesData)
@@ -151,8 +151,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`, "Start");
-                    addOrderMarker(end.lat, end.lon, `<b style="color:red">End</b><br />`, "End");
+                    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start");
+                    addOrderMarker(ourEnd.lat, ourEnd.lon, `<b style="color:red">End</b><br />`, "End");
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
@@ -224,13 +224,15 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 onChange={(event, newManufacturer) => {
                     
                     setManufacturer(newManufacturer);
-                    setStart({...start, lat:newManufacturer.Addresses.lat})
-                    setStart({...start, lon:newManufacturer.Addresses.lon})
+                    setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
+                    setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
+                    console.log("start",ourStart)
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Choose Start" variant="standard" />
                 )}
             />
+            
 
             <Autocomplete
                 {...clientsInputProps}
@@ -238,8 +240,10 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 //   value={client}
                 onChange={(event, newClient) => {
                     setClient(newClient);
-                    setEnd({...end,lat: newClient.Addresses.lat})
-                    setEnd({...end,lon: newClient.Addresses.lon})
+                    // setEnd({lat: newClient.Addresses.lat,lon: newClient.Addresses.lon}})
+                    // setEnd({lat: newClient.Addresses.lat})
+                    // setEnd({lon: newClient.Addresses.lon})
+                    console.log("end",ourEnd)
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Choose End" variant="standard" />

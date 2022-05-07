@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
+const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
 
     
     const [flag,setFlag] = useState(false)

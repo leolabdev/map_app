@@ -20,7 +20,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal }) => {
+const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal }) => {
 
 
 
@@ -312,10 +312,10 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints, order
                         <OrdersDataTable
                             modal={modal}
                             setModal={setModal}
-                            start={start}
-                            setStart={setStart}
-                            end={end}
-                            setEnd={setEnd}
+                            ourStart={ourStart}
+                            setOurStart={setOurStart}
+                            ourEnd={ourEnd}
+                            setOurEnd={setOurEnd}
 
                             orders={orders}
                             setOrders={setOrders}
