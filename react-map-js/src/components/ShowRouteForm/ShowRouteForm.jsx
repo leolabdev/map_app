@@ -224,8 +224,9 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 onChange={(event, newManufacturer) => {
                     
                     setManufacturer(newManufacturer);
-                    setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
-                    setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
+                    setOurStart({lat:newManufacturer.Addresses[0].lat,lon:newManufacturer.Addresses[0].lon})
+                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
+                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
                     console.log("start",ourStart)
                 }}
                 renderInput={(params) => (
@@ -240,6 +241,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 //   value={client}
                 onChange={(event, newClient) => {
                     setClient(newClient);
+                    console.log(newClient)
+                     setOurEnd({lat:newClient.Addresses[0].lat,lon:newClient.Addresses[0].lon})
                     // setEnd({lat: newClient.Addresses.lat,lon: newClient.Addresses.lon}})
                     // setEnd({lat: newClient.Addresses.lat})
                     // setEnd({lon: newClient.Addresses.lon})
