@@ -1,12 +1,74 @@
 import { TextField } from '@mui/material'
+// import InputLabel from '@mui/material/InputLabel';
+// import Select from '@mui/material/Select';
+// import MenuItem from '@mui/material/MenuItem';
 import React, { useState, useEffect } from 'react'
 // import MyButton from '../UI/button/MyButton'
 import MyButton from '../UI/button/MyButton'
 
 
 import classes from './ShowRouteForm.module.css'
+import Autocomplete from "@mui/material/Autocomplete";
+import { getHumansData } from "../../api/humans/GetHumansData";
+// import { valueToPercent } from '@mui/base';
 
-const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
+const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, start, setStart, end, setEnd, setRouteData, routeData }) => {
+
+    let [firstmanufacturer, setManufacturer] = useState({});
+    let [client, setClient] = useState({});
+
+
+
+
+    // console.log(options1)
+    // const [value, setValue] = useState('h');
+
+    // const handleChange = (event) => {
+    //     setValue(event.target.value);
+    // };
+
+
+
+    const [shipmentAddresses, setShipmentAddresses] = useState([])
+    const [deliveryAddresses, setDeliveryAddresses] = useState([])
+
+
+
+    const [shipmentAddress, setShipmentAddress] = useState(null);
+    const [deliveryAddress, setDeliveryAddress] = useState(null);
+
+    let [clients, setClients] = useState([]);
+    let [manufacturers, setManufacturers] = useState([]);
+
+    useEffect(() => {
+        getHumansData("manufacturer").then((data) => {
+            setManufacturers(data)
+            console.log(data)
+        })
+        getHumansData("client").then((data) => {
+            setClients(data)
+            console.log(data)
+        })
+
+
+
+    }, []);
+
+   
+
+    
+
+   
+    const manufacturersInputProps = {
+        options: manufacturers,
+        getOptionLabel: (option) => `${option.manufacturerUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
+    }
+
+    
+     const clientsInputProps = {
+        options: clients,
+        getOptionLabel: (option) => `${option.clientUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
+    }
 
 
 
@@ -21,9 +83,9 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
 
         setVisible(false);
         window.scrollTo({
-           top: 0,
-           behavior:"smooth"
-        }); 
+            top: 0,
+            behavior: "smooth"
+        });
         // window.scrollBy({
         //     top: 1000,
         //     left: 270,
@@ -53,7 +115,7 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                 .then(data => {
                     console.log('Success:', data);
 
-                    
+
                     addRoute(data);
                     setRouteData(data.features[0].properties.summary);
                     console.log(routeData)
@@ -72,8 +134,8 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                                  Building: ${o.deliveryAddress.building}<br />
                                  Flat: ${o.deliveryAddress.flat}<br /> 
                                   `,
-                                  "Client"
-                                  )
+                                "Client"
+                            )
 
                             addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
                                 `<b style="color:orange">Manufacturer</b><br />
@@ -84,13 +146,13 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                                  Building: ${o.shipmentAddress.building}<br />
                                  Flat: ${o.shipmentAddress.flat}<br /> 
                                   `,
-                                  "Manufacturer"
-                                  )
+                                "Manufacturer"
+                            )
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`,"Start");
-                    addOrderMarker(end.lat, end.lon,`<b style="color:red">End</b><br />`,"End");
+                    addOrderMarker(start.lat, start.lon, `<b style="color:green">Start</b><br />`, "Start");
+                    addOrderMarker(end.lat, end.lon, `<b style="color:red">End</b><br />`, "End");
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
@@ -108,8 +170,8 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
         else {
             window.scrollTo({
                 top: 1000,
-                behavior:"smooth"
-             }); 
+                behavior: "smooth"
+            });
             alert("plz select a order/orders")
             return (null)
         }
@@ -146,7 +208,47 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                 label={`CarFuel_Usage`}
             />
 
-            <TextField
+            {/* <select value={value} onChange={handleChange}>
+                {options1.map((option) => (
+                    <option value={option.manufacturerUsername}>{option.manufacturerUsername}</option>
+                ))}
+            </select> */}
+
+
+
+
+            <Autocomplete
+                {...manufacturersInputProps}
+                id="manufacturer-autocomplete"
+                //  value={manufacturer}
+                onChange={(event, newManufacturer) => {
+                    
+                    setManufacturer(newManufacturer);
+                    setStart({...start, lat:newManufacturer.Addresses.lat})
+                    setStart({...start, lon:newManufacturer.Addresses.lon})
+                }}
+                renderInput={(params) => (
+                    <TextField {...params} label="Choose Start" variant="standard" />
+                )}
+            />
+
+            <Autocomplete
+                {...clientsInputProps}
+                id="client-autocomplete"
+                //   value={client}
+                onChange={(event, newClient) => {
+                    setClient(newClient);
+                    setEnd({...end,lat: newClient.Addresses.lat})
+                    setEnd({...end,lon: newClient.Addresses.lon})
+                }}
+                renderInput={(params) => (
+                    <TextField {...params} label="Choose End" variant="standard" />
+                )}
+            />
+
+           
+
+            {/* <TextField
                 onChange={e => setStart({ ...start, lat: e.target.value })}
                 value={start.lat}
                 required
@@ -162,9 +264,9 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                 id="outlined-required"
                 type="number"
                 label={`start lon`}
-            />
+            /> */}
 
-            <TextField
+            {/* <TextField
                 onChange={e => setEnd({ ...end, lat: e.target.value })}
                 value={end.lat}
                 required
@@ -180,7 +282,7 @@ const ShowRouteForm = ({setVisible, ordersIdForRoutes, addRoute, addOrderMarker,
                 id="outlined-required"
                 type="number"
                 label={`end lon`}
-            />
+            /> */}
 
             {/* <button>hello</button> */}
             <ShowrouteButton />

@@ -20,10 +20,10 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
+const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal }) => {
 
-    
-    
+
+
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingOrders, setIsLoadingOrders] = useState(false)
     const [isLoadingOrdersFlag, setIsLoadingOrdersFlag] = useState(false)
@@ -73,6 +73,10 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
     const [orders, setOrders] = useState([]);
 
 
+   
+
+   
+
     const clientsInputProps = {
         options: clients,
         getOptionLabel: (option) => option.clientUsername,
@@ -84,11 +88,11 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
 
     let shipmentAddressInputProps = {
         options: shipmentAddresses,
-        getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
+        getOptionLabel: (option) => option?.street + " " + option?.building + ", " + option?.city,
     }
     let deliveryAddressInputProps = {
         options: deliveryAddresses,
-        getOptionLabel: (option) => option.street + " " + option.building + ", " + option.city,
+        getOptionLabel: (option) => option?.street + " " + option?.building + ", " + option?.city,
     };
 
 
@@ -107,12 +111,13 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
         })
 
         setIsLoading(false)
+
     }, [
         status,
         // manufacturer
     ]);
 
-  
+
 
 
 
@@ -155,7 +160,7 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
     }, [isLoadingOrdersFlag]);
 
 
-   
+
 
     function addNewOrder(e) {
         e.preventDefault()
@@ -219,10 +224,10 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
                                 {/* onChange={e => setHumanPost({ ...humanPost, name: e.target.value })} */}
                                 <Autocomplete
                                     {...manufacturersInputProps}
-                                    id="client-autocomplete"
+                                    id="manufacturer-autocomplete"
                                     value={manufacturer}
                                     onChange={(event, newManufacturer) => {
-
+                                        console.log(manufacturers);
                                         setManufacturer(newManufacturer);
                                         setOrderPost({ ...orderPost, manufacturerUsername: newManufacturer.manufacturerUsername });
                                         // setHumanPost({ ...humanPost, name: e.target.value })
@@ -268,6 +273,8 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
                                     )}
                                 />
 
+                                
+
                                 <Autocomplete
                                     {...deliveryAddressInputProps}
                                     id="deliveryAddresses-autocomplete"
@@ -312,7 +319,7 @@ const List = ({ start, setStart, end, setEnd, orderPoints, setOrderPoints , orde
 
                             orders={orders}
                             setOrders={setOrders}
-                            
+
                             orderPoints={orderPoints}
                             setOrderPoints={setOrderPoints}
 
