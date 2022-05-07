@@ -14,7 +14,7 @@ import { getHumansData } from "../../api/humans/GetHumansData";
 
 const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData }) => {
 
-    let [firstmanufacturer, setManufacturer] = useState({});
+    let [manufacturer, setManufacturer] = useState({});
     let [client, setClient] = useState({});
 
 
@@ -54,18 +54,18 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
 
     }, []);
 
-   
 
-    
 
-   
+
+
+
     const manufacturersInputProps = {
         options: manufacturers,
         getOptionLabel: (option) => `${option.manufacturerUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
     }
 
-    
-     const clientsInputProps = {
+
+    const clientsInputProps = {
         options: clients,
         getOptionLabel: (option) => `${option.clientUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
     }
@@ -122,8 +122,34 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-                    console.log(data.features[0].properties.summary.orders)
-                    data.features[0].properties.summary.orders[2].forEach(
+                    const orders= data.features[0].properties.summary.orders[2][0];
+                    console.log(orders.shipmentAddress.lat, orders.shipmentAddress.lon)
+
+                    addOrderMarker(orders.shipmentAddress.lat, orders.shipmentAddress.lon,
+                        `<b style="color:green">Start</b><br />
+                        <b>${orders.Manufacturer.name}</b><br />
+                                      AddressId:${orders.shipmentAddress.addressId}<br /> 
+                                      City:     ${orders.shipmentAddress.city}<br /> 
+                                      Street: ${orders.shipmentAddress.street}<br />
+                                     Building: ${orders.shipmentAddress.building}<br />
+                                      Flat: ${orders.shipmentAddress.flat}<br />       
+                        `, "Start");
+
+
+                    addOrderMarker(orders.deliveryAddress.lat, orders.deliveryAddress.lon,
+                        `<b style="color:red">End</b><br />
+                                <b>           ${orders.Client.name}</b><br />
+                                          AddressId:${orders.deliveryAddress.addressId}<br /> 
+                                          City:     ${orders.deliveryAddress.city}<br /> 
+                                          Street: ${orders.deliveryAddress.street}<br />
+                                          Building: ${orders.deliveryAddress.building}<br />
+                                          Flat: ${orders.deliveryAddress.flat}<br />       
+                            `, "End");
+
+                    //    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start"); 
+
+                        console.log(orders)
+                        data.features[0].properties.summary.orders[2].slice(1).forEach(
                         (o) => {
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
                                 `<b style="color:blue">Client</b><br />
@@ -137,22 +163,22 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                                 "Client"
                             )
 
-                            addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
-                                `<b style="color:orange">Manufacturer</b><br />
-                                <b>${o.Manufacturer.name}</b><br />
-                                 AddressId:${o.shipmentAddress.addressId}<br /> 
-                                 City:     ${o.shipmentAddress.city}<br /> 
-                                 Street: ${o.shipmentAddress.street}<br />
-                                 Building: ${o.shipmentAddress.building}<br />
-                                 Flat: ${o.shipmentAddress.flat}<br /> 
-                                  `,
-                                "Manufacturer"
-                            )
+                            // addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
+                            //     `<b style="color:orange">Manufacturer</b><br />
+                            //     <b>${o.Manufacturer.name}</b><br />
+                            //      AddressId:${o.shipmentAddress.addressId}<br /> 
+                            //      City:     ${o.shipmentAddress.city}<br /> 
+                            //      Street: ${o.shipmentAddress.street}<br />
+                            //      Building: ${o.shipmentAddress.building}<br />
+                            //      Flat: ${o.shipmentAddress.flat}<br /> 
+                            //       `,
+                            //     "Manufacturer"
+                            // )
                             console.log(o.orderId)
                         }
                     )
-                    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start");
-                    addOrderMarker(ourEnd.lat, ourEnd.lon, `<b style="color:red">End</b><br />`, "End");
+                    // addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start");
+                    // addOrderMarker(ourEnd.lat, ourEnd.lon, `<b style="color:red">End</b><br />`, "End");
 
                     // data.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
 
@@ -222,9 +248,9 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 id="manufacturer-autocomplete"
                 //  value={manufacturer}
                 onChange={(event, newManufacturer) => {
-                    
+
                     setManufacturer(newManufacturer);
-                    setOurStart({lat:newManufacturer.Addresses[0].lat,lon:newManufacturer.Addresses[0].lon})
+                    setOurStart({ lat: newManufacturer.Addresses[0].lat, lon: newManufacturer.Addresses[0].lon })
                     // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
                     // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
                     // console.log("start",ourStart)
@@ -233,7 +259,7 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                     <TextField {...params} label="Choose Start" variant="standard" />
                 )}
             />
-            
+
 
             <Autocomplete
                 {...clientsInputProps}
@@ -242,18 +268,18 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 onChange={(event, newClient) => {
                     setClient(newClient);
                     console.log(newClient)
-                     setOurEnd({lat:newClient.Addresses[0].lat,lon:newClient.Addresses[0].lon})
+                    setOurEnd({ lat: newClient.Addresses[0].lat, lon: newClient.Addresses[0].lon })
                     // setEnd({lat: newClient.Addresses.lat,lon: newClient.Addresses.lon}})
                     // setEnd({lat: newClient.Addresses.lat})
                     // setEnd({lon: newClient.Addresses.lon})
-                    console.log("end",ourEnd)
+                    console.log("end", ourEnd)
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Choose End" variant="standard" />
                 )}
             />
 
-           
+
 
             {/* <TextField
                 onChange={e => setStart({ ...start, lat: e.target.value })}
