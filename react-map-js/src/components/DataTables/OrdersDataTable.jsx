@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
+const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag}) => {
 
     
     const [flag,setFlag] = useState(false)
@@ -92,28 +92,29 @@ const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setO
                                 
                                 setModal(!modal)
 
-                                // selectedIDs[0].map(idx => {
+                               let newOrdersAddresses= [];
+
+                                selectedIDs[0].map(idx => {
                                     
-                                //     getOrderByOrderId(idx).then((data)=>{
-                                //         // console.log(idx)
-                                //         // console.log(data)
-                                        
+                                    getOrderByOrderId(idx).then((data)=>{
+                                        // console.log(idx)
+                                        // console.log(data)
+                                        console.log(data)
                                        
-                                //          newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
-                                //          newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
-                                //         setOrderPoints(newOrderPoints);
-                                //         // console.log(newOrderPoints) 
-                                //         // setOrderPoints(null)
+                                        newOrdersAddresses.push(data)
+                                        //  newOrderPoints.add(data.deliveryAddress)
+                                        // setOrderPoints(newOrderPoints);
+                                        // console.log(newOrderPoints) 
+                                        // setOrderPoints(null)
                                         
-                                //     })
+                                    })
                                     
                                    
-                                // })
+                                })
                                 
-                                //     newOrderPoints=[];
-                                  
-
-
+                                console.log("newOrdersAddresses",newOrdersAddresses)
+                                setOrdersAddresses(newOrdersAddresses)
+                                    // newOrderPoints=[];
                            
                                 
                             }

@@ -12,63 +12,96 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getHumansData } from "../../api/humans/GetHumansData";
 // import { valueToPercent } from '@mui/base';
 
-const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData }) => {
+const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData, ordersAddresses, setOrdersAddresses ,ordersAddressesFlag,setOrdersAddressesFlag}) => {
 
-    let [manufacturer, setManufacturer] = useState({});
-    let [client, setClient] = useState({});
-
-
-
-
-    // console.log(options1)
-    // const [value, setValue] = useState('h');
-
-    // const handleChange = (event) => {
-    //     setValue(event.target.value);
-    // };
+    // let [manufacturer, setManufacturer] = useState({});
+    // let [client, setClient] = useState({});
 
 
 
-    const [shipmentAddresses, setShipmentAddresses] = useState([])
-    const [deliveryAddresses, setDeliveryAddresses] = useState([])
+    
 
-
-
-    const [shipmentAddress, setShipmentAddress] = useState(null);
-    const [deliveryAddress, setDeliveryAddress] = useState(null);
+    const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
+    const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
 
     let [clients, setClients] = useState([]);
-    let [manufacturers, setManufacturers] = useState([]);
+    // let [manufacturers, setManufacturers] = useState([]);
+    
+    // let shipmentAddresses = [];
+    // let deliveryAddresses = [];
+
+    let [ourShipmentAddresses, setOurShipmentAddresses] = useState([{city:null, street:null, building:null}])
+    let [ourDeliveryAddresses, setOurDeliveryAddresses] = useState([{city:null, street:null, building:null}])
 
     useEffect(() => {
-        getHumansData("manufacturer").then((data) => {
-            setManufacturers(data)
-            console.log(data)
-        })
-        getHumansData("client").then((data) => {
-            setClients(data)
-            console.log(data)
-        })
+        
+
+        // getHumansData("manufacturer").then((data) => {
+        //     // setManufacturers(data)
+        //     console.log(data)
+        // })
+        // getHumansData("client").then((data) => {
+        //     setClients(data)
+        //     console.log(data)
+        // })
+        setOurShipmentAddress(ourShipmentAddresses[1])
+        setOurDeliveryAddress(ourDeliveryAddresses[1])
+        
+        // ordersAddresses.map((address) => {
+        //     // if (shipmentAddresses.length!==0){
+        //         // setShipmentAddresses( address.shipmentAddress)
+        //     // }
+        //     // if(deliveryAddresses.length!== 0 ){
+        //         // setDeliveryAddresses(address.deliveryAddress)
+        //     // }
+        //     shipmentAddresses.push(address.shipmentAddress)
+        //     deliveryAddresses.push(address.deliveryAddress)
+        //      return null
+        // })
+        
+        console.log("ordersAddresses", ordersAddresses)
+        console.log("ourShipmentAddresses", ourShipmentAddresses)
+        console.log("ourDeliveryAddresses", ourDeliveryAddresses)
+
+    }, [ordersAddresses]);
+
+    
+
+    ordersAddresses.map((address) => {
+        // if (shipmentAddresses.length!==0){
+            // setShipmentAddresses(address.shipmentAddress)
+        // }
+        // if(deliveryAddresses.length!== 0 ){
+            // setDeliveryAddresses( address.deliveryAddress)
+        // }
+        ourShipmentAddresses.push(address.shipmentAddress)
+        ourDeliveryAddresses.push(address.deliveryAddress)
+        
+    })
+    
 
 
+    const shipmentAddressesInputProps = {
+        options: ourShipmentAddresses,
+        getOptionLabel: (option) => `${option.city}, ${option.street} ${option.building}  `,
+    }
 
-    }, []);
-
-
-
-
-
-
-    const manufacturersInputProps = {
-        options: manufacturers,
-        getOptionLabel: (option) => `${option.manufacturerUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
+    const deliveryAddressesInputProps = {
+        options: ourDeliveryAddresses,
+        getOptionLabel: (option) => `${option.city}, ${option.street} ${option.building}  `,
     }
 
 
-    const clientsInputProps = {
-        options: clients,
-        getOptionLabel: (option) => `${option.clientUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
-    }
+    // const manufacturersInputProps = {
+    //     options: manufacturers,
+    //     getOptionLabel: (option) => `${option.manufacturerUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
+    // }
+
+
+    // const clientsInputProps = {
+    //     options: clients,
+    //     getOptionLabel: (option) => `${option.clientUsername}, ${option.Addresses[0].city}, ${option.Addresses[0].street} ${option.Addresses[0].building}  `,
+    // }
 
 
 
@@ -78,7 +111,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
     function showRoute() {
 
 
-        console.log("ordersIdForRoutes",ordersIdForRoutes)
+        console.log("ordersIdForRoutes", ordersIdForRoutes)
+        console.log("ordersAddresses", ordersAddresses)
 
 
         setVisible(false);
@@ -98,16 +132,16 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
             orderIds: [
                 ...ordersIdForRoutes
             ],
-           
+
             // start: [ourStart.lon, ourStart.lat],
             // end: [ourEnd.lon, ourEnd.lat],
             fuelusage: fuelUsage
         }
-        if(ourStart!==null){
-            sendOrdersIdForRoutesData.start=[ourStart.lon, ourStart.lat]
+        if (ourStart !== null) {
+            sendOrdersIdForRoutesData.start = [ourStart.lon, ourStart.lat]
         }
-        if(ourEnd!==null){
-            sendOrdersIdForRoutesData.end=[ourEnd.lon, ourEnd.lat]
+        if (ourEnd !== null) {
+            sendOrdersIdForRoutesData.end = [ourEnd.lon, ourEnd.lat]
         }
 
 
@@ -132,7 +166,7 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-                    const dataOrders= data.features[0].properties.summary.orders[2][0];
+                    const dataOrders = data.features[0].properties.summary.orders[2][0];
                     console.log(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon)
 
                     addOrderMarker(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon,
@@ -158,8 +192,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
 
                     //    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start"); 
 
-                        console.log(dataOrders)
-                        data.features[0].properties.summary.orders[2].slice(1).forEach(
+                    console.log(dataOrders)
+                    data.features[0].properties.summary.orders[2].slice(1).forEach(
                         (o) => {
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
                                 `<b style="color:blue">Client</b><br />
@@ -249,11 +283,46 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                     <option value={option.manufacturerUsername}>{option.manufacturerUsername}</option>
                 ))}
             </select> */}
-
-
-
+            {/* shipmentAddressesInputProps */}
 
             <Autocomplete
+                {...shipmentAddressesInputProps}
+                id="shipmentAddresses-autocomplete"
+                value={ourShipmentAddress}
+                onChange={(event, newShipmentAddress) => {
+                    setOurShipmentAddress(newShipmentAddress);
+                    
+                    //  setManufacturer(newShipmentAddress);
+                     setOurStart({ lat: newShipmentAddress.lat, lon: newShipmentAddress.lon })
+                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
+                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
+                    // console.log("start",ourStart)
+                }}
+                renderInput={(params) => (
+                    <TextField {...params} label="Choose Start" variant="standard" />
+                )}
+            />
+             <Autocomplete
+                {...deliveryAddressesInputProps}
+                id="deliveryAddresses-autocomplete"
+                value={ourDeliveryAddress}
+                onChange={(event, newDeliveryAddress) => {
+                    setOurDeliveryAddress(newDeliveryAddress);
+                    
+                    //  setManufacturer(newShipmentAddress);
+                     setOurEnd({ lat: newDeliveryAddress.lat, lon: newDeliveryAddress.lon })
+                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
+                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
+                    // console.log("start",ourStart)
+                }}
+                renderInput={(params) => (
+                    <TextField {...params} label="Choose End" variant="standard" />
+                )}
+            />
+
+
+
+            {/* <Autocomplete
                 {...manufacturersInputProps}
                 id="manufacturer-autocomplete"
                 //  value={manufacturer}
@@ -268,10 +337,10 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 renderInput={(params) => (
                     <TextField {...params} label="Choose Start" variant="standard" />
                 )}
-            />
+            /> */}
 
 
-            <Autocomplete
+            {/* <Autocomplete
                 {...clientsInputProps}
                 id="client-autocomplete"
                 //   value={client}
@@ -287,7 +356,7 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                 renderInput={(params) => (
                     <TextField {...params} label="Choose End" variant="standard" />
                 )}
-            />
+            /> */}
 
 
 

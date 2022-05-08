@@ -20,7 +20,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal }) => {
+const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag }) => {
 
 
 
@@ -325,6 +325,12 @@ const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderP
 
                             ordersIdForRoutes={ordersIdForRoutes}
                             setOrdersIdForRoutes={setOrdersIdForRoutes}
+
+                            ordersAddresses={ordersAddresses}
+                            setOrdersAddresses={setOrdersAddresses}
+
+                            ordersAddressesFlag={ordersAddressesFlag}
+                            setOrdersAddressesFlag={setOrdersAddressesFlag}
                         />
                     )}
 

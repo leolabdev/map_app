@@ -41,7 +41,8 @@ function MapPage() {
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
   
-
+  let [ordersAddresses,setOrdersAddresses] = useState([]);
+  let [ordersAddressesFlag,setOrdersAddressesFlag] = useState(false);
 
 
 
@@ -117,6 +118,11 @@ function MapPage() {
         setOrderPoints={setOrderPoints}
         ordersIdForRoutes={ordersIdForRoutes}
         setOrdersIdForRoutes={setOrdersIdForRoutes}
+        ordersAddresses={ordersAddresses}
+        setOrdersAddresses={setOrdersAddresses}
+
+        ordersAddressesFlag={ordersAddressesFlag}
+        setOrdersAddressesFlag={setOrdersAddressesFlag}
 
 
       />
@@ -132,6 +138,10 @@ function MapPage() {
           setOrderPoints={setOrderPoints}
           ordersIdForRoutes={ordersIdForRoutes}
           setOrdersIdForRoutes={setOrdersIdForRoutes}
+          ordersAddresses={ordersAddresses}
+          setOrdersAddresses={setOrdersAddresses}
+
+          
           
         // createHuman={createHuman}
         // humans={humans}
