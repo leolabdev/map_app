@@ -78,7 +78,7 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
     function showRoute() {
 
 
-
+        console.log("ordersIdForRoutes",ordersIdForRoutes)
 
 
         setVisible(false);
@@ -98,10 +98,20 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
             orderIds: [
                 ...ordersIdForRoutes
             ],
-            start: [ourStart.lon, ourStart.lat],
-            end: [ourEnd.lon, ourEnd.lat],
+           
+            // start: [ourStart.lon, ourStart.lat],
+            // end: [ourEnd.lon, ourEnd.lat],
             fuelusage: fuelUsage
         }
+        if(ourStart!==null){
+            sendOrdersIdForRoutesData.start=[ourStart.lon, ourStart.lat]
+        }
+        if(ourEnd!==null){
+            sendOrdersIdForRoutesData.end=[ourEnd.lon, ourEnd.lat]
+        }
+
+
+
         console.log(sendOrdersIdForRoutesData)
         if (sendOrdersIdForRoutesData.orderIds.length !== 0) {
             fetch('http://localhost:8081/api/v1/routing/orders', {
@@ -122,43 +132,43 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-                    const orders= data.features[0].properties.summary.orders[2][0];
-                    console.log(orders.shipmentAddress.lat, orders.shipmentAddress.lon)
+                    const dataOrders= data.features[0].properties.summary.orders[2][0];
+                    console.log(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon)
 
-                    addOrderMarker(orders.shipmentAddress.lat, orders.shipmentAddress.lon,
+                    addOrderMarker(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon,
                         `<b style="color:green">Start</b><br />
-                        <b>${orders.Manufacturer.name}</b><br />
-                                      AddressId:${orders.shipmentAddress.addressId}<br /> 
-                                      City:     ${orders.shipmentAddress.city}<br /> 
-                                      Street: ${orders.shipmentAddress.street}<br />
-                                     Building: ${orders.shipmentAddress.building}<br />
-                                      Flat: ${orders.shipmentAddress.flat}<br />       
+                        <b>${dataOrders?.Manufacturer.name}</b><br />
+                                      AddressId:${dataOrders?.shipmentAddress.addressId}<br /> 
+                                      City:     ${dataOrders?.shipmentAddress.city}<br /> 
+                                      Street: ${dataOrders?.shipmentAddress.street}<br />
+                                     Building: ${dataOrders?.shipmentAddress.building}<br />
+                                      Flat: ${dataOrders?.shipmentAddress.flat}<br />       
                         `, "Start");
 
 
-                    addOrderMarker(orders.deliveryAddress.lat, orders.deliveryAddress.lon,
+                    addOrderMarker(dataOrders.deliveryAddress.lat, dataOrders.deliveryAddress.lon,
                         `<b style="color:red">End</b><br />
-                                <b>           ${orders.Client.name}</b><br />
-                                          AddressId:${orders.deliveryAddress.addressId}<br /> 
-                                          City:     ${orders.deliveryAddress.city}<br /> 
-                                          Street: ${orders.deliveryAddress.street}<br />
-                                          Building: ${orders.deliveryAddress.building}<br />
-                                          Flat: ${orders.deliveryAddress.flat}<br />       
+                                <b>           ${dataOrders?.Client.name}</b><br />
+                                          AddressId:${dataOrders?.deliveryAddress?.addressId}<br /> 
+                                          City:     ${dataOrders?.deliveryAddress?.city}<br /> 
+                                          Street: ${dataOrders?.deliveryAddress?.street}<br />
+                                          Building: ${dataOrders?.deliveryAddress?.building}<br />
+                                          Flat: ${dataOrders?.deliveryAddress?.flat}<br />       
                             `, "End");
 
                     //    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start"); 
 
-                        console.log(orders)
+                        console.log(dataOrders)
                         data.features[0].properties.summary.orders[2].slice(1).forEach(
                         (o) => {
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
                                 `<b style="color:blue">Client</b><br />
-                                <b>${o.Client.name}</b><br />
-                                 AddressId:${o.deliveryAddress.addressId}<br /> 
-                                 City:     ${o.deliveryAddress.city}<br /> 
-                                 Street: ${o.deliveryAddress.street}<br />
-                                 Building: ${o.deliveryAddress.building}<br />
-                                 Flat: ${o.deliveryAddress.flat}<br /> 
+                                <b>${o.Client?.name}</b><br />
+                                 AddressId:${o.deliveryAddress?.addressId}<br /> 
+                                 City:     ${o.deliveryAddress?.city}<br /> 
+                                 Street: ${o.deliveryAddress?.street}<br />
+                                 Building: ${o.deliveryAddress?.building}<br />
+                                 Flat: ${o.deliveryAddress?.flat}<br /> 
                                   `,
                                 "Client"
                             )

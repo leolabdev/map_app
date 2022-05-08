@@ -52,8 +52,9 @@ const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setO
                             
 
 
-
+                            
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
+                           
                         }}
                     >
                         <DeleteIcon />
@@ -78,6 +79,7 @@ const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setO
                                 // setOrderPoints([[252.04533, 600.290486]]);
                             
                             const selectedIDs = new Array(selectionModel);
+                            console.log(orders)
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
                                  selectedIDs = new Array();
@@ -87,6 +89,7 @@ const OrdersDataTable = ({ ourStart, setOurStart, ourEnd, setOurEnd,orders, setO
                                 // var newOrderPoints =  orderPoints;
                                 // console.log(selectedIDs[0])
                                 setOrdersIdForRoutes([...selectedIDs[0]])
+                                
                                 setModal(!modal)
 
                                 // selectedIDs[0].map(idx => {

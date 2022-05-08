@@ -33,9 +33,11 @@ function MapPage() {
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
 
   // const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
-  let [ourStart, setOurStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  // let [ourStart, setOurStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  let [ourStart, setOurStart] = useState(null);
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
-  let [ourEnd, setOurEnd] = useState({ lat: 60.1699, lon: 24.9384 })
+  let [ourEnd, setOurEnd] = useState(null);
+  // let [ourEnd, setOurEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
   
