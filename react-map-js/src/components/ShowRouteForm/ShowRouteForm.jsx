@@ -44,8 +44,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
         //     setClients(data)
         //     console.log(data)
         // })
-        setOurShipmentAddress(ourShipmentAddresses[1])
-        setOurDeliveryAddress(ourDeliveryAddresses[1])
+        setOurShipmentAddress(ourShipmentAddresses[0])
+        setOurDeliveryAddress(ourDeliveryAddresses[0])
         
         // ordersAddresses.map((address) => {
         //     // if (shipmentAddresses.length!==0){
