@@ -12,7 +12,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getHumansData } from "../../api/humans/GetHumansData";
 // import { valueToPercent } from '@mui/base';
 
-const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData, ordersAddresses, setOrdersAddresses ,ordersAddressesFlag,setOrdersAddressesFlag}) => {
+const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses,  ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData, ordersAddresses, setOrdersAddresses ,ordersAddressesFlag,setOrdersAddressesFlag}) => {
 
     // let [manufacturer, setManufacturer] = useState({});
     // let [client, setClient] = useState({});
@@ -21,17 +21,17 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
 
     
 
-    const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
-    const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
-
+    
     let [clients, setClients] = useState([]);
     // let [manufacturers, setManufacturers] = useState([]);
     
     // let shipmentAddresses = [];
     // let deliveryAddresses = [];
+    // const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
+    // const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
 
-    let [ourShipmentAddresses, setOurShipmentAddresses] = useState([{city:null, street:null, building:null}])
-    let [ourDeliveryAddresses, setOurDeliveryAddresses] = useState([{city:null, street:null, building:null}])
+    // let [ourShipmentAddresses, setOurShipmentAddresses] = useState([{city:null, street:null, building:null}])
+    // let [ourDeliveryAddresses, setOurDeliveryAddresses] = useState([{city:null, street:null, building:null}])
 
     useEffect(() => {
         
@@ -44,8 +44,8 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
         //     setClients(data)
         //     console.log(data)
         // })
-        setOurShipmentAddress(ourShipmentAddresses[0])
-        setOurDeliveryAddress(ourDeliveryAddresses[0])
+        // setOurShipmentAddress(ourShipmentAddresses[0])
+        // setOurDeliveryAddress(ourDeliveryAddresses[0])
         
         // ordersAddresses.map((address) => {
         //     // if (shipmentAddresses.length!==0){
@@ -67,17 +67,17 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
 
     
 
-    ordersAddresses.map((address) => {
-        // if (shipmentAddresses.length!==0){
-            // setShipmentAddresses(address.shipmentAddress)
-        // }
-        // if(deliveryAddresses.length!== 0 ){
-            // setDeliveryAddresses( address.deliveryAddress)
-        // }
-        ourShipmentAddresses.push(address.shipmentAddress)
-        ourDeliveryAddresses.push(address.deliveryAddress)
+    // ordersAddresses.map((address) => {
+    //     // if (shipmentAddresses.length!==0){
+    //         // setShipmentAddresses(address.shipmentAddress)
+    //     // }
+    //     // if(deliveryAddresses.length!== 0 ){
+    //         // setDeliveryAddresses( address.deliveryAddress)
+    //     // }
+    //     ourShipmentAddresses.push(address.shipmentAddress)
+    //     ourDeliveryAddresses.push(address.deliveryAddress)
         
-    })
+    // })
     
 
 
@@ -146,7 +146,7 @@ const ShowRouteForm = ({ setVisible, ordersIdForRoutes, addRoute, addOrderMarker
 
 
 
-        console.log(sendOrdersIdForRoutesData)
+        console.log("sendOrdersIdForRoutesData",sendOrdersIdForRoutesData)
         if (sendOrdersIdForRoutesData.orderIds.length !== 0) {
             fetch('http://localhost:8081/api/v1/routing/orders', {
                 method: 'POST', // or 'PUT'

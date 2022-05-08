@@ -23,7 +23,12 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
+function Map({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
+
+
+   
+    
+
 
     
     const [fuelUsage, setFuelUsage] = useState(5.7);
@@ -198,6 +203,16 @@ function Map({ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, 
 
             ordersAddressesFlag={ordersAddressesFlag}
             setOrdersAddressesFlag={setOrdersAddressesFlag}
+
+            ourShipmentAddress={ourShipmentAddress}
+            ourShipmentAddresses={ourShipmentAddresses}
+            ourDeliveryAddress={ourDeliveryAddress}
+            ourDeliveryAddresses={ourDeliveryAddresses}
+
+            setOurShipmentAddress={setOurShipmentAddress}
+          setOurShipmentAddresses={setOurShipmentAddresses}
+          setOurDeliveryAddress={setOurDeliveryAddress}
+          setOurDeliveryAddresses={setOurDeliveryAddresses}
 
             setVisible={setModal}
             />

@@ -20,7 +20,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag }) => {
+const List = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAddress, setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress, ourDeliveryAddresses, ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal, ordersAddresses, setOrdersAddresses, ordersAddressesFlag, setOrdersAddressesFlag }) => {
 
 
 
@@ -73,9 +73,9 @@ const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderP
     const [orders, setOrders] = useState([]);
 
 
-   
 
-   
+
+
 
     const clientsInputProps = {
         options: clients,
@@ -273,7 +273,7 @@ const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderP
                                     )}
                                 />
 
-                                
+
 
                                 <Autocomplete
                                     {...deliveryAddressInputProps}
@@ -331,6 +331,17 @@ const List = ({ ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderP
 
                             ordersAddressesFlag={ordersAddressesFlag}
                             setOrdersAddressesFlag={setOrdersAddressesFlag}
+
+                            ourShipmentAddress={ourShipmentAddress}
+                            ourShipmentAddresses={ourShipmentAddresses}
+                            ourDeliveryAddress={ourDeliveryAddress}
+                            ourDeliveryAddresses={ourDeliveryAddresses}
+
+                            setOurShipmentAddress={setOurShipmentAddress}
+                            setOurShipmentAddresses={setOurShipmentAddresses}
+                            setOurDeliveryAddress={setOurDeliveryAddress}
+                            setOurDeliveryAddresses={setOurDeliveryAddresses}
+
                         />
                     )}
 

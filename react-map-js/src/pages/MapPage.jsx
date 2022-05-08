@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CssBaseline} from '@material-ui/core'
+import { CssBaseline } from '@material-ui/core'
 //import logo from './logo.svg';
 // import '.././App.css';
 // import Navbar from "../components/Navbar/Navbar";
@@ -14,7 +14,7 @@ import L from "leaflet";
 // import mapData3 from "./data/customgeo3.json"
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 // import icon from ".././src/components/constants"
-import icon  from "../components/constants"
+import icon from "../components/constants"
 
 
 
@@ -40,9 +40,16 @@ function MapPage() {
   // let [ourEnd, setOurEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
-  
-  let [ordersAddresses,setOrdersAddresses] = useState([]);
-  let [ordersAddressesFlag,setOrdersAddressesFlag] = useState(false);
+
+  let [ordersAddresses, setOrdersAddresses] = useState([]);
+  let [ordersAddressesFlag, setOrdersAddressesFlag] = useState(false);
+
+  const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
+  const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
+
+  const [ourShipmentAddresses, setOurShipmentAddresses] = useState([]);
+  const [ourDeliveryAddresses, setOurDeliveryAddresses] = useState([]);
+
 
 
 
@@ -91,7 +98,7 @@ function MapPage() {
 
   return (
     <div className='App'>
-     
+
       {/* <input value={value1} onChange={event => setValue1(event.target.value)} /> */}
 
       {/* <input value={value2} onChange={event => setValue2(event.target.value)} /> */}
@@ -123,9 +130,19 @@ function MapPage() {
 
         ordersAddressesFlag={ordersAddressesFlag}
         setOrdersAddressesFlag={setOrdersAddressesFlag}
+        ourShipmentAddress={ourShipmentAddress}
+        ourShipmentAddresses={ourShipmentAddresses}
+        ourDeliveryAddress={ourDeliveryAddress}
+        ourDeliveryAddresses={ourDeliveryAddresses}
 
+        setOurShipmentAddress={setOurShipmentAddress}
+        setOurShipmentAddresses={setOurShipmentAddresses}
+        setOurDeliveryAddress={setOurDeliveryAddress}
+        setOurDeliveryAddresses={setOurDeliveryAddresses}
 
       />
+
+
       <div className="list">
         <List
           modal={modal}
@@ -141,8 +158,19 @@ function MapPage() {
           ordersAddresses={ordersAddresses}
           setOrdersAddresses={setOrdersAddresses}
 
+          ourShipmentAddress={ourShipmentAddress}
+          ourShipmentAddresses={ourShipmentAddresses}
+          ourDeliveryAddress={ourDeliveryAddress}
+          ourDeliveryAddresses={ourDeliveryAddresses}
+
+          setOurShipmentAddress={setOurShipmentAddress}
+          setOurShipmentAddresses={setOurShipmentAddresses}
+          setOurDeliveryAddress={setOurDeliveryAddress}
+          setOurDeliveryAddresses={setOurDeliveryAddresses}
+
           
-          
+
+
         // createHuman={createHuman}
         // humans={humans}
         // isLoading={isLoading}
