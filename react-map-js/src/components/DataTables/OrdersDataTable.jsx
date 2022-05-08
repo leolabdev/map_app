@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) => {
+const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag}) => {
 
     
     const [flag,setFlag] = useState(false)
@@ -52,8 +52,9 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                             
 
 
-
+                            
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
+                           
                         }}
                     >
                         <DeleteIcon />
@@ -78,6 +79,7 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                 // setOrderPoints([[252.04533, 600.290486]]);
                             
                             const selectedIDs = new Array(selectionModel);
+                            console.log(orders)
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
                                  selectedIDs = new Array();
@@ -87,30 +89,62 @@ const OrdersDataTable = ({ start, setStart, end, setEnd,orders, setOrders,orderP
                                 // var newOrderPoints =  orderPoints;
                                 // console.log(selectedIDs[0])
                                 setOrdersIdForRoutes([...selectedIDs[0]])
+                                
                                 setModal(!modal)
 
-                                // selectedIDs[0].map(idx => {
+                               let newOrdersAddresses= [];
+                               let newOurShipmentAddresses=[];
+                               let newOurDeliveryAddresses=[];
+                            //    let newUniqueOurDeliveryAddresses=[];
+                            //    let uniqueObjArray = [
+                            //     ...new Map(myObjArray.map((item) => [item["episodes"], item])).values(),
+                            // ];
+
+
+                                selectedIDs[0].map(idx => {
                                     
-                                //     getOrderByOrderId(idx).then((data)=>{
-                                //         // console.log(idx)
-                                //         // console.log(data)
-                                        
+                                    getOrderByOrderId(idx).then((data)=>{
+                                        // console.log(idx)
+                                        // console.log(data)
+                                        console.log(data)
                                        
-                                //          newOrderPoints.push([data.shipmentAddress.lat,data.shipmentAddress.lon])
-                                //          newOrderPoints.push([data.deliveryAddress.lat,data.deliveryAddress.lon])
-                                //         setOrderPoints(newOrderPoints);
-                                //         // console.log(newOrderPoints) 
-                                //         // setOrderPoints(null)
-                                        
-                                //     })
+                                        newOrdersAddresses.push(data)
+                                        //  newOrderPoints.add(data.deliveryAddress)
+                                        // setOrderPoints(newOrderPoints);
+                                        // console.log(newOrderPoints) 
+                                        // setOrderPoints(null)
+                                        newOrdersAddresses.map((address) => {
+                                            newOurShipmentAddresses.push(address.shipmentAddress)
+                                            newOurShipmentAddresses= [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
+                                            newOurDeliveryAddresses.push(address.deliveryAddress)
+                                          
+                                            
+                                         })
+                                         const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item)=>[item["addressId"], item])).values()]
+                                         setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
+                                    })
                                     
-                                   
-                                // })
+                                })
+
                                 
-                                //     newOrderPoints=[];
-                                  
+                                
 
 
+                                
+
+                                console.log("newOurShipmentAddresses",newOurShipmentAddresses)
+                                console.log("newOurDeliveryAddresses",newOurDeliveryAddresses)
+                                console.log("newOrdersAddresses",newOrdersAddresses)
+
+                                setOrdersAddresses(newOrdersAddresses)
+
+                                setOurShipmentAddresses(newOurShipmentAddresses);
+                               
+                                
+
+
+                                    // newOrderPoints=[];
+                                
                            
                                 
                             }

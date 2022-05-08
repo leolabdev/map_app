@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CssBaseline} from '@material-ui/core'
+import { CssBaseline } from '@material-ui/core'
 //import logo from './logo.svg';
 // import '.././App.css';
 // import Navbar from "../components/Navbar/Navbar";
@@ -14,7 +14,7 @@ import L from "leaflet";
 // import mapData3 from "./data/customgeo3.json"
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 // import icon from ".././src/components/constants"
-import icon  from "../components/constants"
+import icon from "../components/constants"
 
 
 
@@ -33,79 +33,22 @@ function MapPage() {
   const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
 
   // const [start, setStart] = useState({ lat: 60.98267, lng: 25.66151 });
-  const [start, setStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  // let [ourStart, setOurStart] = useState({ lat: 60.98267, lon: 25.66151 });
+  let [ourStart, setOurStart] = useState(null);
   // const [end, setEnd] = useState({ lat: 60.1699, lng: 24.9384 })
-  const [end, setEnd] = useState({ lat: 60.1699, lon: 24.9384 })
+  let [ourEnd, setOurEnd] = useState(null);
+  // let [ourEnd, setOurEnd] = useState({ lat: 60.1699, lon: 24.9384 })
   let [orderPoints, setOrderPoints] = useState([]);
   let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
-  
 
+  let [ordersAddresses, setOrdersAddresses] = useState([]);
+  let [ordersAddressesFlag, setOrdersAddressesFlag] = useState(false);
 
+  const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
+  const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
 
-  function LeafletgeoSearchStart() {
-
-
-    const map = useMap();
-    useEffect(() => {
-      const provider = new OpenStreetMapProvider();
-
-      const searchControl = new GeoSearchControl({
-
-        provider,
-        // marker: {
-        //   icon
-
-        // },
-      });
-      map.addControl(searchControl);
-      function searchEventHandler(result) {
-        setStart(result.location.x, result.location.y)
-        // console.log(start);
-      }
-
-      map.on('geosearch/showlocation', searchEventHandler);
-
-
-      // console.log("h", searchControl.provider)
-      return () => map.removeControl(searchControl);
-    }, []);
-
-    return null;
-
-  }
-
-  function LeafletgeoSearchEnd() {
-
-
-    const map = useMap();
-    useEffect(() => {
-      const provider = new OpenStreetMapProvider();
-
-      const searchControl = new GeoSearchControl({
-
-        provider,
-
-        // marker: {
-        //   icon
-
-        // },
-      });
-      map.addControl(searchControl);
-
-      function searchEventHandler(result) {
-        setEnd(result.location.x, result.location.y)
-        // console.log(end);
-      }
-
-      map.on('geosearch/showlocation', searchEventHandler);
-
-
-      // console.log("h", searchControl.provider)
-      return () => map.removeControl(searchControl);
-    }, []);
-
-    return null;
-  }
+  const [ourShipmentAddresses, setOurShipmentAddresses] = useState([]);
+  const [ourDeliveryAddresses, setOurDeliveryAddresses] = useState([]);
 
 
 
@@ -155,7 +98,7 @@ function MapPage() {
 
   return (
     <div className='App'>
-     
+
       {/* <input value={value1} onChange={event => setValue1(event.target.value)} /> */}
 
       {/* <input value={value2} onChange={event => setValue2(event.target.value)} /> */}
@@ -169,35 +112,65 @@ function MapPage() {
         // ref={mapRef}
         modal={modal}
         setModal={setModal}
-        start={start}
-        setStart={setStart}
-        setEnd={setEnd}
-        end={end}
+        ourStart={ourStart}
+        setOurStart={setOurStart}
+        ourEnd={ourEnd}
+        setOurEnd={setOurEnd}
         coordinates={coordinates}
         setCoordinates={setCoordinates}
         LocationMarker={LocationMarker}
-        LeafletgeoSearchStart={LeafletgeoSearchStart}
-        LeafletgeoSearchEnd={LeafletgeoSearchEnd}
+        // LeafletgeoSearchStart={LeafletgeoSearchStart}
+        // LeafletgeoSearchEnd={LeafletgeoSearchEnd}
         orderPoints={orderPoints}
         setOrderPoints={setOrderPoints}
         ordersIdForRoutes={ordersIdForRoutes}
         setOrdersIdForRoutes={setOrdersIdForRoutes}
+        ordersAddresses={ordersAddresses}
+        setOrdersAddresses={setOrdersAddresses}
 
+        ordersAddressesFlag={ordersAddressesFlag}
+        setOrdersAddressesFlag={setOrdersAddressesFlag}
+        ourShipmentAddress={ourShipmentAddress}
+        ourShipmentAddresses={ourShipmentAddresses}
+        ourDeliveryAddress={ourDeliveryAddress}
+        ourDeliveryAddresses={ourDeliveryAddresses}
+
+        setOurShipmentAddress={setOurShipmentAddress}
+        setOurShipmentAddresses={setOurShipmentAddresses}
+        setOurDeliveryAddress={setOurDeliveryAddress}
+        setOurDeliveryAddresses={setOurDeliveryAddresses}
 
       />
+
+
       <div className="list">
         <List
           modal={modal}
           setModal={setModal}
-          start={start}
-          setStart={setStart}
-          end={end}
-          setEnd={setEnd}
+          ourStart={ourStart}
+          setOurStart={setOurStart}
+          ourEnd={ourEnd}
+          setOurEnd={setOurEnd}
           orderPoints={orderPoints}
           setOrderPoints={setOrderPoints}
           ordersIdForRoutes={ordersIdForRoutes}
           setOrdersIdForRoutes={setOrdersIdForRoutes}
+          ordersAddresses={ordersAddresses}
+          setOrdersAddresses={setOrdersAddresses}
+
+          ourShipmentAddress={ourShipmentAddress}
+          ourShipmentAddresses={ourShipmentAddresses}
+          ourDeliveryAddress={ourDeliveryAddress}
+          ourDeliveryAddresses={ourDeliveryAddresses}
+
+          setOurShipmentAddress={setOurShipmentAddress}
+          setOurShipmentAddresses={setOurShipmentAddresses}
+          setOurDeliveryAddress={setOurDeliveryAddress}
+          setOurDeliveryAddresses={setOurDeliveryAddresses}
+
           
+
+
         // createHuman={createHuman}
         // humans={humans}
         // isLoading={isLoading}

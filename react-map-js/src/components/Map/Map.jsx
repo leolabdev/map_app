@@ -23,67 +23,14 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart, setEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal}) {
-
-    // const map = useMap();const [orderPoints, setOrderPoints] = useState([]);
-    // const map = useMap();
-    // function name(params) {
-    //     const map = useMap();    
-
-    //     useEffect(() => {
-
-    //         console.log(map)
-    //     }, []);
-    //     return null;
-    // }
-
-    // function GeoL() {
+function Map({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
 
-    //     const map = useMap();
-    //     useEffect(() => {
-
-    //         const searchControl = mapData
-
-    //         map.addControl(searchControl);
-
-    //         // function searchEventHandler(result) {
-    //         //     // setStart(result.location.x, result.location.y)
-    //         //     console.log(start);
-    //         // }
-
-    //         // map.on('geosearch/showlocation', searchEventHandler);
+   
+    
 
 
-    //         // console.log("h", searchControl.provider)
-    //         return () => map.removeControl(searchControl);
-    //     }, []);
-
-    //     return null;
-
-    // }
-
-    // function LocationMarkers() {
-    //     const initialMarkers = [new L.LatLng(51.505, -0.09)];
-    //     const [markers, setMarkers] = useState(initialMarkers);
-
-    //     const map = useMapEvents({
-    //         click(e) {
-    //             markers.push(e.latlng);
-    //             setMarkers((prevValue) => [...prevValue, e.latlng]);
-    //         }
-    //     });
-
-    //     return (
-    //         <React.Fragment>
-    //             {markers.map(marker => <Marker position={marker} ></Marker>)}
-    //         </React.Fragment>
-    //     );
-    // }
-
-
-
-   // const [modal, setModal] = useState(false);
+    
     const [fuelUsage, setFuelUsage] = useState(5.7);
     let [routeData,setRouteData] = useState({});
 
@@ -91,11 +38,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
     useEffect(() => {
 
-        console.log("heeeere", start, end)
+        console.log("heeeere", ourStart, ourEnd)
 
 
     }, [
-        start, end
+        ourStart, ourEnd
 
     ]);
 
@@ -111,45 +58,8 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
     const layerGroup = L.layerGroup();
 
     const [status, setStatus] = useState(false)
-
-
-
-
-    // const LayerGroupcomponent = () => {
-
-    //     const map1 = useMap();
-    //     let [printInfo, setPrintinfo] = useState('');
-
-    //     useEffect(() => {
-
-
-
-    //         function hello() {
-
-    //             layerGroup.clearLayers();
-    //             // let latlng = e.geocode.center;
-    //             let latlon = L.latLng([23.7610, 61.4978]);
-    //             L.marker(latlon, { icon1 })
-    //                 .bindPopup("e.geocode.name")
-    //                 .openPopup()
-    //                 .addTo(layerGroup);
-
-    //             // map1.panTo(latlng);
-
-    //             setPrintinfo("e.geocode.name");
-    //             map1.addLayer(layerGroup)
-    //                 .addTo(map1);
-    //         }
-    //         hello()
-
-    //     }, [map1]);
-    //     return (
-    //         null
-    //     )
-    // }
     
     
-
     function addRoute(geoJSON) {
         map.eachLayer(function (layer) {
             // layer._url == null  ?  map.removeLayer(layer) ;
@@ -176,16 +86,7 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
 
 
-    // function addEndMarker(lat, lon) {
-    //     let latlon = L.latLng([lat, lon]);
-    //     // let latlon = L.latLng([22.2666, 60.4518]);
-    //     endMarker = new L.marker(latlon)
-    //     endMarker.addTo(map)
-    // }
-    // const testarray = [];
-    // const hello = "hello";
-    // // hello.addTo(testarray)
-    // console.log(testarray)
+ 
 
     function addOrderMarker(lat,lon,popUp,markerType){
         let markerColor;
@@ -251,36 +152,11 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <LocationMarker />
-            {/* <LocationMarkers /> */}
-
-            {/* <GeoL /> */}
-
-
-            {/* <Marker position={[60.169, 24.938]}>
-                <Popup>
-                    A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-            </Marker> */}
-            {/*
-            <Marker position={[61.169, 25.938]}>
-                <Popup>
-                    hello MiKhkail. <br /> Easily customizable.
-                </Popup>
-            </Marker>
-
-            <Marker position={[61.169, 26.938]}>
-                <Popup>
-                    hello Leevi. <br /> Easily customizable.
-                </Popup>
-            </Marker> */}
-            {/* <button className={classes.button} onClick={Calculate}>Calculate</button> */}
-            {/* <MyButton className={classes.button} onClick={Calculate}> Calculate</MyButton> */}
-            {/* <MyCalculate></MyCalculate> */}
+        
+            
 
     
-            {/* <MyButton style={{ marginTop: '20px' }} onClick={() => setModal(true)}>
-             Create User
-             </MyButton> */}
+           
 
              <div className={classes.showRouteButton}>
             <MyButton
@@ -309,10 +185,10 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
 
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
-            start={start}
-            setStart={setStart}
-            end={end}
-            setEnd={setEnd}
+            ourStart={ourStart}
+            setOurStart={setOurStart}
+            ourEnd={ourEnd}
+            setOurEnd={setOurEnd}
             fuelUsage={fuelUsage}
             setFuelUsage={setFuelUsage}
             setRouteData={setRouteData}
@@ -322,28 +198,30 @@ function Map({ coordinates, setCoordinates, LocationMarker, start, end,setStart,
             addRoute={addRoute}
             addOrderMarker={addOrderMarker}
 
+            ordersAddresses={ordersAddresses}
+            setOrdersAddresses={setOrdersAddresses}
+
+            ordersAddressesFlag={ordersAddressesFlag}
+            setOrdersAddressesFlag={setOrdersAddressesFlag}
+
+            ourShipmentAddress={ourShipmentAddress}
+            ourShipmentAddresses={ourShipmentAddresses}
+            ourDeliveryAddress={ourDeliveryAddress}
+            ourDeliveryAddresses={ourDeliveryAddresses}
+
+            setOurShipmentAddress={setOurShipmentAddress}
+          setOurShipmentAddresses={setOurShipmentAddresses}
+          setOurDeliveryAddress={setOurDeliveryAddress}
+          setOurDeliveryAddresses={setOurDeliveryAddresses}
+
             setVisible={setModal}
             />
             </MyModal>
 
-            {/* <ShowRouteForm
-            ordersIdForRoutes={ordersIdForRoutes}
-            addRoute={addRoute}
-            addOrderMarker={addOrderMarker}
-            /> */}
-
-            {/* <ShowrouteButton /> */}
-            {/* <RoutingMachine /> */}
-            {/* <LeafletgeoSearchStart /> */}
-            {/* <LeafletgeoSearchEnd /> */}
-            {/* <Description
-                title={"My Button Title"}
-                markerPosition={[20.27, -157]}
-                description="This is a custom description!"
-            /> */}
+          
             <MyMap />
 
-            {/* <LayerGroupcomponent /> */}
+         
 
 
 
