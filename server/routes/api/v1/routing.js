@@ -135,6 +135,22 @@ async function fuelPriceJSON(country) {
     }
 }
 
+function calcRoutePrice(prices, fuelSpent) {
+    const result = {};
+    if(prices != null){
+        const dieselPriceStr = prices.diesel.replace(",", ".");
+        const gasolinePriceStr = prices.gasoline.replace(",", ".");
+
+        const dieselPrice = parseFloat(dieselPriceStr) * fuelSpent;
+        const gasolinePrice = parseFloat(gasolinePriceStr) * fuelSpent;
+
+        result.diesel = dieselPrice.toFixed(2);
+        result.gasoline = gasolinePrice.toFixed(2);
+    }
+
+    return result;
+}
+
 async function getOptimizedRoute(coordinates) {
     try{
         return new Promise(async function (resolve, reject) {
@@ -227,12 +243,15 @@ async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
             });
 
             response.on('end', () => {
-                let JsonData;
                 try {
-                    JsonData = JSON.parse(data);
-                    JsonData.features[0].properties.summary.fuelusage = calcFuel(JsonData.features[0].properties.summary.distance, fuelusage);
+                    const JsonData = JSON.parse(data);
+                    const routeDistance = JsonData.features[0].properties.summary.distance;
+                    const fuelSpent = calcFuel(routeDistance, fuelusage);
+
+                    JsonData.features[0].properties.summary.fuelusage = fuelSpent;
                     JsonData.features[0].properties.summary.pricedata = price;
-                    JsonData.features[0].properties.summary.co2 = calcCO2(JsonData.features[0].properties.summary.distance, fuelusage);
+                    JsonData.features[0].properties.summary.routeCost = calcRoutePrice(price, fuelSpent);
+                    JsonData.features[0].properties.summary.co2 = calcCO2(routeDistance, fuelusage);
 
                     if(additionalDataObj != null){
                         for(const property in additionalDataObj){
@@ -242,7 +261,7 @@ async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
 
                     res.send(JsonData);
                 }catch (err) {
-                    res.send(JsonData);
+                    res.send(undefined);
                 }
             });
 
