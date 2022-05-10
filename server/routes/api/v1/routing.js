@@ -5,6 +5,8 @@ const {DataDAO} = require("../../../DAO/Data");
 const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
 const {OptimizationUtil} = require("../../../util/OptimizationUtil");
 const {ResponseUtil} = require("../../../util/ResponseUtil");
+const {AddressUtil} = require("../../../util/AddressUtil");
+const {DaoUtil} = require("../../../util/DaoUtil");
 
 const router = express.Router();
 
@@ -13,6 +15,8 @@ const dataDAO = new DataDAO();
 const orderDataDAO = new OrderDataDAO();
 const optimizationUtil = new OptimizationUtil();
 const responseUtil = new ResponseUtil();
+const addressUtil = new AddressUtil();
+const daoUtil = new DaoUtil();
 
 /**
  * Default options for https request.
@@ -173,6 +177,33 @@ async function getOptimizedShipmentDelivery(orderArr, start, end) {
     }
 }
 
+async function getPointData(pointReq) {
+    if(typeof pointReq === "number"){
+        //point is order id
+        const result = await orderDataDAO.read(pointReq);
+        return daoUtil.unpackOrder(result);
+    } else if(Array.isArray(pointReq)){
+        //point is [lon, lat] array (=coordinates)
+        return await addressUtil.getAddressByCoordinates(pointReq);
+    } else{
+        return null;
+    }
+}
+function getPointCoordinates(pointData, addressToGet) {
+    let result;
+    if(pointData.type != null && pointData.type === "address"){
+        result = pointData.coordinates;
+    } else if(addressToGet === 1){
+        const shipmentAddress =  pointData.shipmentAddress;
+        result = [shipmentAddress.lon, shipmentAddress.lat];
+    } else if(addressToGet === 2){
+        const deliveryAddress =  pointData.deliveryAddress;
+        result = [deliveryAddress.lon, deliveryAddress.lat];
+    }
+
+    return result;
+}
+
 async function makeOptimizationRequest(reqBody, resolve) {
     if (reqBody != null) {
         let data = JSON.stringify(reqBody);
@@ -329,11 +360,20 @@ router.post('/routing/orders', async (req, res) => {
         const end = req.body.end;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
 
-        const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, start, end);
-        const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
-        const respOrders = responseUtil.sortOrdersByShipmentAddress(queriedOrders);
+        let respStart, respEnd, startReq, endReq;
+        if(start != null) {
+            respStart = await getPointData(start);
+            startReq = getPointCoordinates(respStart, 1);
+        }
+        if(end != null){
+            respEnd = await getPointData(end);
+            endReq = getPointCoordinates(respEnd, 2);
+        }
 
-        makeRoutingRequest(coordinates, req, res, { orders: respOrders });
+        const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, startReq, endReq);
+        const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
+
+        makeRoutingRequest(coordinates, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
     }catch (err){
         console.log(err);
     }

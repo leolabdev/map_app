@@ -9,17 +9,19 @@ const clients = []
  * least 3 characters in text parameter
  */
 router.use('/address', (req, res, next) => {
-    console.log(req);
+    try{
+        let search_text = req.query.text;
+        if(search_text.length < 3) {
+            res.status(400);
+            res.send({
+                status: 400,
+                search: search_text,
+                desc: "search parameter not valid! Should contain at least 3 characters",
+            });
+            return;
+        }
+    }catch (e) {
 
-    let search_text = req.query.text;
-    if(search_text.length < 3) {
-        res.status(400);
-        res.send({
-            status: 400,
-            search: search_text,
-            desc: "search parameter not valid! Should contain at least 3 characters",
-        });
-        return;
     }
     next();
 });
@@ -56,6 +58,20 @@ function parseGeoJsonFromORS(geojson) {
     return GeoJson;
 }
 
+function parseReverseGeocode(placeData) {
+    const coordinates = placeData.geometry.coordinates;
+
+    const place = placeData.properties;
+    const streetAddress = place.name;
+    const city = place.county;
+    return {
+        type: "address",
+        streetAddress: streetAddress,
+        city: city,
+        coordinates: coordinates
+    }
+}
+
 /**
  * Query parameter search searches from Openrouteservice geocoding api addresses based on
  * the text and predefined country (finland) FI.
@@ -87,7 +103,7 @@ router.get('/address/search', async (req, res) => {
                 res.send(parseAddressFromORS(json));
             } catch (error) {
                 console.error(error.message);
-            };
+            }
         });
 
     }).on("error", (error) => {
@@ -178,7 +194,7 @@ router.get('/address/autocomplete', async (req, res) => {
                 res.send(parseAddressFromORS(json));
             } catch (error) {
                 console.error(error.message);
-            };
+            }
         });
 
     }).on("error", (error) => {
@@ -201,8 +217,7 @@ router.get('/address/geojson', async (req, res) => {
     let search_text = req.query.text;
     console.log(search_text);
     //let url = `https://api.mapbox.com/geocoding/v5/${endpoint}/${search_text}.json?country=FI&access_token=${accessToken.mapbox}`
-    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500&boundary.country=FI`
-    console.log(url);
+    let url =  `https://api.openrouteservice.org/geocode/search?api_key=${process.env.ORS_API_KEY}&text=${search_text}&size=500&boundary.country=FI`;
     let json;
     await https.get(url,(response) => {
         let body = "";
@@ -218,7 +233,40 @@ router.get('/address/geojson', async (req, res) => {
                 res.send(parseGeoJsonFromORS(json));
             } catch (error) {
                 console.error(error.message);
-            };
+            }
+        });
+
+    }).on("error", (error) => {
+        console.error(error.message);
+    });
+});
+
+router.get('/address/geocode', async (req, res) => {
+    const lon = req.query.lon;
+    const lat = req.query.lat;
+    const url = `https://api.openrouteservice.org/geocode/reverse?api_key=${process.env.ORS_API_KEY}&point.lon=${lon}&point.lat=${lat}`;
+
+    await https.get(url,(response) => {
+        let body = "";
+
+        response.on("data", (chunk) => {
+            body += chunk;
+        });
+
+        response.on("end", () => {
+            try {
+                const json = JSON.parse(body);
+                const reqResult = json.features;
+                if(reqResult != null && reqResult.length > 0){
+                    const resp = parseReverseGeocode(reqResult[0]);
+                    res.send(resp);
+                } else{
+                    res.send(null);
+                }
+
+            } catch (error) {
+                console.error(error.message);
+            }
         });
 
     }).on("error", (error) => {

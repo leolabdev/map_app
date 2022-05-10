@@ -39,6 +39,21 @@ class DaoUtil{
         }
     }
 
+    unpackOrder(order){
+        const orderData = { orderId: order.orderId };
+        const manufacturer = order.Manufacturer.dataValues;
+        const client = order.Client.dataValues;
+        const shipmentAddress = order.shipmentAddress.dataValues;
+        const deliveryAddress = order.deliveryAddress.dataValues;
+
+        orderData.Manufacturer = manufacturer;
+        orderData.Client = client;
+        orderData.shipmentAddress = shipmentAddress;
+        orderData.deliveryAddress = deliveryAddress;
+
+        return orderData;
+    }
+
     async getAddressData(street, building, city) {
         if(street != null && building != null && city != null){
             const address = street + " " + building + ", " + city;
