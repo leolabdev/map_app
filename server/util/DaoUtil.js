@@ -71,6 +71,39 @@ class DaoUtil{
         }
     }
 
+    parsePolygonToAreaCoordinates(polygonObj){
+        let result = null;
+
+        const {areaName, type, coordinates} = polygonObj;
+
+        if(type === "Polygon"){
+            result = [];
+            const lonLatArr = coordinates[0];
+            if(lonLatArr != null){
+                for(let i = 0; i < lonLatArr.length; i++){
+                    const coordinate = {
+                        areaName: areaName,
+                        polygonNumber: 0,
+                        orderNumber: i,
+                        lon: lonLatArr[i][0],
+                        lat: lonLatArr[i][1]
+                    };
+                    result.push(coordinate);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    parseAreaCoordinatesToPolygon(areaObj){
+        let result = null;
+
+
+
+        return result;
+    }
+
     containNoNullArr(arr){
         if(arr != null){
             for(let i = 0; i < arr.length; i++){

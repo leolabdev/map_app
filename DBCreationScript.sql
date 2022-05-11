@@ -60,11 +60,25 @@ CREATE TABLE AsDeliveryAddress
     FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername)
 );
 
-CREATE TABLE DATA
+CREATE TABLE data
 (
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     value VARCHAR(255),
     lastUpdated DATETIME DEFAULT NOW() ON UPDATE NOW()
+);
+
+CREATE TABLE Area(
+    areaName VARCHAR(255) NOT NULL PRIMARY KEY,
+    type VARCHAR(255) NOT NULL
+);
+CREATE TABLE AreaCoordinates(
+    coordinateId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    orderNumber INT NOT NULL,
+    polygonNumber INT NOT NULL,
+    lon DOUBLE NOT NULL,
+    lat DOUBLE NOT NULL,
+    areaName VARCHAR(255) NOT NULL,
+    FOREIGN KEY (areaName) REFERENCES Area(areaName)
 );
 
 INSERT INTO DATA (name, value) VALUES ('gasoline', '2.1');

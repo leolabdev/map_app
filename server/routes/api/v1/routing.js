@@ -215,7 +215,7 @@ async function makeOptimizationRequest(reqBody, resolve) {
     }
 }
 
-async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
+async function makeRoutingRequest(coordinates, options, req, res, additionalDataObj){
     if(coordinates != null && coordinates.length > 0){
         let fuelusage = req.body.fuelusage;
         if(fuelusage == null){
@@ -225,13 +225,14 @@ async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
             coordinates:coordinates,
             continue_straight:true,
             instructions:true,
+            options: options,
             units:"m"
         });
-        const options = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
-        options.headers["Content-Length"] = data.length;
+        const apiOptions = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
+        apiOptions.headers["Content-Length"] = data.length;
         const price = await fuelPriceJSON("finland");
 
-        const request = await https.request(options, (response) => {
+        const request = await https.request(apiOptions, (response) => {
             let data = '';
 
             response.on('data', (chunk) => {
@@ -326,6 +327,26 @@ router.post('/routing/orders', async (req, res) => {
         const end = req.body.end;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
 
+        const options = {};
+        //TODO: change to isCenterAvoided after tests
+        if(true){
+            options.avoid_polygons = {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [24.903945922851562,60.172598657015236],
+                        [24.934844970703125,60.1551760158896],
+                        [24.95716094970703,60.1541508669647],
+                        [24.961280822753906,60.15910545729056],
+                        [24.979476928710938,60.16764610077336],
+                        [24.964370727539062,60.18403791502284],
+                        [24.90325927734375,60.18591562140308],
+                        [24.903945922851562,60.172598657015236]
+                    ]
+                ]
+            }
+        }
+
         let respStart, respEnd, startReq, endReq;
         if(start != null) {
             respStart = await getPointData(start);
@@ -339,11 +360,10 @@ router.post('/routing/orders', async (req, res) => {
         const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, startReq, endReq);
         const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
 
-        makeRoutingRequest(coordinates, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
+        makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
     }catch (err){
         console.log(err);
     }
 });
-
 
 module.exports = router;
