@@ -7,9 +7,11 @@ const {OptimizationUtil} = require("../../../util/OptimizationUtil");
 const {ResponseUtil} = require("../../../util/ResponseUtil");
 const {AddressUtil} = require("../../../util/AddressUtil");
 const {DaoUtil} = require("../../../util/DaoUtil");
+const APIRequestUtil = require("../../../util/APIRequestUtil");
 
 const router = express.Router();
 
+const apiRequestUtil = new APIRequestUtil();
 const valuesDateChecker = new ValuesDateChecker();
 const dataDAO = new DataDAO();
 const orderDataDAO = new OrderDataDAO();
@@ -17,35 +19,6 @@ const optimizationUtil = new OptimizationUtil();
 const responseUtil = new ResponseUtil();
 const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
-
-/**
- * Default options for https request.
- * REMEMBER TO ADD options.headers["Content-Length"] = data.length; when trying to post data
- * @type {{path: string, headers: {Authorization: string, Accept: string, "Content-Type": string}, protocol: string, hostname: string, method: string, port: number}}
- */
-let options = {
-    protocol: 'https:',
-    hostname: 'api.openrouteservice.org',
-    port: 443,
-    path: '/v2/directions/driving-car/geojson',
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-        'Authorization': process.env.ORS_API_KEY,
-        'Content-Type': 'application/json',
-    }
-};
-
-const fuelOptions = {
-    "method": "GET",
-    "hostname": "api.collectapi.com",
-    "port": null,
-    "path": "/gasPrice/europeanCountries",
-    "headers": {
-        "content-type": "application/json",
-        "authorization": "apikey " + process.env.FUEL_API_KEY
-    }
-};
 
 /**
  * Calculates fuel consumption in route based on route length
@@ -94,7 +67,8 @@ async function fuelPriceJSON(country) {
     const areValuesOld = valuesDateChecker.areValuesOld(["diesel", "gasoline"], data);
     if(areValuesOld){
         return new Promise(async function (resolve, reject) {
-            let requ = await https.request(fuelOptions, function (response) {
+            const options = apiRequestUtil.getFuelSettings();
+            let requ = await https.request(options, function (response) {
                 let data = '';
                 response.on("data", function (chunk) {
                     data += chunk;
@@ -208,22 +182,12 @@ async function makeOptimizationRequest(reqBody, resolve) {
     if (reqBody != null) {
         let data = JSON.stringify(reqBody);
 
-        const options1 = {
-            protocol: 'https:',
-            hostname: 'api.openrouteservice.org',
-            port: 443,
-            path: '/optimization',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
-                'Authorization': process.env.ORS_API_KEY,
-                'Content-Type': 'application/json',
-            }
-        }
+        const options = apiRequestUtil.getORSSettings('/optimization');
 
-        options1.headers["Content-Length"] = data.length;
 
-        const request = await https.request(options1, (response) => {
+        options.headers["Content-Length"] = data.length;
+
+        const request = await https.request(options, (response) => {
             let data = '';
 
             response.on('data', (chunk) => {
@@ -263,6 +227,7 @@ async function makeRoutingRequest(coordinates, req, res, additionalDataObj){
             instructions:true,
             units:"m"
         });
+        const options = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
         options.headers["Content-Length"] = data.length;
         const price = await fuelPriceJSON("finland");
 
@@ -348,14 +313,15 @@ router.post('/routing', async (req, res) => {
  * fuelusage fuel usage of the car per 100 km, not required
  * {
  *     orderIds: [1,2], (int)
- *     *optional start : [24.573798698987527,60.19074881467758], (lon, lat)
- *     *optional end : [24.573798698987527,60.19074881467758], (lon, lat)
-     *     fuelusage: 5.7
+ *     start : [24.573798698987527,60.19074881467758], (lon, lat) *optional
+ *     end : [24.573798698987527,60.19074881467758], (lon, lat) *optional
+ *     fuelusage: 5.7
  *  }
  */
 router.post('/routing/orders', async (req, res) => {
     try{
         const orderIds = req.body.orderIds;
+        const isCenterAvoided = req.body.isCenterAvoided;
         const start = req.body.start;
         const end = req.body.end;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
