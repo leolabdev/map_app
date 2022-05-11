@@ -329,7 +329,7 @@ router.post('/routing/orders', async (req, res) => {
 
         const options = {};
         //TODO: change to isCenterAvoided after tests
-        if(true){
+        if(false){
             options.avoid_polygons = {
                 "type": "Polygon",
                 "coordinates": [
