@@ -9,6 +9,7 @@ module.exports = SettingsUtil;
 
 async function addCityCenters() {
     await axios.post(`http://localhost:8081/dao/area`, HelsinkiCenter);
+    await axios.post(`http://localhost:8081/dao/area`, LahtiCenter);
 }
 
 //Helsinki center coordinates in Polygon form
@@ -27,3 +28,20 @@ const HelsinkiCenter = {
         ]
     ]
 }
+
+const LahtiCenter = {
+    "areaName": "LahtiCenter",
+    "type": "Polygon",
+    "coordinates": [
+        [
+            [25.654878616333004,60.98514074901049],
+            [25.65007209777832,60.98268442445237],
+            [25.65007209777832,60.980852465601075],
+            [25.65582275390625,60.98056100786631],
+            [25.655651092529297,60.979020401155694],
+            [25.671615600585938,60.979353511636425],
+            [25.668354034423825,60.98426648575919],
+            [25.654878616333004,60.98514074901049]
+        ]
+    ]
+};
