@@ -3,11 +3,14 @@ const https = require('https');
 const {ValuesDateChecker} = require("../../../util/ValuesDateChecker");
 const {DataDAO} = require("../../../DAO/Data");
 const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
+const AreaDAO = require("../../../DAO/AreaDAO");
 const {OptimizationUtil} = require("../../../util/OptimizationUtil");
 const {ResponseUtil} = require("../../../util/ResponseUtil");
 const {AddressUtil} = require("../../../util/AddressUtil");
 const {DaoUtil} = require("../../../util/DaoUtil");
 const APIRequestUtil = require("../../../util/APIRequestUtil");
+const Util = require("../../../util/Util");
+const axios = require("axios");
 
 const router = express.Router();
 
@@ -15,10 +18,12 @@ const apiRequestUtil = new APIRequestUtil();
 const valuesDateChecker = new ValuesDateChecker();
 const dataDAO = new DataDAO();
 const orderDataDAO = new OrderDataDAO();
+const areaDAO = new AreaDAO();
 const optimizationUtil = new OptimizationUtil();
 const responseUtil = new ResponseUtil();
 const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
+const util = new Util();
 
 /**
  * Calculates fuel consumption in route based on route length
@@ -127,6 +132,29 @@ function calcRoutePrice(prices, fuelSpent) {
     }
 
     return result;
+}
+
+async function getCitiesCentersPolygons(orders){
+    const cities = Array.from(util.getOrdersCities(orders));
+    let polygon;
+    if(cities.length === 1){
+        const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[0] + "Center");
+        polygon = resp.data.result;
+    } else if(cities.length > 1){
+        polygon = {type: "MultiPolygon", coordinates: []};
+        for(let i=0; i<cities.length; i++){
+            const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[i] + "Center");
+            const respPolygon = resp.data.result;
+
+            if(respPolygon.type === "Polygon"){
+                polygon.coordinates[i] = respPolygon.coordinates;
+            } else if(respPolygon.type === "MultiPolygon"){
+                polygon.coordinates.push(...respPolygon.coordinates);
+            }
+        }
+    }
+
+    return polygon;
 }
 
 async function getOptimizedRoute(coordinates) {
@@ -328,23 +356,10 @@ router.post('/routing/orders', async (req, res) => {
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
 
         const options = {};
-        //TODO: change to isCenterAvoided after tests
-        if(false){
-            options.avoid_polygons = {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [24.903945922851562,60.172598657015236],
-                        [24.934844970703125,60.1551760158896],
-                        [24.95716094970703,60.1541508669647],
-                        [24.961280822753906,60.15910545729056],
-                        [24.979476928710938,60.16764610077336],
-                        [24.964370727539062,60.18403791502284],
-                        [24.90325927734375,60.18591562140308],
-                        [24.903945922851562,60.172598657015236]
-                    ]
-                ]
-            }
+        if(isCenterAvoided){
+            const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
+            if(polygonToAvoid != null)
+                options.avoid_polygons = polygonToAvoid;
         }
 
         let respStart, respEnd, startReq, endReq;
