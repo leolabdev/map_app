@@ -74,22 +74,15 @@ class DaoUtil{
     parsePolygonToAreaCoordinates(polygonObj){
         let result = null;
 
-        const {areaName, type, coordinates} = polygonObj;
+        const {areaName,type} = polygonObj;
 
         if(type === "Polygon"){
+            result = convertPolygonToArea(polygonObj.coordinates, areaName, 0);
+        } else if(type === "MultiPolygon"){
             result = [];
-            const lonLatArr = coordinates[0];
-            if(lonLatArr != null){
-                for(let i = 0; i < lonLatArr.length; i++){
-                    const coordinate = {
-                        areaName: areaName,
-                        polygonNumber: 0,
-                        orderNumber: i,
-                        lon: lonLatArr[i][0],
-                        lat: lonLatArr[i][1]
-                    };
-                    result.push(coordinate);
-                }
+            const polygons = polygonObj.coordinates;
+            for(let i = 0; i < polygons.length; i++){
+                result.push(...convertPolygonToArea(polygons[i], areaName, i));
             }
         }
 
@@ -98,8 +91,43 @@ class DaoUtil{
 
     parseAreaCoordinatesToPolygon(areaObj){
         let result = null;
+        if(areaObj != null){
+            const type = areaObj.type;
+            if(type === "Polygon"){
+                const areaCoords = this.getDataValues(areaObj.AreaCoordinates);
 
+                const coordinates = [];
+                for(let i = 0; i < areaCoords.length; i++){
+                    const currentCoords = areaCoords[i];
+                    if(coordinates[currentCoords.polygonNumber] == null){
+                        coordinates[currentCoords.polygonNumber] = [];
+                    }
 
+                    coordinates[currentCoords.polygonNumber][currentCoords.orderNumber] = [currentCoords.lon, currentCoords.lat];
+                }
+
+                result = {
+                    type: type,
+                    coordinates: coordinates
+                }
+            } else if(type === "MultiPolygon"){
+                const areaCoords = this.getDataValues(areaObj.AreaCoordinates);
+
+                const coordinates = [];
+                for(let i = 0; i < areaCoords.length; i++){
+                    const currentCoords = areaCoords[i];
+                    if(coordinates[currentCoords.polygonNumber] == null){
+                        coordinates[currentCoords.polygonNumber] = [[]];
+                    }
+                    coordinates[currentCoords.polygonNumber][0][currentCoords.orderNumber] = [currentCoords.lon, currentCoords.lat];
+                }
+
+                result = {
+                    type: type,
+                    coordinates: coordinates
+                }
+            }
+        }
 
         return result;
     }
@@ -131,6 +159,25 @@ class DaoUtil{
             return false;
         }
     }
+}
+
+function convertPolygonToArea(polygon, areaName, polygonNumber) {
+        const result = [];
+        const lonLatArr = polygon[0];
+        if(lonLatArr != null){
+            for(let i = 0; i < lonLatArr.length; i++){
+                const coordinate = {
+                    areaName: areaName,
+                    polygonNumber: polygonNumber,
+                    orderNumber: i,
+                    lon: lonLatArr[i][0],
+                    lat: lonLatArr[i][1]
+                };
+                result.push(coordinate);
+            }
+        }
+
+        return result;
 }
 
 module.exports.DaoUtil = DaoUtil;

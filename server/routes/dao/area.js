@@ -5,8 +5,7 @@ const {DaoUtil} = require('../../util/DaoUtil');
 const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
 const AreaDAO = require('../../DAO/AreaDAO');
 const AreaCoordinatesDAO = require('../../DAO/AreaCoordinatesDAO');
-const {OrderDataDAO} = require("../../DAO/OrderDataDAO");
-const orderDataDAO = new OrderDataDAO();
+const axios = require("axios");
 
 const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
@@ -34,23 +33,43 @@ router.post("/", async(req, res) => {
 });
 
 router.get("/:areaName", async(req, res) => {
-    const result = await areaDAO.read(req.params.areaName);
+    const areaObj = await areaDAO.read(req.params.areaName);
+    const result = daoUtil.parseAreaCoordinatesToPolygon(areaObj);
     responseUtil.sendResultOfQuery(res, result);
 });
 
 router.get("/", async(req, res) => {
-    const result = await orderDataDAO.readAll();
+    const result = await areaDAO.readAll().then((areaObjects)=>{
+        const result = [];
+        for(let i = 0; i < areaObjects.length; i++){
+            result[i] = daoUtil.parseAreaCoordinatesToPolygon(areaObjects[i]);
+        }
+
+        return result;
+    });
+
     responseUtil.sendResultOfQuery(res, result);
 });
 
 router.put("/", async(req, res) => {
-    const status = await orderDataDAO.update(req.body);
-    responseUtil.sendStatusOfOperation(res, status);
+    try{
+        const areaObj = req.body;
+        await areaDAO.delete(areaObj.areaName);
+        const createResp = await axios.post(`http://localhost:8081/dao/area/`, areaObj);
+        const status = createResp.data.result != null;
+        responseUtil.sendStatusOfOperation(res, status);
+    }catch(e){
+        console.log(e);
+    }
 });
 
-router.delete("/:orderId", async(req, res) => {
-    const status = await orderDataDAO.delete(req.params.orderId);
-    responseUtil.sendStatusOfOperation(res, status);
+router.delete("/:areaName", async(req, res) => {
+    try{
+        const status = await areaDAO.delete(req.params.areaName);
+        responseUtil.sendStatusOfOperation(res, status);
+    }catch(e){
+        console.log(e);
+    }
 });
 
 module.exports = router;

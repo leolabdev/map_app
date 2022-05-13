@@ -4,12 +4,12 @@
 // Dev Start: npm run dev
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require("axios");
 const dotenv = require("dotenv");
 const cors = require('cors');
 dotenv.config();
 
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
+const SettingsUtil = require("./util/SettingsUtil");
 
 const address = require('./routes/api/v1/address');
 const routing = require('./routes/api/v1/routing');
@@ -42,9 +42,11 @@ app.use('/dao/area', area);
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const port = process.env.PORT || 8081;
 const sequelizeUtil = new SequelizeUtil();
+const settingsUtil = new SettingsUtil();
 
 app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
+        //await settingsUtil.setUp();
     }
 });
