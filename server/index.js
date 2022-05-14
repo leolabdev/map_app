@@ -47,6 +47,6 @@ const settingsUtil = new SettingsUtil();
 app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
-        //await settingsUtil.setUp();
+       // await settingsUtil.setUp();
     }
 });
