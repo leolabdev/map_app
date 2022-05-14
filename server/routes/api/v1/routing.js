@@ -346,9 +346,10 @@ router.post('/routing', async (req, res) => {
  * fuelusage fuel usage of the car per 100 km, not required
  * {
  *     orderIds: [1,2], (int)
- *     start : [24.573798698987527,60.19074881467758], (lon, lat) *optional
- *     end : [24.573798698987527,60.19074881467758], (lon, lat) *optional
- *     fuelusage: 5.7
+ *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
+ *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
+ *     fuelusage: 5.7, *optional
+ *     isCenterAvoided: true *optional
  *  }
  */
 router.post('/routing/orders', async (req, res) => {
@@ -376,37 +377,11 @@ router.post('/routing/orders', async (req, res) => {
 
         //if needed, add areas to be avoided
         const options = {};
-        if(true){
+        if(isCenterAvoided){
             const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
-            if(polygonToAvoid != null){
-                let isPossibleAvoid = true;
-                //check is some the points are inside in the avoided area = this area can not be avoided
-                if(polygonToAvoid.type === "Polygon"){
-                    const polygonArea = polygonToAvoid.coordinates[0];
-                    for(let i=0; i<coordinates.length; i++){
-                        const isPointInside = polygonUtil.isInside(polygonArea, coordinates[i]);
-                        if(isPointInside){
-                            isPossibleAvoid = false;
-                            break;
-                        }
-                    }
-                } else if(polygonToAvoid.type === "MultiPolygon"){
-                    const polygons = polygonToAvoid.coordinates;
-                    for(let i=0; i<polygons.length; i++){
-                        const polygonArea = polygons[i][0];
-                        for(let i=0; i<coordinates.length; i++){
-                            const isPointInside = polygonUtil.isInside(polygonArea, coordinates[i]);
-                            if(isPointInside){
-                                isPossibleAvoid = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if(isPossibleAvoid)
-                    options.avoid_polygons = polygonToAvoid;
-            }
+            const isPointInside = polygonUtil.arePointsInsidePolygon(polygonToAvoid, coordinates);
+            if(!isPointInside)
+                options.avoid_polygons = polygonToAvoid;
         }
 
         makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
