@@ -104,23 +104,34 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
                                 selectedIDs[0].map(idx => {
                                     
                                     getOrderByOrderId(idx).then((data)=>{
-                                       
+                                      
                                         console.log(data)
-                                       
+                                      
                                         newOrdersAddresses.push(data)
                                     
-                                        newOrdersAddresses.map((address) => {
-                                            newOurShipmentAddresses.push(address.shipmentAddress)
-                                            console.log("newOurShipmentAddresses",newOurShipmentAddresses)
-                                           // newOurShipmentAddresses= [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
-                                            newOurDeliveryAddresses.push(address.deliveryAddress)
+                                        newOrdersAddresses.map((order,index) => {
+                                            newOurShipmentAddresses.push(order.shipmentAddress)
+                                           
+                                            newOurShipmentAddresses[index].orderId = order.orderId
+                                            
+
+                                            
+
+                                            
+                                            newOurDeliveryAddresses.push(order.deliveryAddress)
+                                            newOurDeliveryAddresses[index].orderId = order.orderId
+                                            
+                                            
                                           
                                             
                                          })
+
                                          const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
                                          setOurShipmentAddresses(newUniqueOurShipmentAddresses);
                                          const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item)=>[item["addressId"], item])).values()]
                                          setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
+                                         newOurShipmentAddresses=[];
+                                         newOurDeliveryAddresses=[];
                                     })
                                     
                                 })
@@ -131,9 +142,7 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
 
                                 
 
-                                console.log("newOurShipmentAddresses",newOurShipmentAddresses)
-                                console.log("newOurDeliveryAddresses",newOurDeliveryAddresses)
-                                console.log("newOrdersAddresses",newOrdersAddresses)
+            
 
                                 setOrdersAddresses(newOrdersAddresses)
 
@@ -143,7 +152,7 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
                                 
 
 
-                                    // newOrderPoints=[];
+                                   
                                 
                            
                                 
@@ -164,19 +173,19 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
 
     ]
 
-    useEffect( () => {
-        try{
-            // setOrderPoints([[100.936707651023134,600.18226502577591]])
-            const emptyArray = new Array() 
-            // setMarkers((prevValue) => [...prevValue, e.latlng]);
+    // useEffect( () => {
+    //     try{
+    //         // setOrderPoints([[100.936707651023134,600.18226502577591]])
+    //         const emptyArray = new Array() 
+    //         // setMarkers((prevValue) => [...prevValue, e.latlng]);
 
-            // setOrderPoints(null)
-        }catch (e){
-            console.log(e);
-        }
-    }, [
-        flag
-    ]);
+    //         // setOrderPoints(null)
+    //     }catch (e){
+    //         console.log(e);
+    //     }
+    // }, [
+    //     flag
+    // ]);
    
 
 
