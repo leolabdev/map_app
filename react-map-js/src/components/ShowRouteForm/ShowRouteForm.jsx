@@ -166,7 +166,10 @@ const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeli
                     // removeStartMarker();
                     // removeEndMarker();
                     // coordinatesData.coordinates.map((c)=>addOrderMarker(c[1],c[0]))
-                    const dataOrders = data.features[0].properties.summary.orders[2][0];
+                    console.log("ourproblem",data.features[0].properties.summary.orders);
+
+                    //6 is name
+                    const dataOrders = data.features[0].properties.summary.orders[6][0];
                     console.log(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon)
 
                     addOrderMarker(dataOrders.shipmentAddress.lat, dataOrders.shipmentAddress.lon,
@@ -256,16 +259,9 @@ const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeli
                 >
                     Finally Show Route
                 </MyButton>
-                {/* <button onClick={showRoute} >Show Route</button> */}
             </div>
         )
     }
-
-
-
-
-
-
 
     return (
         <div className={classes.formContainer} >
@@ -278,13 +274,6 @@ const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeli
                 label={`CarFuel_Usage`}
             />
 
-            {/* <select value={value} onChange={handleChange}>
-                {options1.map((option) => (
-                    <option value={option.manufacturerUsername}>{option.manufacturerUsername}</option>
-                ))}
-            </select> */}
-            {/* shipmentAddressesInputProps */}
-
             <Autocomplete
                 {...shipmentAddressesInputProps}
                 id="shipmentAddresses-autocomplete"
@@ -292,11 +281,10 @@ const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeli
                 onChange={(event, newShipmentAddress) => {
                     setOurShipmentAddress(newShipmentAddress);
                     
-                    //  setManufacturer(newShipmentAddress);
-                     setOurStart({ lat: newShipmentAddress.lat, lon: newShipmentAddress.lon })
-                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
-                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
-                    // console.log("start",ourStart)
+                    if (newShipmentAddress!=null){
+                        setOurStart({ lat: newShipmentAddress.lat, lon: newShipmentAddress.lon })
+                    }
+                    else{setOurStart(null)}    
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Choose Start" variant="standard" />
@@ -309,94 +297,16 @@ const ShowRouteForm = ({setOurShipmentAddress,setOurShipmentAddresses,setOurDeli
                 onChange={(event, newDeliveryAddress) => {
                     setOurDeliveryAddress(newDeliveryAddress);
                     
-                    //  setManufacturer(newShipmentAddress);
-                     setOurEnd({ lat: newDeliveryAddress.lat, lon: newDeliveryAddress.lon })
-                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
-                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
-                    // console.log("start",ourStart)
+                    if (newDeliveryAddress!=null){
+                        setOurEnd({ lat: newDeliveryAddress.lat, lon: newDeliveryAddress.lon });
+                    }
+                    else{setOurEnd(null)}
+                    
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Choose End" variant="standard" />
                 )}
             />
-
-
-
-            {/* <Autocomplete
-                {...manufacturersInputProps}
-                id="manufacturer-autocomplete"
-                //  value={manufacturer}
-                onChange={(event, newManufacturer) => {
-
-                    setManufacturer(newManufacturer);
-                    setOurStart({ lat: newManufacturer.Addresses[0].lat, lon: newManufacturer.Addresses[0].lon })
-                    // setOurStart({...ourStart, lat:newManufacturer.Addresses.lat})
-                    // setOurStart({...ourStart, lon:newManufacturer.Addresses.lon})
-                    // console.log("start",ourStart)
-                }}
-                renderInput={(params) => (
-                    <TextField {...params} label="Choose Start" variant="standard" />
-                )}
-            /> */}
-
-
-            {/* <Autocomplete
-                {...clientsInputProps}
-                id="client-autocomplete"
-                //   value={client}
-                onChange={(event, newClient) => {
-                    setClient(newClient);
-                    console.log(newClient)
-                    setOurEnd({ lat: newClient.Addresses[0].lat, lon: newClient.Addresses[0].lon })
-                    // setEnd({lat: newClient.Addresses.lat,lon: newClient.Addresses.lon}})
-                    // setEnd({lat: newClient.Addresses.lat})
-                    // setEnd({lon: newClient.Addresses.lon})
-                    console.log("end", ourEnd)
-                }}
-                renderInput={(params) => (
-                    <TextField {...params} label="Choose End" variant="standard" />
-                )}
-            /> */}
-
-
-
-            {/* <TextField
-                onChange={e => setStart({ ...start, lat: e.target.value })}
-                value={start.lat}
-                required
-                id="outlined-required"
-                type="number"
-                label={`start lat`}
-            />
-
-            <TextField
-                onChange={e => setStart({ ...start, lon: e.target.value })}
-                value={start.lon}
-                required
-                id="outlined-required"
-                type="number"
-                label={`start lon`}
-            /> */}
-
-            {/* <TextField
-                onChange={e => setEnd({ ...end, lat: e.target.value })}
-                value={end.lat}
-                required
-                id="outlined-required"
-                type="number"
-                label={`end lat`}
-            />
-
-            <TextField
-                onChange={e => setEnd({ ...end, lon: e.target.value })}
-                value={end.lon}
-                required
-                id="outlined-required"
-                type="number"
-                label={`end lon`}
-            /> */}
-
-            {/* <button>hello</button> */}
             <ShowrouteButton />
 
         </div>

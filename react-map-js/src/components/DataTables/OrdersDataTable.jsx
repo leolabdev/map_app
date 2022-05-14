@@ -104,22 +104,21 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
                                 selectedIDs[0].map(idx => {
                                     
                                     getOrderByOrderId(idx).then((data)=>{
-                                        // console.log(idx)
-                                        // console.log(data)
+                                       
                                         console.log(data)
                                        
                                         newOrdersAddresses.push(data)
-                                        //  newOrderPoints.add(data.deliveryAddress)
-                                        // setOrderPoints(newOrderPoints);
-                                        // console.log(newOrderPoints) 
-                                        // setOrderPoints(null)
+                                    
                                         newOrdersAddresses.map((address) => {
                                             newOurShipmentAddresses.push(address.shipmentAddress)
-                                            newOurShipmentAddresses= [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
+                                            console.log("newOurShipmentAddresses",newOurShipmentAddresses)
+                                           // newOurShipmentAddresses= [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
                                             newOurDeliveryAddresses.push(address.deliveryAddress)
                                           
                                             
                                          })
+                                         const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
+                                         setOurShipmentAddresses(newUniqueOurShipmentAddresses);
                                          const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item)=>[item["addressId"], item])).values()]
                                          setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
                                     })
@@ -138,7 +137,8 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
 
                                 setOrdersAddresses(newOrdersAddresses)
 
-                                setOurShipmentAddresses(newOurShipmentAddresses);
+                                
+                                
                                
                                 
 
@@ -184,33 +184,13 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
     // const [rows, setRows] = useState(_rows);
     const [selectionModel, setSelectionModel] = useState([]);
     const [manufacturerUsernameModel, setManufacturerUsernameModel] = useState([])
-    // const [tableData, setTableData] = useState([])
-    // useEffect(() => {
-    //     // fetch("https://jsonplaceholder.typicode.com/posts")
-    //     // fetch("http://localhost:8081/dao/order")
-    //     fetch("http://localhost:3000/users")
-    //         .then((data) => data.json())
-    //         .then((data) => setTableData(data))
-
-
-    //     // console.log("orders from table data", orders)
-    // }, [])
-
-    // console.log(" hello from tabledata from tableData", tableData)
-    // console.log(" hello from tabledata from orders", orders)
-    // console.log(tableData)
+    
 
     return (
 
 
         <div style={{ height: 700, width: '100%' }}>
-            {/* {isLoading ? (
-                <div 
-                // className={classes.loading}
-                >
-                    <CircularProgress size="5rem" />
-                </div>
-            ) : ( */}
+           
             
             <DataGrid
                 getRowId={(row) => row.orderId}
