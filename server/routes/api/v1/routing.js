@@ -1,5 +1,7 @@
 const express = require('express');
 const https = require('https');
+const axios = require("axios");
+
 const {ValuesDateChecker} = require("../../../util/ValuesDateChecker");
 const {DataDAO} = require("../../../DAO/Data");
 const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
@@ -10,7 +12,7 @@ const {AddressUtil} = require("../../../util/AddressUtil");
 const {DaoUtil} = require("../../../util/DaoUtil");
 const APIRequestUtil = require("../../../util/APIRequestUtil");
 const Util = require("../../../util/Util");
-const axios = require("axios");
+const PolygonUtil = require("../../../util/PolygonUtil");
 
 const router = express.Router();
 
@@ -24,6 +26,8 @@ const responseUtil = new ResponseUtil();
 const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
 const util = new Util();
+const polygonUtil = new PolygonUtil();
+
 
 /**
  * Calculates fuel consumption in route based on route length
@@ -355,13 +359,7 @@ router.post('/routing/orders', async (req, res) => {
         const end = req.body.end;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
 
-        const options = {};
-        if(isCenterAvoided){
-            const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
-            if(polygonToAvoid != null)
-                options.avoid_polygons = polygonToAvoid;
-        }
-
+        //generate start and end points information for the client side
         let respStart, respEnd, startReq, endReq;
         if(start != null) {
             respStart = await getPointData(start);
@@ -372,8 +370,44 @@ router.post('/routing/orders', async (req, res) => {
             endReq = getPointCoordinates(respEnd, 2);
         }
 
+        //optimize the route via vroom
         const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, startReq, endReq);
         const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
+
+        //if needed, add areas to be avoided
+        const options = {};
+        if(true){
+            const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
+            if(polygonToAvoid != null){
+                let isPossibleAvoid = true;
+                //check is some the points are inside in the avoided area = this area can not be avoided
+                if(polygonToAvoid.type === "Polygon"){
+                    const polygonArea = polygonToAvoid.coordinates[0];
+                    for(let i=0; i<coordinates.length; i++){
+                        const isPointInside = polygonUtil.isInside(polygonArea, coordinates[i]);
+                        if(isPointInside){
+                            isPossibleAvoid = false;
+                            break;
+                        }
+                    }
+                } else if(polygonToAvoid.type === "MultiPolygon"){
+                    const polygons = polygonToAvoid.coordinates;
+                    for(let i=0; i<polygons.length; i++){
+                        const polygonArea = polygons[i][0];
+                        for(let i=0; i<coordinates.length; i++){
+                            const isPointInside = polygonUtil.isInside(polygonArea, coordinates[i]);
+                            if(isPointInside){
+                                isPossibleAvoid = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if(isPossibleAvoid)
+                    options.avoid_polygons = polygonToAvoid;
+            }
+        }
 
         makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
     }catch (err){
