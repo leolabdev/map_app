@@ -23,7 +23,7 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
+function Map({currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
 
    
