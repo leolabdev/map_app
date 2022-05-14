@@ -23,7 +23,7 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
+function Map({currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
 
    
@@ -175,6 +175,7 @@ function Map({setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddres
                            <div><b>Duration: </b> {secToHours((routeData?.duration))}  </div>
                            <div><b>Fuel usage: </b>{(routeData?.fuelusage)?.toFixed(2)} <i>litres</i> </div>
                            <div><b><i>CO<sub>2</sub>e</i>: </b>{(routeData?.co2)?.toFixed(2)}  </div>
+                           <div><b>Route Cost:</b> dis: {(routeData?.routeCost?.diesel)}€, gas: {routeData?.routeCost?.gasoline}€</div>
                            </>
                         //    <div>{routeData.distance}</div>
                         //    <div>{routeData.distance}</div>

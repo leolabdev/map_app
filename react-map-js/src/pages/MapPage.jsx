@@ -52,10 +52,10 @@ function MapPage() {
 
 
 
-
+  const [currentPosition, setCurrentPosition] = useState(null)
 
   function LocationMarker() {
-    const [position, setPosition] = useState(null)
+    
     var executed = false;
 
     const map = useMapEvents({
@@ -68,15 +68,15 @@ function MapPage() {
       locationfound(e) {
         if (!executed) {
           executed = true;
-          setPosition(e.latlng);
+          setCurrentPosition(e.latlng);
           // map.flyTo(e.latlng, map.getZoom());
         }
 
       },
     })
 
-    return position === null ? null : (
-      <Marker position={position}>
+    return currentPosition === null ? null : (
+      <Marker position={currentPosition}>
         <Popup>You are here</Popup>
       </Marker>
     )
@@ -110,6 +110,7 @@ function MapPage() {
       {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
         // ref={mapRef}
+        currentPosition={currentPosition}
         modal={modal}
         setModal={setModal}
         ourStart={ourStart}
