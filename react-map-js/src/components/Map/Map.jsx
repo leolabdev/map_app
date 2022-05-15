@@ -61,6 +61,7 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
     
     
     function addRoute(geoJSON) {
+        setAllowPositionMarker(false)
         map.eachLayer(function (layer) {
             // layer._url == null  ?  map.removeLayer(layer) ;
             
@@ -146,13 +147,16 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
             }}
         >
 
-            {/* <LocationMarker /> */}
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <LocationMarker />
+
+            
+                <LocationMarker />
+            
+            
         
             
 

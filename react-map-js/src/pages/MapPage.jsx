@@ -76,7 +76,9 @@ function MapPage() {
     var executed = false;
 
     const map = useMapEvents({
-
+      load(){
+        console.log("Loading")
+      },
       mouseover() {
         // console.log(useMapEvents)
         map.locate()
@@ -128,6 +130,7 @@ function MapPage() {
       {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
         // ref={mapRef}
+        allowPositionMarker={allowPositionMarker}
         setAllowPositionMarker={setAllowPositionMarker}
         modal={modal}
         setModal={setModal}
