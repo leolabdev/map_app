@@ -226,7 +226,7 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                             `<b style="color:green">Start(Current Position)</b><br />
                             City:   ${start?.city}<br /> 
                             Street: ${start?.streetAddress}<br />   
-                            Latlng: ${start.coordinates.toString()}<br />
+                            Latlng: ${start?.coordinates.toString()}<br />
                             `, "Start");
                         }
                         else{
@@ -244,7 +244,6 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                     }
                     //end
                     if (end != null) {
-                        console.log(end)
                         // addOrderMarker(end.coordinates[1], end.coordinates[0],
                            addOrderMarker(end.deliveryAddress.lat,end.deliveryAddress.lon,
                             `<b style="color:red">End(Client)</b><br />
