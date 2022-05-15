@@ -20,7 +20,7 @@ import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
-const List = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAddress, setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress, ourDeliveryAddresses, ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal, ordersAddresses, setOrdersAddresses, ordersAddressesFlag, setOrdersAddressesFlag }) => {
+const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAddress, setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress, ourDeliveryAddresses, ourStart, setOurStart, ourEnd, setOurEnd, orderPoints, setOrderPoints, ordersIdForRoutes, setOrdersIdForRoutes, modal, setModal, ordersAddresses, setOrdersAddresses, ordersAddressesFlag, setOrdersAddressesFlag }) => {
 
 
 
@@ -310,6 +310,9 @@ const List = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAd
                     ) : (
 
                         <OrdersDataTable
+
+                            currentPosition={currentPosition}
+
                             modal={modal}
                             setModal={setModal}
                             ourStart={ourStart}

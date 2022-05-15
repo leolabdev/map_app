@@ -11,7 +11,7 @@ import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 
 
-const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag}) => {
+const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag}) => {
 
     
     const [flag,setFlag] = useState(false)
@@ -127,7 +127,18 @@ const OrdersDataTable = ({ setOurShipmentAddress,setOurShipmentAddresses,setOurD
                                          })
 
                                          const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
+                                         newUniqueOurShipmentAddresses.push(currentPosition)
                                          setOurShipmentAddresses(newUniqueOurShipmentAddresses);
+                                         // add current position to choose position array
+                                        //  setOurShipmentAddresses(...ourShipmentAddresses,currentPosition);
+
+                                        //  setOurShipmentAddresses((prevValue)=>([
+                                        //     prevValue.push(currentPosition),
+                                        //     ]));
+
+
+                                        //  console.log("newUniqueOurShipmentAddresses",newUniqueOurShipmentAddresses);
+                                        //  console.log("ourShipmentAddresses",ourShipmentAddresses);
                                          const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item)=>[item["addressId"], item])).values()]
                                          setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
                                          newOurShipmentAddresses=[];

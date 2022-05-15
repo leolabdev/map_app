@@ -14,7 +14,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { getHumansData } from "../../api/humans/GetHumansData";
 // import { valueToPercent } from '@mui/base';
 
-const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAddress, setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress, ourDeliveryAddresses, setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData, ordersAddresses, setOrdersAddresses, ordersAddressesFlag, setOrdersAddressesFlag }) => {
+const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShipmentAddresses, setOurDeliveryAddress, setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress, ourDeliveryAddresses, setVisible, ordersIdForRoutes, addRoute, addOrderMarker, fuelUsage, setFuelUsage, ourStart, setOurStart, ourEnd, setOurEnd, setRouteData, routeData, ordersAddresses, setOrdersAddresses, ordersAddressesFlag, setOrdersAddressesFlag }) => {
 
     // let [manufacturer, setManufacturer] = useState({});
     // let [client, setClient] = useState({});
@@ -86,7 +86,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
 
     const shipmentAddressesInputProps = {
         options: ourShipmentAddresses,
-        getOptionLabel: (option) => `${option.city}, ${option.street} ${option.building}  `,
+        getOptionLabel: (option) => `${option.city?option.city:""}${option.street?option.street:""} ${option.building?option.building:""}${option.name?option.name:""}`,
     }
 
     const deliveryAddressesInputProps = {
@@ -170,7 +170,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                 .then(data => {
                     console.log('Success:', data);
 
-
+                    setAllowPositionMarker(false)
                     addRoute(data);
                     setRouteData(data.features[0].properties.summary);
                     console.log(routeData)
@@ -192,6 +192,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                     // data.features[0].properties.summary.orders[2].slice(1).forEach(
                     summary.orders.forEach(
                         (o) => {
+                            
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
                                 `<b style="color:blue">Client</b><br />
                                 <b>${o.Client?.name}</b><br />
@@ -217,7 +218,19 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                         }
                     )
                     //start
+                   
                     if (start != null) {
+                        if(start.type ==="address"){
+                            setAllowPositionMarker(false)
+                            addOrderMarker(start.coordinates[1], start.coordinates[0],
+                            `<b style="color:green">Start(Current Position)</b><br />
+                            City:   ${start?.city}<br /> 
+                            Street: ${start?.streetAddress}<br />   
+                            Latlng: ${start.coordinates.toString()}<br />
+                            `, "Start");
+                        }
+                        else{
+                            setAllowPositionMarker(true)
                         // addOrderMarker(start.coordinates[1], start.coordinates[0],
                         addOrderMarker(start.shipmentAddress.lat, start.shipmentAddress.lon,
                             `<b style="color:green">Start(Manufacturer)</b><br />
@@ -227,6 +240,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                             Street: ${start?.shipmentAddress?.street} ${start?.shipmentAddress?.building}<br /> 
                             Flat: ${start?.shipmentAddress?.flat}<br />     
                             `, "Start");
+                        }
                     }
                     //end
                     if (end != null) {
@@ -309,7 +323,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                         if ('orderId' in newShipmentAddress) {
                             setOurStart(newShipmentAddress.orderId)
                         }
-                        else if (newShipmentAddress != null) {
+                        else if (newShipmentAddress.type==='position' ) {
                             setOurStart({ lat: newShipmentAddress.lat, lon: newShipmentAddress.lon })
                         }
                         else { setOurStart(null) }
