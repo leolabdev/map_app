@@ -1,4 +1,6 @@
 import { TextField } from '@mui/material'
+import {Checkbox} from '@mui/material/'
+import {FormControlLabel} from '@mui/material';
 // import InputLabel from '@mui/material/InputLabel';
 // import Select from '@mui/material/Select';
 // import MenuItem from '@mui/material/MenuItem';
@@ -17,7 +19,8 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
     // let [manufacturer, setManufacturer] = useState({});
     // let [client, setClient] = useState({});
 
-
+    //Checkbox
+    const [checked,setChecked] = useState(false)
 
 
 
@@ -135,7 +138,8 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
 
             // start: [ourStart.lon, ourStart.lat],
             // end: [ourEnd.lon, ourEnd.lat],
-            fuelusage: fuelUsage
+            fuelusage: fuelUsage,
+            isCenterAvoided: checked
         }
         if (Number.isInteger(ourStart)) {
             RouteRequestData.start= ourStart
@@ -153,7 +157,7 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
 
 
 
-        console.log("sendOrdersIdForRoutesData", RouteRequestData)
+        console.log("RouteRequestData", RouteRequestData)
         if (RouteRequestData.orderIds.length !== 0) {
             fetch('http://localhost:8081/api/v1/routing/orders', {
                 method: 'POST', // or 'PUT'
@@ -281,6 +285,17 @@ const ShowRouteForm = ({ setOurShipmentAddress, setOurShipmentAddresses, setOurD
                 id="outlined-required"
                 label={`CarFuel_Usage`}
             />
+
+        <FormControlLabel
+            control={
+              <Checkbox checked={checked} onChange={(event)=>{
+                setChecked(event.target.checked)
+              }} name="isCenterAvoided" />
+            }
+            label="Avoid Center?"
+            labelPlacement="end"
+          />
+
 
             <Autocomplete
                 {...shipmentAddressesInputProps}
