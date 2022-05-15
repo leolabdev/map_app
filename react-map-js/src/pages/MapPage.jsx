@@ -52,7 +52,24 @@ function MapPage() {
 
 
 
-  const [currentPosition, setCurrentPosition] = useState(null)
+  let [currentPosition,setCurrentPosition]= useState({name:"Current Position", type:"position",lat:null,lon:null})
+  let [currentPositionMarker, setCurrentPositionMarker] = useState(null)
+  let [allowPositionMarker, setAllowPositionMarker] = useState(true)
+
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      
+      setCurrentPosition(prevState=>({
+        ...prevState, lat: position.coords.latitude, lon: position.coords.longitude
+      })
+      )
+
+      // setCurrentPosition(...currentPosition, currentPosition.lat = position.coords.latitude)
+      // setCurrentPosition(...currentPosition, currentPosition.lon = position.coords.longitude)
+    })
+  },[])
+
 
   function LocationMarker() {
     
@@ -66,17 +83,18 @@ function MapPage() {
       },
 
       locationfound(e) {
-        if (!executed) {
+        if (!executed && allowPositionMarker===true) {
           executed = true;
-          setCurrentPosition(e.latlng);
+          setCurrentPositionMarker(e.latlng);
+          console.log(currentPositionMarker)
           // map.flyTo(e.latlng, map.getZoom());
         }
 
       },
     })
 
-    return currentPosition === null ? null : (
-      <Marker position={currentPosition}>
+    return currentPositionMarker === null ? null : (
+      <Marker position={currentPositionMarker}>
         <Popup>You are here</Popup>
       </Marker>
     )
@@ -110,7 +128,7 @@ function MapPage() {
       {/* <span>Where we go ?</span> <Droplist1 /> */}
       <Map
         // ref={mapRef}
-        currentPosition={currentPosition}
+        setAllowPositionMarker={setAllowPositionMarker}
         modal={modal}
         setModal={setModal}
         ourStart={ourStart}
@@ -146,6 +164,7 @@ function MapPage() {
 
       <div className="list">
         <List
+          currentPosition={currentPosition}
           modal={modal}
           setModal={setModal}
           ourStart={ourStart}

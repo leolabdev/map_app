@@ -23,7 +23,7 @@ import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
 
-function Map({currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
+function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
 
    
@@ -151,6 +151,7 @@ function Map({currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setO
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+
             <LocationMarker />
         
             
@@ -186,6 +187,8 @@ function Map({currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setO
 
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
+            setAllowPositionMarker={setAllowPositionMarker}
+
             ourStart={ourStart}
             setOurStart={setOurStart}
             ourEnd={ourEnd}
