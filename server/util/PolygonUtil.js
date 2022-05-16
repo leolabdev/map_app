@@ -51,37 +51,40 @@ class PolygonUtil {
         return (count % 2 === 1);
     }
 
-    arePointsInsidePolygon(polygon, points){
+    getPolygonWithoutPointsInside(polygon, points){
         if(polygon != null){
-            let result = false;
             //check is some the points are inside in the avoided area = this area can not be avoided
             if(polygon.type === "Polygon"){
                 const polygonArea = polygon.coordinates[0];
                 for(let i=0; i<points.length; i++){
                     const isPointInside = this.isInside(polygonArea, points[i]);
                     if(isPointInside){
-                        result = true;
+                        polygon.coordinates[0] = [];
                         break;
                     }
                 }
             } else if(polygon.type === "MultiPolygon"){
                 const polygons = polygon.coordinates;
                 for(let i=0; i<polygons.length; i++){
-                    const polygonArea = polygons[i][0];
-                    for(let i=0; i<points.length; i++){
-                        const isPointInside = this.isInside(polygonArea, points[i]);
-                        if(isPointInside){
-                            result = true;
-                            break;
+                    if(polygons[i] != null){
+                        const polygonArea = polygons[i][0];
+                        for(let j=0; j<points.length; j++){
+                            const isPointInside = this.isInside(polygonArea, points[j]);
+                            if(isPointInside){
+                                polygons[i][0] = [];
+                                break;
+                            }
                         }
+                    } else{
+                        polygons[i] = [[]];
                     }
                 }
             }
 
-            return result;
+            return polygon;
         }
 
-        return true;
+        return null;
     }
 }
 module.exports = PolygonUtil;

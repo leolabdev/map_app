@@ -143,17 +143,19 @@ async function getCitiesCentersPolygons(orders){
     let polygon;
     if(cities.length === 1){
         const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[0] + "Center");
-        polygon = resp.data.result;
+        if(resp.data.result != null)
+            polygon = resp.data.result;
     } else if(cities.length > 1){
         polygon = {type: "MultiPolygon", coordinates: []};
         for(let i=0; i<cities.length; i++){
             const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[i] + "Center");
             const respPolygon = resp.data.result;
-
-            if(respPolygon.type === "Polygon"){
-                polygon.coordinates[i] = respPolygon.coordinates;
-            } else if(respPolygon.type === "MultiPolygon"){
-                polygon.coordinates.push(...respPolygon.coordinates);
+            if(respPolygon != null){
+                if(respPolygon.type === "Polygon"){
+                    polygon.coordinates.push(respPolygon.coordinates);
+                } else if(respPolygon.type === "MultiPolygon"){
+                    polygon.coordinates.push(...respPolygon.coordinates);
+                }
             }
         }
     }
@@ -379,9 +381,11 @@ router.post('/routing/orders', async (req, res) => {
         const options = {};
         if(isCenterAvoided){
             const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
-            const isPointInside = polygonUtil.arePointsInsidePolygon(polygonToAvoid, coordinates);
-            if(!isPointInside)
-                options.avoid_polygons = polygonToAvoid;
+            const polygonMayBeAvoided = polygonUtil.getPolygonWithoutPointsInside(polygonToAvoid, coordinates);
+            if(polygonMayBeAvoided != null && polygonMayBeAvoided.coordinates.length > 0){
+                options.avoid_polygons = polygonMayBeAvoided;
+            }
+
         }
 
         makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
