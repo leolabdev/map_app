@@ -188,7 +188,7 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
 
                     //    addOrderMarker(ourStart.lat, ourStart.lon, `<b style="color:green">Start</b><br />`, "Start"); 
 
-                    console.log(dataOrders)
+                    console.log(start)
                     // data.features[0].properties.summary.orders[2].slice(1).forEach(
                     summary.orders.forEach(
                         (o) => {
@@ -196,25 +196,23 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
                                 `<b style="color:blue">Client</b><br />
                                 <b>${o.Client?.name}</b><br />
-                                 AddressId:${o.deliveryAddress?.addressId}<br /> 
+                                 OrderId:${o?.orderId}<br /> 
                                  City:     ${o.deliveryAddress?.city}<br /> 
                                  Street: ${o.deliveryAddress?.street} ${o.deliveryAddress?.building}<br />
                                  Flat: ${o.deliveryAddress?.flat}<br /> 
                                   `,
                                 "Client"
                             )
-
                             addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
                                 `<b style="color:orange">Manufacturer</b><br />
-                                <b>${o.Manufacturer?.name}</b><br />
-                                 AddressId:${o.shipmentAddress?.addressId}<br /> 
+                                 <b>${o.Manufacturer?.name}</b><br />
+                                 OrderId:${o?.orderId}<br /> 
                                  City:     ${o.shipmentAddress?.city}<br /> 
                                  Street: ${o.shipmentAddress?.street} ${o.shipmentAddress?.building}<br />
                                  Flat: ${o.shipmentAddress?.flat}<br /> 
                                   `,
                                 "Manufacturer"
                             )
-                            console.log(o.orderId)
                         }
                     )
                     //start
@@ -226,7 +224,6 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                             `<b style="color:green">Start(Current Position)</b><br />
                             City:   ${start?.city}<br /> 
                             Street: ${start?.streetAddress}<br />   
-                            Latlng: ${start?.coordinates.toString()}<br />
                             `, "Start");
                         }
                         else{
@@ -235,7 +232,7 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                         addOrderMarker(start.shipmentAddress.lat, start.shipmentAddress.lon,
                             `<b style="color:green">Start(Manufacturer)</b><br />
                             <b>${start?.Manufacturer?.name}</b><br /> 
-                            AddressId:${start?.shipmentAddress?.addressId}<br /> 
+                            OrderId:${start?.orderId}<br /> 
                             City:   ${start?.shipmentAddress?.city}<br /> 
                             Street: ${start?.shipmentAddress?.street} ${start?.shipmentAddress?.building}<br /> 
                             Flat: ${start?.shipmentAddress?.flat}<br />     
@@ -248,7 +245,7 @@ const ShowRouteForm = ({setAllowPositionMarker, setOurShipmentAddress, setOurShi
                            addOrderMarker(end.deliveryAddress.lat,end.deliveryAddress.lon,
                             `<b style="color:red">End(Client)</b><br />
                             <b>${end?.Client?.name}</b><br />
-                            AddressId:${end?.deliveryAddress?.addressId}<br />  
+                            OrderId:${end?.orderId}<br />  
                             City:   ${end?.deliveryAddress?.city}<br /> 
                             Street: ${end?.deliveryAddress?.street} ${end?.deliveryAddress?.building}<br />  
                             Flat: ${end?.deliveryAddress?.flat}<br /> 

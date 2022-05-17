@@ -79,7 +79,7 @@ const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentA
                                 // setOrderPoints([[252.04533, 600.290486]]);
                             
                             const selectedIDs = new Array(selectionModel);
-                            console.log(orders)
+                            console.log("ourorders:",orders)
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
                                  selectedIDs = new Array();
