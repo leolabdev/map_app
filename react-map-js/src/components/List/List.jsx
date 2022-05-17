@@ -45,21 +45,20 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
     const [shipmentAddresses, setShipmentAddresses] = useState([
 
         {
-            addressId: 0,
-            city: 'lahti',
-            street: 'alekskatu',
-            building: '2',
-            flat: null,
-            lon: 60.2,
-            lat: 40.3,
-            AsShipmentAddress: {
-                manufacturerUsername: 'hello',
-                addressId: 0
-            }
+            city: '',
+            street: '',
+            building: '',
+            annotation: 'Plz choose a manufacturer first',
+           
         }
 
     ])
-    const [deliveryAddresses, setDeliveryAddresses] = useState([])
+    const [deliveryAddresses, setDeliveryAddresses] = useState([ {
+        city: '',
+        street: '',
+        building: '',
+        annotation: 'Plz choose a client first',
+    }])
 
     // orders's autoinput
     const [manufacturer, setManufacturer] = useState(null);
@@ -88,11 +87,11 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
 
     let shipmentAddressInputProps = {
         options: shipmentAddresses,
-        getOptionLabel: (option) => option?.street + " " + option?.building + ", " + option?.city,
+        getOptionLabel: (option) => (option?.annotation?option.annotation:"")+(option?.street&& option.street) + " " + (option?.building&&option.building) + " " + (option?.city&&option.city),
     }
     let deliveryAddressInputProps = {
         options: deliveryAddresses,
-        getOptionLabel: (option) => option?.street + " " + option?.building + ", " + option?.city,
+        getOptionLabel: (option) => (option?.annotation?option.annotation:"")+(option?.street &&option.street) + " " + (option?.building&&option.building) + " " + (option?.city&&option.city),
     };
 
 
@@ -125,7 +124,9 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
     useEffect(() => {
         try {
             setShipmentAddress(null);
-            setShipmentAddresses(manufacturer?.Addresses);
+            if(manufacturer?.Addresses!=null){
+                setShipmentAddresses(manufacturer?.Addresses)
+            }
             // console.log("heer222e",shipmentAddresses)
         } catch (e) {
             console.log(e);
@@ -137,7 +138,10 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
     useEffect(() => {
         try {
             setDeliveryAddress(null);
-            setDeliveryAddresses(client && client?.Addresses)
+            if(client?.Addresses!=null){
+                setDeliveryAddresses(client && client?.Addresses)
+            }
+            
         } catch (e) {
             console.log(e);
         }
@@ -249,8 +253,11 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
                                     id="shipmentAddress-autocomplete"
                                     value={shipmentAddress}
                                     onChange={(event, newShipmentAddress) => {
-                                        setShipmentAddress(newShipmentAddress);
-                                        setOrderPost({ ...orderPost, shipmentAddressId: newShipmentAddress.addressId });
+                                        if(newShipmentAddress.annotation==null){
+                                            setShipmentAddress(newShipmentAddress);
+                                            setOrderPost({ ...orderPost, shipmentAddressId: newShipmentAddress.addressId });
+                                        }
+                                        else{setShipmentAddress(null)}
                                         // console.log(orderPost)
                                     }}
                                     renderInput={(params) => (
@@ -280,8 +287,13 @@ const List = ({currentPosition, setOurShipmentAddress, setOurShipmentAddresses, 
                                     id="deliveryAddresses-autocomplete"
                                     value={deliveryAddress}
                                     onChange={(event, newDeleveryAddress) => {
-                                        setDeliveryAddress(newDeleveryAddress);
-                                        setOrderPost({ ...orderPost, deliveryAddressId: newDeleveryAddress.addressId });
+                                        if(newDeleveryAddress.annotation==null){
+                                            setDeliveryAddress(newDeleveryAddress);
+                                            setOrderPost({ ...orderPost, deliveryAddressId: newDeleveryAddress.addressId });
+                                        }
+                                        else{setDeliveryAddress(null)}
+                                        // console.log(orderPost)
+                                        
 
                                     }}
                                     renderInput={(params) => (
