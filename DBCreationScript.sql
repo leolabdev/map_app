@@ -81,6 +81,14 @@ CREATE TABLE AreaCoordinates(
     FOREIGN KEY (areaName) REFERENCES Area(areaName)
 );
 
+CREATE TABLE TMS(
+    stationId INT NOT NULL PRIMARY KEY,
+    sensor1Id INT,
+    sensor2Id INT,
+    lon DOUBLE NOT NULL,
+    lat DOUBLE NOT NULL
+);
+
 INSERT INTO DATA (name, value) VALUES ('gasoline', '2.1');
 INSERT INTO DATA (name, value) VALUES ('diesel', '2.2');
 INSERT INTO DATA (name, value) VALUES ('lpg', '1.9');
