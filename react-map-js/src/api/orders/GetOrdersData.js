@@ -4,15 +4,12 @@ import axios from 'axios';
 
 export const getOrdersData = async () => {
 
-
     try {
-
-        var data = await axios.get(`http://localhost:8081/dao/order`, {
-        });
-        // console.log("hello from orders", data.data.result) 
+        const data = await axios.get(`http://localhost:8081/dao/order`, {});
         return data.data.result;
 
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error)
 
     }

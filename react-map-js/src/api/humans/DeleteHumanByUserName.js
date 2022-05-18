@@ -5,15 +5,11 @@ export const deleteHumanByUserName = async (humansType, username) => {
 
 
     try {
-
-        var data = await axios.delete(`http://localhost:8081/dao/${humansType}/${username}`, {
-
-
-        });
-        console.log(data.data.result)
+        const data = await axios.delete(`http://localhost:8081/dao/${humansType}/${username}`, {});
         return data.data.result;
 
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error)
 
     }

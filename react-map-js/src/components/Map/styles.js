@@ -30,11 +30,4 @@ export default makeStyles(() => ({
              minWidth: "100px"
 
     }
-
-    // button: {
-    //     zIndex: 999,
-    //     position: "absolute",
-    //     left: "10px",
-    //     top: "170px"
-    // }
 }));

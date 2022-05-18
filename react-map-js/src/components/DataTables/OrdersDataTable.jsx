@@ -1,37 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import IconButton from "@mui/material/IconButton";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
-import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
-import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
+import {deleteOrderByOrderId} from '../../api/orders/DeleteOrderByOrderId';
+import {getOrderByOrderId} from '../../api/orders/GetOrderByOrderId';
 
 
+const OrdersDataTable = ({
+                             currentPosition,
+                             setOurShipmentAddress,
+                             setOurShipmentAddresses,
+                             setOurDeliveryAddress,
+                             setOurDeliveryAddresses,
+                             ourShipmentAddress,
+                             ourShipmentAddresses,
+                             ourDeliveryAddress,
+                             ourDeliveryAddresses,
+                             ourStart,
+                             setOurStart,
+                             ourEnd,
+                             setOurEnd,
+                             orders,
+                             setOrders,
+                             orderPoints,
+                             setOrderPoints,
+                             ordersIdForRoutes,
+                             setOrdersIdForRoutes,
+                             modal,
+                             setModal,
+                             ordersAddresses,
+                             setOrdersAddresses,
+                             ordersAddressesFlag,
+                             setOrdersAddressesFlag
+                         }) => {
 
 
+    const [flag, setFlag] = useState(false)
 
 
-const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ourStart, setOurStart, ourEnd, setOurEnd,orders, setOrders,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal,ordersAddresses, setOrdersAddresses,ordersAddressesFlag,setOrdersAddressesFlag}) => {
-
-    
-    const [flag,setFlag] = useState(false)
-    
-
-    
-
-
-        const columns = [
-        // { field: 'id', headerName: 'ID' },
-        // { field: 'title', headerName: 'Title', width: 300 },
-        // { field: 'body', headerName: 'Body', width: 600 },
-        // { field: 'body2', headerName: 'Body2', width: 600 },
-        // { field: getRowId, headerName: 'hello' },
-        { field: 'orderId', headerName: 'orderId' },
-        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250 },
-        { field: 'clientUsername', headerName: 'clientUsername', width: 250 },
-        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 250 },
+    const columns = [
+        {field: 'orderId', headerName: 'orderId'},
+        {field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250},
+        {field: 'clientUsername', headerName: 'clientUsername', width: 250},
+        {field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 250},
         // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
-        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250 },
+        {field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250},
 
         {
             field: "delete",
@@ -49,15 +63,12 @@ const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentA
                             // then call setRows() to update the data locally here
 
                             selectedIDs.forEach(s => deleteOrderByOrderId(s));
-                            
 
-
-                            
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
-                           
+
                         }}
                     >
-                        <DeleteIcon />
+                        <DeleteIcon/>
                     </IconButton>
 
                 );
@@ -72,146 +83,81 @@ const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentA
                 return (
                     <IconButton
                         onClick={() => {
+                            // setFlag(!flag)
 
-                            
-                                // const emptyArray = new Array();
-                                // setFlag(!flag)
-                                // setOrderPoints([[252.04533, 600.290486]]);
-                            
-                            const selectedIDs = new Array(selectionModel);
-                            console.log("ourorders:",orders)
+
+                            let selectedIDs = new Array(selectionModel);
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
-                                 selectedIDs = new Array();
-                            }
-                            else{ 
+                                selectedIDs = new Array();
+                            } else {
 
-                                // var newOrderPoints =  orderPoints;
-                                // console.log(selectedIDs[0])
                                 setOrdersIdForRoutes([...selectedIDs[0]])
-                                
+
                                 setModal(!modal)
 
-                               let newOrdersAddresses= [];
-                               let newOurShipmentAddresses=[];
-                               let newOurDeliveryAddresses=[];
-                            //    let newUniqueOurDeliveryAddresses=[];
-                            //    let uniqueObjArray = [
-                            //     ...new Map(myObjArray.map((item) => [item["episodes"], item])).values(),
-                            // ];
+                                let newOrdersAddresses = [];
+                                let newOurShipmentAddresses = [];
+                                let newOurDeliveryAddresses = [];
 
 
                                 selectedIDs[0].map(idx => {
-                                    
-                                    getOrderByOrderId(idx).then((data)=>{
-                                      
-                                        console.log(data)
-                                      
+
+                                    getOrderByOrderId(idx).then((data) => {
+
                                         newOrdersAddresses.push(data)
-                                    
-                                        newOrdersAddresses.map((order,index) => {
+
+                                        newOrdersAddresses.map((order, index) => {
                                             newOurShipmentAddresses.push(order.shipmentAddress)
-                                           
+
                                             newOurShipmentAddresses[index].orderId = order.orderId
-                                            
 
-                                            
 
-                                            
                                             newOurDeliveryAddresses.push(order.deliveryAddress)
                                             newOurDeliveryAddresses[index].orderId = order.orderId
-                                            
-                                            
-                                          
-                                            
-                                         })
-
-                                         const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item)=>[item["addressId"], item])).values()]
-                                         newUniqueOurShipmentAddresses.push(currentPosition)
-                                         setOurShipmentAddresses(newUniqueOurShipmentAddresses);
-                                         // add current position to choose position array
-                                        //  setOurShipmentAddresses(...ourShipmentAddresses,currentPosition);
-
-                                        //  setOurShipmentAddresses((prevValue)=>([
-                                        //     prevValue.push(currentPosition),
-                                        //     ]));
 
 
-                                        //  console.log("newUniqueOurShipmentAddresses",newUniqueOurShipmentAddresses);
-                                        //  console.log("ourShipmentAddresses",ourShipmentAddresses);
-                                         const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item)=>[item["addressId"], item])).values()]
-                                         setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
-                                         newOurShipmentAddresses=[];
-                                         newOurDeliveryAddresses=[];
+                                        })
+
+                                        const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item) => [item["addressId"], item])).values()]
+                                        newUniqueOurShipmentAddresses.push(currentPosition)
+                                        setOurShipmentAddresses(newUniqueOurShipmentAddresses);
+
+                                        const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item) => [item["addressId"], item])).values()]
+                                        setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
+                                        newOurShipmentAddresses = [];
+                                        newOurDeliveryAddresses = [];
                                     })
-                                    
+
                                 })
 
-                                
-                                
-
-
-                                
-
-            
 
                                 setOrdersAddresses(newOrdersAddresses)
 
-                                
-                                
-                               
-                                
 
-
-                                   
-                                
-                           
-                                
                             }
                         }}
                     >
-                        <AltRouteIcon />
+                        <AltRouteIcon/>
                     </IconButton>
 
                 );
             }
         },
-
-
-
-
-
-
     ]
 
-    // useEffect( () => {
-    //     try{
-    //         // setOrderPoints([[100.936707651023134,600.18226502577591]])
-    //         const emptyArray = new Array() 
-    //         // setMarkers((prevValue) => [...prevValue, e.latlng]);
-
-    //         // setOrderPoints(null)
-    //     }catch (e){
-    //         console.log(e);
-    //     }
-    // }, [
-    //     flag
-    // ]);
-   
 
 
-
-    // const [rows, setRows] = useState(_rows);
     const [selectionModel, setSelectionModel] = useState([]);
     const [manufacturerUsernameModel, setManufacturerUsernameModel] = useState([])
-    
+
 
     return (
 
 
-        <div style={{ height: 700, width: '100%' }}>
-           
-            
+        <div style={{height: 700, width: '100%'}}>
+
+
             <DataGrid
                 getRowId={(row) => row.orderId}
                 rows={orders}
@@ -219,15 +165,12 @@ const OrdersDataTable = ({currentPosition, setOurShipmentAddress,setOurShipmentA
                 columns={columns}
                 checkboxSelection
                 pageSize={15}
-                // onCellClick={setOrders(...orders)}
                 onSelectionModelChange={(ids) => {
                     setSelectionModel(ids);
                 }}
-                components={{ Toolbar: GridToolbar }}
+                components={{Toolbar: GridToolbar}}
             />
-            {/* ) */}
-        {/* } */}
-        </div>  
+        </div>
     )
 }
 
