@@ -1,7 +1,7 @@
 // library witch helps us with calls
 import axios from 'axios';
 
-
+// async function for getting the Orders' data .
 export const getOrdersData = async () => {
 
     try {

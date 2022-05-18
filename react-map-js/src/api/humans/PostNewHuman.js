@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 
+// async function for posting a new Client/Manufacturer.
 export const postNewHuman = async (humansType, post) => {
 
     try {

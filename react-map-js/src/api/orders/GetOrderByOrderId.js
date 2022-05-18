@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-
+// async function for getting an order by orderId.
 export const getOrderByOrderId = async (orderId) => {
 
     try {

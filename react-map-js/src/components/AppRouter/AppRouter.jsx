@@ -5,6 +5,8 @@ import Error from '../../pages/Error';
 import MapPage from '../../pages/MapPage';
 import RegistrationPage from '../../pages/RegistrationPage';
 
+
+//AppRouter is for switching between pages. The map page is set by default.
 const AppRouter = () => {
   return (
     <Routes>
