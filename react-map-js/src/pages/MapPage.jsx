@@ -62,7 +62,6 @@ function MapPage() {
                 if (!executed && allowPositionMarker === true) {
                     executed = true;
                     setCurrentPositionMarker(e.latlng);
-                    console.log(currentPositionMarker)
                     // map.flyTo(e.latlng, map.getZoom());
                 }
 
