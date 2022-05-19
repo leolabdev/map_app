@@ -86,6 +86,27 @@ class PolygonUtil {
 
         return null;
     }
+
+    generateSquarePolygonCoordinates(centerCoordinates, radius){
+        if(centerCoordinates != null && centerCoordinates.length > 0){
+            const result = [[]];
+
+            const x1 = centerCoordinates[0] - radius;
+            const x2 = centerCoordinates[0] + radius;
+            const y1 = centerCoordinates[1] - radius;
+            const y2 = centerCoordinates[1] + radius;
+
+            result[0].push([x1, y1]);
+            result[0].push([x2, y1]);
+            result[0].push([x2, y2]);
+            result[0].push([x1, y2]);
+            result[0].push([x1, y1]);
+
+            return result;
+        }
+
+        return null;
+    }
 }
 module.exports = PolygonUtil;
 

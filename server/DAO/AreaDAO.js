@@ -24,6 +24,16 @@ class AreaDAO {
         }
     }
 
+    async createMultiple(data) {
+        try {
+            return await Area.bulkCreate(data);
+        } catch (e) {
+            console.log("AreaDAO: Could not execute the query");
+            console.log(e);
+            return null;
+        }
+    }
+
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
             try {
