@@ -146,10 +146,15 @@ const List = ({
         setIsLoadingOrders(true)
         getOrdersData().then((data) => {
 
-            setOrders(data)
-            setTimeout(() => {
+            if (data!=null) {
+                setOrders(data)
                 setIsLoadingOrders(false)
-            }, 1000);
+            }
+          
+            // setTimeout(() => {
+            //     setIsLoadingOrders(false)
+            // }, 1000);
+            
         })
     }, [isLoadingOrdersFlag]);
 
