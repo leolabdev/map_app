@@ -89,6 +89,9 @@ CREATE TABLE TMS(
     lat DOUBLE NOT NULL
 );
 
+INSERT INTO AREA (areaName, type) VALUES ('SlowTraffic', 'MultiPolygon');
+
 INSERT INTO DATA (name, value) VALUES ('gasoline', '2.1');
 INSERT INTO DATA (name, value) VALUES ('diesel', '2.2');
 INSERT INTO DATA (name, value) VALUES ('lpg', '1.9');
+INSERT INTO DATA (name, value) VALUES ('TrafficSituation', '');

@@ -1,12 +1,15 @@
 const axios = require("axios");
 const TMSDAO = require("../DAO/TMSDAO");
+const PolygonUtil = require("../util/PolygonUtil");
 
 const tmsDAO = new TMSDAO();
+const polygonUtil = new PolygonUtil();
 
 class SettingsUtil {
     async setUp(){
         try{ await addCityCenters(); } catch (e) { console.log("Failed to add city centers"); }
         try{ await addTMS(); } catch (e) { console.log("Failed to add TMSs"); }
+        try{ await addTMSAreas(); } catch (e) { console.log("Failed to add TMS areas"); }
     }
 }
 module.exports = SettingsUtil;
@@ -73,6 +76,24 @@ async function addTMS() {
     }
 
     await tmsDAO.createMultiple(Object.values(tmsObj));
+}
+
+async function addTMSAreas() {
+    const stations = await tmsDAO.readAll();
+    const areas = [];
+    for(let i=0; i<stations.length; i++){
+        const centerCoordinates = [stations[i].lon, stations[i].lat];
+        const polygonCoordinates = polygonUtil.generateSquarePolygonCoordinates(centerCoordinates, 0.0000415);
+
+        const area = {
+            "areaName": "tms"+stations[i].stationId,
+            "type": "Polygon",
+            "coordinates": polygonCoordinates
+        }
+        areas.push(area);
+    }
+
+    await axios.post("http://localhost:8081/dao/area/multiple", areas);
 }
 
 //Helsinki center coordinates in Polygon form

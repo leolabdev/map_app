@@ -6,7 +6,7 @@ import AltRouteIcon from '@mui/icons-material/AltRoute';
 import {deleteOrderByOrderId} from '../../api/orders/DeleteOrderByOrderId';
 import {getOrderByOrderId} from '../../api/orders/GetOrderByOrderId';
 
-
+//in order data table can be found the information about orders, also it is used for making the request to the server for getting the routing
 const OrdersDataTable = ({
                              currentPosition,
                              setOurShipmentAddress,
@@ -38,7 +38,7 @@ const OrdersDataTable = ({
 
     const [flag, setFlag] = useState(false)
 
-
+    // columns are used for displaying the necessary information from the data source to the order data table
     const columns = [
         {field: 'orderId', headerName: 'orderId'},
         {field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250},
@@ -47,6 +47,7 @@ const OrdersDataTable = ({
         // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
         {field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250},
 
+        //button for deleting orders 
         {
             field: "delete",
             width: 210,
@@ -74,6 +75,7 @@ const OrdersDataTable = ({
                 );
             }
         },
+        //button for making the request to the server for getting the routing
         {
             field: "Get Route",
             width: 75,
@@ -87,42 +89,44 @@ const OrdersDataTable = ({
 
 
                             let selectedIDs = new Array(selectionModel);
+                            // if choose more then 10 orders they will be reseted
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
                                 selectedIDs = new Array();
                             } else {
-
+                                // orders's id for routes are saved
                                 setOrdersIdForRoutes([...selectedIDs[0]])
-
+                                //toogle off the modal window
                                 setModal(!modal)
 
                                 let newOrdersAddresses = [];
                                 let newOurShipmentAddresses = [];
                                 let newOurDeliveryAddresses = [];
 
-
+                                // here by order ids we get orders' shipmentAddresses and deliveryAddress
                                 selectedIDs[0].map(idx => {
 
                                     getOrderByOrderId(idx).then((data) => {
 
                                         newOrdersAddresses.push(data)
-
                                         newOrdersAddresses.map((order, index) => {
-                                            newOurShipmentAddresses.push(order.shipmentAddress)
 
+                                            // for shipmentAddresses make ordersid keys
+                                            newOurShipmentAddresses.push(order.shipmentAddress)
                                             newOurShipmentAddresses[index].orderId = order.orderId
 
-
+                                            // for deliveryAddresses make ordersid keys
                                             newOurDeliveryAddresses.push(order.deliveryAddress)
                                             newOurDeliveryAddresses[index].orderId = order.orderId
 
 
                                         })
-
+                                        // filtering shipmentAddresses to remove reccurring ones
                                         const newUniqueOurShipmentAddresses = [...new Map(newOurShipmentAddresses.map((item) => [item["addressId"], item])).values()]
                                         newUniqueOurShipmentAddresses.push(currentPosition)
                                         setOurShipmentAddresses(newUniqueOurShipmentAddresses);
 
+                                        // filtering deliveryAddress to remove reccurring ones
                                         const newUniqueOurDeliveryAddresses = [...new Map(newOurDeliveryAddresses.map((item) => [item["addressId"], item])).values()]
                                         setOurDeliveryAddresses(newUniqueOurDeliveryAddresses);
                                         newOurShipmentAddresses = [];
@@ -131,10 +135,7 @@ const OrdersDataTable = ({
 
                                 })
 
-
                                 setOrdersAddresses(newOrdersAddresses)
-
-
                             }
                         }}
                     >
@@ -146,12 +147,8 @@ const OrdersDataTable = ({
         },
     ]
 
-
-
     const [selectionModel, setSelectionModel] = useState([]);
-    const [manufacturerUsernameModel, setManufacturerUsernameModel] = useState([])
-
-
+    
     return (
 
 

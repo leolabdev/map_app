@@ -32,6 +32,29 @@ router.post("/", async(req, res) => {
     }
 });
 
+router.post("/multiple", async(req, res) => {
+    try{
+        const areas = req.body;
+        const coordinates = [];
+        for(let i=0; i<areas.length; i++){
+            const parsedCoordinates = daoUtil.parsePolygonToAreaCoordinates(areas[i]);
+
+            coordinates.push(...parsedCoordinates);
+            delete areas[i].coordinates;
+        }
+
+        //console.log("coordinates", coordinates);
+
+        const result = await areaDAO.createMultiple(areas);
+        await areaCoordinatesDAO.createMultiple(coordinates);
+
+        responseUtil.sendResultOfQuery(res, result);
+    }catch (e) {
+        console.log(e);
+        responseUtil.sendResultOfQuery(res, null);
+    }
+});
+
 router.get("/:areaName", async(req, res) => {
     const areaObj = await areaDAO.read(req.params.areaName);
     const result = daoUtil.parseAreaCoordinatesToPolygon(areaObj);

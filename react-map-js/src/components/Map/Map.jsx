@@ -17,12 +17,6 @@ import secToHours from "../../functions/secToHours";
 import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
-
-
-
-
-
-
 function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
     const [fuelUsage, setFuelUsage] = useState(5.7);
@@ -60,9 +54,12 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
         startMarker.addTo(map)
     }
 
+
+    // add order marker to the map function 
     function addOrderMarker(lat,lon,popUp,markerType){
         let markerColor;
         let markerIcon;
+        // depends on a marker type we choose the marker color
         if(markerType==="Manufacturer") markerColor="orange";
         else if(markerType==="Client") markerColor="blue";
         else if(markerType==="Start") markerColor="green";
@@ -87,7 +84,7 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
     }
 
     const classes = useStyles();
-    const isDesktop = useMediaQuery('(min-width:600px)')
+    
 
     return (
 
@@ -118,6 +115,7 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
             Show Route
             </MyButton>
             </div>
+            {/* The map summary output  */}
             <div className={classes.summaryOutput}>
                  {routeData !== null ?
                  (          <>
@@ -128,10 +126,9 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
                            <div><b>Route Cost:</b> dis: {(routeData?.routeCost?.diesel)}€, gas: {routeData?.routeCost?.gasoline}€</div>
                            </>
                         )
-                    :(<div>hello</div>)
+                    :(<div>No data</div>)
                     }
             </div>
-
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
             setAllowPositionMarker={setAllowPositionMarker}
