@@ -83,7 +83,7 @@ async function addTMSAreas() {
     const areas = [];
     for(let i=0; i<stations.length; i++){
         const centerCoordinates = [stations[i].lon, stations[i].lat];
-        const polygonCoordinates = polygonUtil.generateSquarePolygonCoordinates(centerCoordinates, 0.0000415);
+        const polygonCoordinates = polygonUtil.generateSquarePolygonCoordinates(centerCoordinates, 0.0001415);
 
         const area = {
             "areaName": "tms"+stations[i].stationId,
