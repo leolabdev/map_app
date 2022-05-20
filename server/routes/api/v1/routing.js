@@ -347,7 +347,8 @@ router.post('/routing', async (req, res) => {
  *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
  *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
  *     fuelusage: 5.7, *optional
- *     isCenterAvoided: true *optional
+ *     isCenterAvoided: true, *optional
+ *     isTrafficSituation: true *optional
  *  }
  */
 router.post('/routing/orders', async (req, res) => {
