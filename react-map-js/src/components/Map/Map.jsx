@@ -17,58 +17,27 @@ import secToHours from "../../functions/secToHours";
 import getMarkerIcon from "../../functions/getMarkerIcon";
 
 
-
-
-
-
-
-
 function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOurShipmentAddresses,setOurDeliveryAddress,setOurDeliveryAddresses, ourShipmentAddress, ourShipmentAddresses, ourDeliveryAddress,ourDeliveryAddresses,ordersAddresses, setOrdersAddresses, coordinates, setCoordinates, LocationMarker, ourStart, ourEnd,setOurStart, setOurEnd, LeafletgeoSearchStart, LeafletgeoSearchEnd ,orderPoints,setOrderPoints,  ordersIdForRoutes,setOrdersIdForRoutes,modal,setModal, ordersAddressesFlag,setOrdersAddressesFlag}) {
 
-
-   
-    
-
-
-    
     const [fuelUsage, setFuelUsage] = useState(5.7);
     let [routeData,setRouteData] = useState({});
 
- 
-
-    useEffect(() => {
-
-        console.log("heeeere", ourStart, ourEnd)
-
-
-    }, [
-        ourStart, ourEnd
-
-    ]);
-
-
-
-
-    var geojsonLayer;
-    var map;
+    let geojsonLayer;
+    let map;
     // var latlng;
-    var startMarker = new L.marker();
-    var endMarker = new L.marker();
+    let startMarker = new L.marker();
+    const endMarker = new L.marker();
 
     const layerGroup = L.layerGroup();
 
-    const [status, setStatus] = useState(false)
-    
-    
+    const [status, setStatus] = useState(false);
+
     function addRoute(geoJSON) {
         setAllowPositionMarker(false)
         map.eachLayer(function (layer) {
-            // layer._url == null  ?  map.removeLayer(layer) ;
-            
             if (layer._url == null){
                 map.removeLayer(layer)
             }
-            // console.log(layer._url)
           });
         map.removeLayer(geojsonLayer);
         geojsonLayer = L.geoJSON(geoJSON);
@@ -86,12 +55,11 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
     }
 
 
-
- 
-
+    // add order marker to the map function 
     function addOrderMarker(lat,lon,popUp,markerType){
         let markerColor;
         let markerIcon;
+        // depends on a marker type we choose the marker color
         if(markerType==="Manufacturer") markerColor="orange";
         else if(markerType==="Client") markerColor="blue";
         else if(markerType==="Start") markerColor="green";
@@ -106,35 +74,21 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
         orderMarker.addTo(map);
     }
 
-  
-
-
     // by this we get access to using html DOM's map 
     function MyMap() {
-        map = useMap()
-        // console.log('map center:', map.getCenter())
+        map = useMap();
         geojsonLayer = L.geoJSON();
-     
-        geojsonLayer.addTo(map)
-
-        layerGroup.addTo(map)
-
-       
+        geojsonLayer.addTo(map);
+        layerGroup.addTo(map);
         return null
     }
 
-
     const classes = useStyles();
-    const isDesktop = useMediaQuery('(min-width:600px)')
     
 
     return (
 
-
-
         <MapContainer
-
-            // ref={mapRef}
             className={classes.mapContainer}
             // dragging={false}
             center={coordinates}
@@ -143,7 +97,7 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
             minZoom={7}
             scrollWheelZoom={false}
             whenReady={() => {
-                console.log("we are ready")
+                console.log("map is loaded")
             }}
         >
 
@@ -152,16 +106,7 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-
-            
                 <LocationMarker />
-            
-            
-        
-            
-
-    
-           
 
              <div className={classes.showRouteButton}>
             <MyButton
@@ -170,11 +115,9 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
             Show Route
             </MyButton>
             </div>
-            {/* <button onClick={showRoute} >Show Route</button> */}
-            {/* // console.log(routeData.features[0].properties.summary); */}
+            {/* The map summary output  */}
             <div className={classes.summaryOutput}>
-                 {/* {routeData} */}
-                 {routeData !== null ?  
+                 {routeData !== null ?
                  (          <>
                            <div> <b>Distance: </b>{(routeData?.distance/1000)?.toFixed(2)} <i>kms</i> </div>
                            <div><b>Duration: </b> {secToHours((routeData?.duration))}  </div>
@@ -182,13 +125,10 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
                            <div><b><i>CO<sub>2</sub>e</i>: </b>{(routeData?.co2)?.toFixed(2)}  </div>
                            <div><b>Route Cost:</b> dis: {(routeData?.routeCost?.diesel)}€, gas: {routeData?.routeCost?.gasoline}€</div>
                            </>
-                        //    <div>{routeData.distance}</div>
-                        //    <div>{routeData.distance}</div>
                         )
-                    :(<div>hello</div>)
+                    :(<div>No data</div>)
                     }
             </div>
-
             <MyModal visible={modal} setVisible={setModal}>
             <ShowRouteForm
             setAllowPositionMarker={setAllowPositionMarker}
@@ -218,22 +158,15 @@ function Map({setAllowPositionMarker,currentPosition,setOurShipmentAddress,setOu
             ourDeliveryAddresses={ourDeliveryAddresses}
 
             setOurShipmentAddress={setOurShipmentAddress}
-          setOurShipmentAddresses={setOurShipmentAddresses}
-          setOurDeliveryAddress={setOurDeliveryAddress}
-          setOurDeliveryAddresses={setOurDeliveryAddresses}
+            setOurShipmentAddresses={setOurShipmentAddresses}
+            setOurDeliveryAddress={setOurDeliveryAddress}
+            setOurDeliveryAddresses={setOurDeliveryAddresses}
 
             setVisible={setModal}
             />
             </MyModal>
 
-          
             <MyMap />
-
-         
-
-
-
-
 
         </MapContainer>
     );
