@@ -1,51 +1,30 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState } from 'react'
 import IconButton from "@mui/material/IconButton";
-import {DataGrid, GridToolbar} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
-import {deleteOrderByOrderId} from '../../api/orders/DeleteOrderByOrderId';
-import {getOrderByOrderId} from '../../api/orders/GetOrderByOrderId';
+import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
+import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
 
 //in order data table can be found the information about orders, also it is used for making the request to the server for getting the routing
 const OrdersDataTable = ({
-                             currentPosition,
-                             setOurShipmentAddress,
-                             setOurShipmentAddresses,
-                             setOurDeliveryAddress,
-                             setOurDeliveryAddresses,
-                             ourShipmentAddress,
-                             ourShipmentAddresses,
-                             ourDeliveryAddress,
-                             ourDeliveryAddresses,
-                             ourStart,
-                             setOurStart,
-                             ourEnd,
-                             setOurEnd,
-                             orders,
-                             setOrders,
-                             orderPoints,
-                             setOrderPoints,
-                             ordersIdForRoutes,
-                             setOrdersIdForRoutes,
-                             modal,
-                             setModal,
-                             ordersAddresses,
-                             setOrdersAddresses,
-                             ordersAddressesFlag,
-                             setOrdersAddressesFlag
-                         }) => {
-
-
-    const [flag, setFlag] = useState(false)
-
+    currentPosition,
+    setOurShipmentAddresses,
+    setOurDeliveryAddresses,
+    modal,
+    setModal,
+    orders,
+    setOrders,
+    setOrdersIdForRoutes,
+    setOrdersAddresses,
+}) => {
     // columns are used for displaying the necessary information from the data source to the order data table
     const columns = [
-        {field: 'orderId', headerName: 'orderId'},
-        {field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250},
-        {field: 'clientUsername', headerName: 'clientUsername', width: 250},
-        {field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 250},
-        // { field: orders.result.shipmentAddress, headerName: 'deliveryAddressId', width: 400 },
-        {field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250},
+        { field: 'orderId', headerName: 'orderId' },
+        { field: 'manufacturerUsername', headerName: 'manufacturerUsername', width: 250 },
+        { field: 'clientUsername', headerName: 'clientUsername', width: 250 },
+        { field: 'deliveryAddressId', headerName: 'deliveryAddressId', width: 250 },
+        { field: 'shipmentAddressId', headerName: 'shipmentAddressId', width: 250 },
 
         //button for deleting orders 
         {
@@ -58,20 +37,16 @@ const OrdersDataTable = ({
                     <IconButton
                         onClick={() => {
                             const selectedIDs = new Set(selectionModel);
-
                             // you can call an API to delete the selected IDs
                             // and get the latest results after the deletion
                             // then call setRows() to update the data locally here
-
                             selectedIDs.forEach(s => deleteOrderByOrderId(s));
-
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
 
                         }}
                     >
-                        <DeleteIcon/>
+                        <DeleteIcon />
                     </IconButton>
-
                 );
             }
         },
@@ -85,14 +60,11 @@ const OrdersDataTable = ({
                 return (
                     <IconButton
                         onClick={() => {
-                            // setFlag(!flag)
-
-
                             let selectedIDs = new Array(selectionModel);
                             // if choose more then 10 orders they will be reseted
                             if (selectedIDs[0].length > 10) {
                                 alert("plz select max 10 orders")
-                                selectedIDs = new Array();
+                                selectedIDs = [];
                             } else {
                                 // orders's id for routes are saved
                                 setOrdersIdForRoutes([...selectedIDs[0]])
@@ -104,12 +76,13 @@ const OrdersDataTable = ({
                                 let newOurDeliveryAddresses = [];
 
                                 // here by order ids we get orders' shipmentAddresses and deliveryAddress
-                                selectedIDs[0].map(idx => {
+                                selectedIDs[0].forEach(idx => {
 
                                     getOrderByOrderId(idx).then((data) => {
 
                                         newOrdersAddresses.push(data)
-                                        newOrdersAddresses.map((order, index) => {
+                                        // here we add ordersid keys 
+                                        newOrdersAddresses.forEach((order, index) => {
 
                                             // for shipmentAddresses make ordersid keys
                                             newOurShipmentAddresses.push(order.shipmentAddress)
@@ -139,36 +112,29 @@ const OrdersDataTable = ({
                             }
                         }}
                     >
-                        <AltRouteIcon/>
+                        <AltRouteIcon />
                     </IconButton>
 
                 );
             }
         },
     ]
-
+    // order data table requires for selecting items 
     const [selectionModel, setSelectionModel] = useState([]);
-    
     return (
-
-
-        <div style={{height: 700, width: '100%'}}>
-
-
+        <div style={{ height: 700, width: '100%' }}>
             <DataGrid
                 getRowId={(row) => row.orderId}
                 rows={orders}
                 onRowsUpdate={""}
                 columns={columns}
                 checkboxSelection
-                pageSize={15}
                 onSelectionModelChange={(ids) => {
                     setSelectionModel(ids);
                 }}
-                components={{Toolbar: GridToolbar}}
+                components={{ Toolbar: GridToolbar }}
             />
         </div>
     )
 }
-
 export default OrdersDataTable

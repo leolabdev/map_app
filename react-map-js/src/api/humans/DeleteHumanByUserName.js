@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-// async function for deleting a  Client/Manufacturer.
+// async function for deleting a Client/Manufacturer.
 export const deleteHumanByUserName = async (humansType, username) => {
 
     try {

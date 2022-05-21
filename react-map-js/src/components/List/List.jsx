@@ -1,62 +1,32 @@
-import React, {useState, useEffect, useMemo} from 'react'
+import React, { useState, useEffect } from 'react'
 // CircularProgress is loading icon 
-import {CircularProgress, Grid, Typography, InputLabel, MenuItem, FormControl, Select, Button} from '@material-ui/core';
-import Box from '@mui/material/Box';
+import { CircularProgress, Typography, FormControl } from '@material-ui/core';
 import Stack from "@mui/material/Stack";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
 import OrdersDataTable from '../DataTables/OrdersDataTable';
-
-
 import useStyles from './styles.js';
-import classes1 from './List.module.css';
-// import MyButton from '../UI/Button/MyButton';
 import MyButton from '../UI/button/MyButton';
-import {postNewHuman} from '../../api/humans/PostNewHuman';
-import {getHumansData} from '../../api/humans/GetHumansData'
-import {deleteHumanByUserName} from '../../api/humans/DeleteHumanByUserName';
-import {getOrdersData} from '../../api/orders/GetOrdersData';
-import {postNewOrder} from '../../api/orders/PostNewOrder';
+import { getHumansData } from '../../api/humans/GetHumansData'
+import { getOrdersData } from '../../api/orders/GetOrdersData';
+import { postNewOrder } from '../../api/orders/PostNewOrder';
 
 
 const List = ({
-                  currentPosition,
-                  setOurShipmentAddress,
-                  setOurShipmentAddresses,
-                  setOurDeliveryAddress,
-                  setOurDeliveryAddresses,
-                  ourShipmentAddress,
-                  ourShipmentAddresses,
-                  ourDeliveryAddress,
-                  ourDeliveryAddresses,
-                  ourStart,
-                  setOurStart,
-                  ourEnd,
-                  setOurEnd,
-                  orderPoints,
-                  setOrderPoints,
-                  ordersIdForRoutes,
-                  setOrdersIdForRoutes,
-                  modal,
-                  setModal,
-                  ordersAddresses,
-                  setOrdersAddresses,
-                  ordersAddressesFlag,
-                  setOrdersAddressesFlag
-              }) => {
-
+    currentPosition,
+    setOurShipmentAddresses,
+    setOurDeliveryAddresses,
+    setOrdersAddresses,
+    setOrdersIdForRoutes,
+    modal,
+    setModal,
+}) => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingOrders, setIsLoadingOrders] = useState(false)
     const [isLoadingOrdersFlag, setIsLoadingOrdersFlag] = useState(false)
 
-    const [status, setStatus] = useState(false);
-
-    const [username, setUsername] = useState("");
-
     // orders logic 
-
     const [orderPost, setOrderPost] = useState({
         manufacturerUsername: '', clientUsername: '', shipmentAddressId: '', deliveryAddressId: ''
     })
@@ -68,25 +38,27 @@ const List = ({
 
         {
             city: '', street: '', building: '', annotation: 'Plz choose a manufacturer first',
-
         }
 
     ])
-    const [deliveryAddresses, setDeliveryAddresses] = useState([{
-        city: '', street: '', building: '', annotation: 'Plz choose a client first',
-    }])
+    const [deliveryAddresses, setDeliveryAddresses] = useState([
 
-    // orders's autoinput
+        {
+            city: '', street: '', building: '', annotation: 'Plz choose a client first',
+        }
+
+    ])
+
+    // orders's autoinput logic , they help to  display current value in the autoinput and from them we make the orderpost
     const [manufacturer, setManufacturer] = useState(null);
-    //const [shipmentAddressId, setShipmentAddressId] = useState(null);
     const [shipmentAddress, setShipmentAddress] = useState(null);
-
     const [client, setClient] = useState(null);
     const [deliveryAddress, setDeliveryAddress] = useState(null);
 
+    // state for saving orders
     const [orders, setOrders] = useState([]);
 
-
+    // props for autoinputs
     const clientsInputProps = {
         options: clients, getOptionLabel: (option) => option.clientUsername,
     }
@@ -94,15 +66,16 @@ const List = ({
         options: manufacturers, getOptionLabel: (option) => option.manufacturerUsername,
     }
 
-    let shipmentAddressInputProps = {
+    const shipmentAddressInputProps = {
         options: shipmentAddresses,
         getOptionLabel: (option) => (option?.annotation ? option.annotation : "") + (option?.street && option.street) + " " + (option?.building && option.building) + " " + (option?.city && option.city),
     }
-    let deliveryAddressInputProps = {
+    const deliveryAddressInputProps = {
         options: deliveryAddresses,
         getOptionLabel: (option) => (option?.annotation ? option.annotation : "") + (option?.street && option.street) + " " + (option?.building && option.building) + " " + (option?.city && option.city),
     };
 
+    //on component mount we get clients and manufacturers data
     useEffect(() => {
         setIsLoading(true)
 
@@ -113,12 +86,10 @@ const List = ({
         getHumansData("manufacturer").then((data) => {
             setManufacturers(data)
         })
-
         setIsLoading(false)
+    }, []);
 
-    }, [status,]);
-
-
+    // when we get a manufacturer, we can get from it addresses 
     useEffect(() => {
         try {
             setShipmentAddress(null);
@@ -130,6 +101,7 @@ const List = ({
         }
     }, [manufacturer]);
 
+    // when we get a client, we can get from it addresses 
     useEffect(() => {
         try {
             setDeliveryAddress(null);
@@ -142,26 +114,21 @@ const List = ({
         }
     }, [client]);
 
+    // here we get orders data 
     useEffect(() => {
         setIsLoadingOrders(true)
         getOrdersData().then((data) => {
-
-            if (data!=null) {
+            if (data != null) {
                 setOrders(data)
                 setIsLoadingOrders(false)
             }
-          
-            // setTimeout(() => {
-            //     setIsLoadingOrders(false)
-            // }, 1000);
-            
         })
     }, [isLoadingOrdersFlag]);
 
-
+    // for the order add button 
     function addNewOrder(e) {
+        // no update page after sending a post
         e.preventDefault()
-
         const newOrderPost = {
             ...orderPost
         }
@@ -169,159 +136,123 @@ const List = ({
         setOrderPost({
             manufacturerUsername: '', clientUsername: '', shipmentAddressId: '', deliveryAddressId: ''
         })
+        // reset fields
         setManufacturer(null);
         setClient(null);
         setShipmentAddress(null);
         setDeliveryAddress(null);
         setIsLoadingOrdersFlag(!isLoadingOrdersFlag)
-        // setTimeout(() => {
-        //     setIsLoadingOrdersFlag(!isLoadingOrdersFlag)
-        // }, 100);
     }
 
     const classes = useStyles();
 
     return (
-
-
         <div className={classes.container}>
 
             {isLoading ? (<div className={classes.loading}>
-                    <CircularProgress size="5rem"/>
-                </div>) : (<>
-                    <h1 style={{textAlign: 'center'}}>
-                        Second Form
-                    </h1>
-                    <Typography variant='h5'>Order's CRUD form</Typography>
-                    <FormControl>
-                        <Stack
-                            component="form"
-                            onSubmit={addNewOrder}
-                            sx={{
-                                '& .MuiTextField-root': {m: 1, width: '250px'},
-                            }}
-                        >
-                            <div>
-                                <Autocomplete
-                                    {...manufacturersInputProps}
-                                    id="manufacturer-autocomplete"
-                                    value={manufacturer}
-                                    onChange={(event, newManufacturer) => {
-                                        console.log(manufacturers);
-                                        setManufacturer(newManufacturer);
+                <CircularProgress size="5rem" />
+            </div>) : (<>
+                <h1 style={{ textAlign: 'center' }}>
+                    Second Form
+                </h1>
+                <Typography variant='h5'>Order's CRUD form</Typography>
+                <FormControl>
+                    <Stack
+                        component="form"
+                        onSubmit={addNewOrder}
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '250px' },
+                        }}
+                    >
+                        <div>
+                            <Autocomplete
+                                {...manufacturersInputProps}
+                                id="manufacturer-autocomplete"
+                                value={manufacturer}
+                                onChange={(event, newManufacturer) => {
+                                    setManufacturer(newManufacturer);
+                                    setOrderPost({
+                                        ...orderPost, manufacturerUsername: newManufacturer.manufacturerUsername
+                                    });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Choose manufacturer" variant="standard" />)}
+                            />
+
+                            <Autocomplete
+                                {...shipmentAddressInputProps}
+                                id="shipmentAddress-autocomplete"
+                                value={shipmentAddress}
+                                onChange={(event, newShipmentAddress) => {
+                                    if (newShipmentAddress.annotation == null) {
+                                        setShipmentAddress(newShipmentAddress);
                                         setOrderPost({
-                                            ...orderPost, manufacturerUsername: newManufacturer.manufacturerUsername
+                                            ...orderPost, shipmentAddressId: newShipmentAddress.addressId
                                         });
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Choose manufacturer" variant="standard"/>)}
-                                />
+                                    } else {
+                                        setShipmentAddress(null)
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Shipment Address" variant="standard" />)}
+                            />
 
-                                <Autocomplete
-                                    {...shipmentAddressInputProps}
-                                    id="shipmentAddress-autocomplete"
-                                    value={shipmentAddress}
-                                    onChange={(event, newShipmentAddress) => {
-                                        if (newShipmentAddress.annotation == null) {
-                                            setShipmentAddress(newShipmentAddress);
-                                            setOrderPost({
-                                                ...orderPost, shipmentAddressId: newShipmentAddress.addressId
-                                            });
-                                        } else {
-                                            setShipmentAddress(null)
-                                        }
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Shipment Address" variant="standard"/>)}
-                                />
+                            <Autocomplete
+                                {...clientsInputProps}
+                                id="client-autocomplete"
+                                value={client}
+                                onChange={(event, newClient) => {
+                                    setClient(newClient);
+                                    setOrderPost({ ...orderPost, clientUsername: newClient.clientUsername });
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Choose client" variant="standard" />)}
+                            />
 
+                            <Autocomplete
+                                {...deliveryAddressInputProps}
+                                id="deliveryAddresses-autocomplete"
+                                value={deliveryAddress}
+                                onChange={(event, newDeleveryAddress) => {
+                                    if (newDeleveryAddress.annotation == null) {
+                                        setDeliveryAddress(newDeleveryAddress);
+                                        setOrderPost({
+                                            ...orderPost, deliveryAddressId: newDeleveryAddress.addressId
+                                        });
+                                    } else {
+                                        setDeliveryAddress(null)
+                                    }
 
-                                <Autocomplete
-                                    {...clientsInputProps}
-                                    id="client-autocomplete"
-                                    value={client}
-                                    onChange={(event, newClient) => {
-                                        setClient(newClient);
-                                        setOrderPost({...orderPost, clientUsername: newClient.clientUsername});
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Delivery Addresses" variant="standard" />)}
+                            />
+                            <br />
+                            <MyButton type='submit'>Create order</MyButton>
+                        </div>
+                    </Stack>
+                </FormControl>
 
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Choose client" variant="standard"/>)}
-                                />
+                <br /><br />
 
+                {isLoadingOrders ? (<div
+                    className={classes.loading}
+                >
+                    <CircularProgress size="5rem" />
+                </div>) : (
 
-                                <Autocomplete
-                                    {...deliveryAddressInputProps}
-                                    id="deliveryAddresses-autocomplete"
-                                    value={deliveryAddress}
-                                    onChange={(event, newDeleveryAddress) => {
-                                        if (newDeleveryAddress.annotation == null) {
-                                            setDeliveryAddress(newDeleveryAddress);
-                                            setOrderPost({
-                                                ...orderPost, deliveryAddressId: newDeleveryAddress.addressId
-                                            });
-                                        } else {
-                                            setDeliveryAddress(null)
-                                        }
-
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Delivery Addresses" variant="standard"/>)}
-                                />
-
-
-                                <br/>
-                                <MyButton type='submit'>Create order</MyButton>
-                            </div>
-                        </Stack>
-                    </FormControl>
-
-                    <br/><br/>
-
-
-                    {isLoadingOrders ? (<div
-                            // className={classes.loading}
-                        >
-                            <CircularProgress size="5rem"/>
-                        </div>) : (
-
-                        <OrdersDataTable
-
-                            currentPosition={currentPosition}
-
-                            modal={modal}
-                            setModal={setModal}
-                            ourStart={ourStart}
-                            setOurStart={setOurStart}
-                            ourEnd={ourEnd}
-                            setOurEnd={setOurEnd}
-
-                            orders={orders}
-                            setOrders={setOrders}
-
-                            orderPoints={orderPoints}
-                            setOrderPoints={setOrderPoints}
-
-                            ordersIdForRoutes={ordersIdForRoutes}
-                            setOrdersIdForRoutes={setOrdersIdForRoutes}
-
-                            ordersAddresses={ordersAddresses}
-                            setOrdersAddresses={setOrdersAddresses}
-
-                            ordersAddressesFlag={ordersAddressesFlag}
-                            setOrdersAddressesFlag={setOrdersAddressesFlag}
-
-                            ourShipmentAddress={ourShipmentAddress}
-                            ourShipmentAddresses={ourShipmentAddresses}
-                            ourDeliveryAddress={ourDeliveryAddress}
-                            ourDeliveryAddresses={ourDeliveryAddresses}
-
-                            setOurShipmentAddress={setOurShipmentAddress}
-                            setOurShipmentAddresses={setOurShipmentAddresses}
-                            setOurDeliveryAddress={setOurDeliveryAddress}
-                            setOurDeliveryAddresses={setOurDeliveryAddresses}
-                        />)}
-                </>)}
+                    <OrdersDataTable
+                        currentPosition={currentPosition}
+                        setOurShipmentAddresses={setOurShipmentAddresses}
+                        setOurDeliveryAddresses={setOurDeliveryAddresses}
+                        modal={modal}
+                        setModal={setModal}
+                        orders={orders}
+                        setOrders={setOrders}
+                        setOrdersIdForRoutes={setOrdersIdForRoutes}
+                        setOrdersAddresses={setOrdersAddresses}
+                    />)}
+            </>)}
 
         </div>
 

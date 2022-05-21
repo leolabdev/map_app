@@ -1,26 +1,23 @@
-import {makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 
 export default makeStyles((theme) => ({
-     toolbar: {
+    toolbar: {
         display: 'flex', justifyContent: 'space-between'
     },
     title: {
-      
+
     },
-    navMenu:{
+    navMenu: {
         display: 'flex',
         justifyContent: 'space-between',
         gap: '15px'
     },
-    navItem:{
-        textDecoration:'none',
+    navItem: {
+        textDecoration: 'none',
         color: 'white',
         "&:hover": {
             color: "red"
-          }
-        
+        }
     }
-  
-   
 }));

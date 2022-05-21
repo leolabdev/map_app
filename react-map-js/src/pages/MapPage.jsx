@@ -1,24 +1,23 @@
-import React, {useState, useEffect, useRef} from "react";
-import {CssBaseline} from '@material-ui/core'
-import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap} from 'react-leaflet'
+import React, { useState, useEffect } from "react";
+import { Marker, Popup, useMapEvents } from 'react-leaflet'
 import Map from "../components/Map/Map";
 import List from "../components/List/List";
 import "leaflet-geosearch/dist/geosearch.css";
-import L from "leaflet";
+
+
 
 function MapPage() {
 
     const [modal, setModal] = useState(false);
 
-    const [coordinates, setCoordinates] = useState({lat: 60.1699, lon: 24.9384});
+    const [coordinates, setCoordinates] = useState({ lat: 60.1699, lon: 24.9384 });
 
     let [ourStart, setOurStart] = useState(null);
     let [ourEnd, setOurEnd] = useState(null);
 
-    let [orderPoints, setOrderPoints] = useState([]);
+
     let [ordersIdForRoutes, setOrdersIdForRoutes] = useState([]);
     let [ordersAddresses, setOrdersAddresses] = useState([]);
-    let [ordersAddressesFlag, setOrdersAddressesFlag] = useState(false);
 
     const [ourShipmentAddress, setOurShipmentAddress] = useState(null);
     const [ourDeliveryAddress, setOurDeliveryAddress] = useState(null);
@@ -36,16 +35,17 @@ function MapPage() {
     let [allowPositionMarker, setAllowPositionMarker] = useState(true)
 
 
+    // here we get current position from the navigator
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
             setCurrentPosition(prevState => ({
-                    ...prevState, lat: position.coords.latitude, lon: position.coords.longitude
-                })
+                ...prevState, lat: position.coords.latitude, lon: position.coords.longitude
+            })
             )
         })
     }, [])
 
-
+    // allow us to display the current position on the map
     function LocationMarker() {
 
         let executed = false;
@@ -78,64 +78,35 @@ function MapPage() {
     return (
         <div className='App'>
             <Map
-                allowPositionMarker={allowPositionMarker}
                 setAllowPositionMarker={setAllowPositionMarker}
-                modal={modal}
-                setModal={setModal}
-                ourStart={ourStart}
-                setOurStart={setOurStart}
-                ourEnd={ourEnd}
-                setOurEnd={setOurEnd}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
-                LocationMarker={LocationMarker}
-                orderPoints={orderPoints}
-                setOrderPoints={setOrderPoints}
-                ordersIdForRoutes={ordersIdForRoutes}
-                setOrdersIdForRoutes={setOrdersIdForRoutes}
-                ordersAddresses={ordersAddresses}
-                setOrdersAddresses={setOrdersAddresses}
-
-                ordersAddressesFlag={ordersAddressesFlag}
-                setOrdersAddressesFlag={setOrdersAddressesFlag}
+                setOurShipmentAddress={setOurShipmentAddress}
+                setOurDeliveryAddress={setOurDeliveryAddress}
                 ourShipmentAddress={ourShipmentAddress}
                 ourShipmentAddresses={ourShipmentAddresses}
                 ourDeliveryAddress={ourDeliveryAddress}
                 ourDeliveryAddresses={ourDeliveryAddresses}
-
-                setOurShipmentAddress={setOurShipmentAddress}
-                setOurShipmentAddresses={setOurShipmentAddresses}
-                setOurDeliveryAddress={setOurDeliveryAddress}
-                setOurDeliveryAddresses={setOurDeliveryAddresses}
+                coordinates={coordinates}
+                setCoordinates={setCoordinates}
+                LocationMarker={LocationMarker}
+                ourStart={ourStart}
+                ourEnd={ourEnd}
+                setOurStart={setOurStart}
+                setOurEnd={setOurEnd}
+                ordersIdForRoutes={ordersIdForRoutes}
+                modal={modal}
+                setModal={setModal}
             />
-
 
             <div className="list">
                 <List
                     currentPosition={currentPosition}
-                    modal={modal}
-                    setModal={setModal}
-                    ourStart={ourStart}
-                    setOurStart={setOurStart}
-                    ourEnd={ourEnd}
-                    setOurEnd={setOurEnd}
-                    orderPoints={orderPoints}
-                    setOrderPoints={setOrderPoints}
-                    ordersIdForRoutes={ordersIdForRoutes}
-                    setOrdersIdForRoutes={setOrdersIdForRoutes}
+                    setOurShipmentAddresses={setOurShipmentAddresses}
+                    setOurDeliveryAddresses={setOurDeliveryAddresses}
                     ordersAddresses={ordersAddresses}
                     setOrdersAddresses={setOrdersAddresses}
-
-                    ourShipmentAddress={ourShipmentAddress}
-                    ourShipmentAddresses={ourShipmentAddresses}
-                    ourDeliveryAddress={ourDeliveryAddress}
-                    ourDeliveryAddresses={ourDeliveryAddresses}
-
-                    setOurShipmentAddress={setOurShipmentAddress}
-                    setOurShipmentAddresses={setOurShipmentAddresses}
-                    setOurDeliveryAddress={setOurDeliveryAddress}
-                    setOurDeliveryAddresses={setOurDeliveryAddresses}
-
+                    setOrdersIdForRoutes={setOrdersIdForRoutes}
+                    modal={modal}
+                    setModal={setModal}
                 />
             </div>
 

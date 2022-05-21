@@ -4,8 +4,8 @@
     bottom: 0;
     right: 0;
     left: 0;
-    display: none; 
-    background: rgba(0,0,0, 0.5);
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1200;
 }
 

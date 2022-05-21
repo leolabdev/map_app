@@ -34,9 +34,9 @@ export const postNewHuman = async (humansType, post) => {
             }
         }
 
-        const resp = await axios.post(`http://localhost:8081/dao/${humansType}`, {
+       await axios.post(`http://localhost:8081/dao/${humansType}`, {
             ...request
-        }, );
+        });
 
 
     } catch (error) {
