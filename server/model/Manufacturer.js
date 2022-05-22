@@ -11,7 +11,11 @@ const options = {
     timestamps: false
 };
 
-class Manufacturer extends Model{}
+/**
+ * This class represents row of the Manufacturer SQL table.
+ * Used by the Sequalize ORM for communicating between Manufacturer SQL table and this software.
+ */
+class Manufacturer extends Model {}
 
 Manufacturer.init({
     manufacturerUsername: {

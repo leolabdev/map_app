@@ -11,7 +11,11 @@ const options = {
     timestamps: false
 };
 
-class Address extends Model{}
+/**
+ * This class represents row of the Address SQL table.
+ * Used by the Sequalize ORM for communicating between Address SQL table and this software.
+ */
+class Address extends Model {}
 
 Address.init({
     addressId: {
