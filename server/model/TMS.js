@@ -11,7 +11,11 @@ const options = {
     timestamps: false
 };
 
-class TMS extends Model{}
+/**
+ * This class represents row of the TMS(=traffic measurement station) SQL table.
+ * Used by the Sequalize ORM for communicating between TMS SQL table and this software.
+ */
+class TMS extends Model {}
 
 TMS.init({
     stationId: {

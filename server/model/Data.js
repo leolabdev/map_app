@@ -11,7 +11,11 @@ const options = {
     timestamps: false
 };
 
-class Data extends Model{}
+/**
+ * This class represents row of the Data SQL table.
+ * Used by the Sequalize ORM for communicating between Data SQL table and this software.
+ */
+class Data extends Model {}
 
 Data.init({
     name: {

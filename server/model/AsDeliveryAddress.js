@@ -13,6 +13,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the As delivery address SQL table (intermediate table between address and client tables).
+ * Used by the Sequalize ORM for communicating between As delivery address SQL table and this software.
+ */
 class AsDeliveryAddress extends Model {}
 
 AsDeliveryAddress.init({

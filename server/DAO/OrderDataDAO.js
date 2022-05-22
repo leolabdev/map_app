@@ -4,7 +4,16 @@ const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const daoUtil = new DaoUtil();
 
+/**
+ * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
+ * This table contains orders data such as manufacturer username, client username, shipment address id and delivery address id
+ */
 class OrderDataDAO {
+    /**
+     * The method creates new Order in the OrderData SQL table
+     * @param {Object} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are manditory
+     * @returns created Order object, if operation was sucessful or null if not
+     */
     async create(data) {
         const { manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId } = data;
 
@@ -23,6 +32,11 @@ class OrderDataDAO {
         }
     }
 
+    /**
+     * The method reads Order with provided primary key(orderId)
+     * @param {int} primaryKey primary key of the order
+     * @returns founded Order object, if operation was sucessful or null if not
+     */
     async read(primaryKey) {
         if (primaryKey != null) {
             try {
@@ -39,13 +53,18 @@ class OrderDataDAO {
         }
     }
 
+    /**
+     * The method reads Order with provided primary keys(orderId)
+     * @param {Array} primaryKeys array with primary keys of the orders
+     * @returns array with founded Order objects, if operation was sucessful or null if not
+     */
     async readByIds(primaryKeys) {
         if (primaryKeys != null) {
             try {
-                let resp = await OrderData.findAll( {
-                    where:{
-                        orderId:{
-                            [Op.or] : primaryKeys
+                let resp = await OrderData.findAll({
+                    where: {
+                        orderId: {
+                            [Op.or]: primaryKeys
                         }
                     },
                     include: [{ all: true }]
@@ -63,6 +82,10 @@ class OrderDataDAO {
         }
     }
 
+    /**
+     * The method reads all Orders of the OrderData SQL table
+     * @returns array of the founded Order objects, if operation was sucessful or null if not
+     */
     async readAll() {
         try {
             const resp = await OrderData.findAll({ include: [{ all: true }] });
@@ -74,6 +97,11 @@ class OrderDataDAO {
         }
     }
 
+    /**
+     * The method updates existing Order data in the OrderDAta SQL table
+     * @param {Object} data object with the order data, such as manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId
+     * @returns true, if the operation was sucessful or false if not
+     */
     async update(data) {
         const { orderId } = data;
 
@@ -95,6 +123,11 @@ class OrderDataDAO {
         }
     }
 
+    /**
+     * The method deletes order with provided primary key(orderId)
+     * @param {int} primaryKey primary key of the order
+     * @returns true if operation was sucessful or false if not
+     */
     async delete(primaryKey) {
         if (primaryKey != null) {
             try {

@@ -11,6 +11,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the Client SQL table.
+ * Used by the Sequalize ORM for communicating between Client SQL table and this software.
+ */
 class Client extends Model {}
 
 Client.init({

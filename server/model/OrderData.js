@@ -14,6 +14,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the Order Data SQL table.
+ * Used by the Sequalize ORM for communicating between Order data SQL table and this software.
+ */
 class OrderData extends Model {}
 
 OrderData.init({
