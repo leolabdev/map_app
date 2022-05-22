@@ -22,9 +22,13 @@ const createInstance = () => {
     );
 }
 
+/**
+ * This class is a lazy singleton for the Sequalize ORM instanse.
+ * For making queries to the DB, Sequalize instance must be created, for example at the beginning of the program
+ */
 class SequelizeUtil {
     getSequelizeInstance = () => {
-        if(!instance)
+        if (!instance)
             instance = createInstance();
 
         return instance;
