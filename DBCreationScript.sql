@@ -60,7 +60,7 @@ CREATE TABLE AsDeliveryAddress
     FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername)
 );
 
-CREATE TABLE data
+CREATE TABLE Data
 (
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     value VARCHAR(255),

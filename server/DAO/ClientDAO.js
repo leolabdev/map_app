@@ -1,6 +1,6 @@
 const { Address } = require("../model/Address");
 const { AsDeliveryAddress } = require("../model/AsDeliveryAddress");
-const {OrderData} = require("../model/OrderData");
+const { OrderData } = require("../model/OrderData");
 
 const StringValidator = require("../util/StringValidator").StringValidator;
 const Client = require("../model/Client").Client;
@@ -9,7 +9,16 @@ const DaoUtil = require("../util/DaoUtil").DaoUtil;
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
 
+/**
+ * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
+ * This table contains clients data such as client username and name
+ */
 class ClientDAO {
+    /**
+     * The method creates new client in the Client SQL table
+     * @param {Object} data object with the client data, where clientUsername field is manditory
+     * @returns created Client object, if operation was sucessful or null if not
+     */
     async create(data) {
         const { clientUsername, addressAdd } = data;
 
@@ -35,6 +44,11 @@ class ClientDAO {
         }
     }
 
+    /**
+     * The method reads Client with provided primary key(clientUsername)
+     * @param {String} primaryKey primary key of the client
+     * @returns founded Client object, if operation was sucessful or null if not
+     */
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
             try {
@@ -50,6 +64,10 @@ class ClientDAO {
         }
     }
 
+    /**
+     * The method reads all Clients of the Client SQL table
+     * @returns array of the founded Client objects, if operation was sucessful or null if not
+     */
     async readAll() {
         try {
             const resp = await Client.findAll({ include: Address });
@@ -60,6 +78,11 @@ class ClientDAO {
         }
     }
 
+    /**
+     * The method updates existing client data in the Client SQL table
+     * @param {Object} data object with the client data, such as clientUsername or name
+     * @returns true, if the operation was sucessful or false if not
+     */
     async update(data) {
         const { clientUsername, addressAdd, addressDelete } = data;
 
@@ -99,6 +122,11 @@ class ClientDAO {
         }
     }
 
+    /**
+     * The method deletes client with provided primary key(clientUsername)
+     * @param {String} primaryKey primary key of the client
+     * @returns true if operation was sucessful or false if not
+     */
     async delete(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
             try {
