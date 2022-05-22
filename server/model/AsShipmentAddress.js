@@ -13,6 +13,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the As shipment address SQL table (intermediate table between address and manufacturer tables).
+ * Used by the Sequalize ORM for communicating between As shipment address SQL table and this software.
+ */
 class AsShipmentAddress extends Model {}
 
 AsShipmentAddress.init({

@@ -12,6 +12,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the Area coordinates SQL table.
+ * Used by the Sequalize ORM for communicating between Area coordinates SQL table and this software.
+ */
 class AreaCoordinates extends Model {}
 
 AreaCoordinates.init({

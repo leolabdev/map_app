@@ -163,17 +163,19 @@ class DaoUtil{
 
 function convertPolygonToArea(polygon, areaName, polygonNumber) {
         const result = [];
-        const lonLatArr = polygon[0];
-        if(lonLatArr != null){
-            for(let i = 0; i < lonLatArr.length; i++){
-                const coordinate = {
-                    areaName: areaName,
-                    polygonNumber: polygonNumber,
-                    orderNumber: i,
-                    lon: lonLatArr[i][0],
-                    lat: lonLatArr[i][1]
-                };
-                result.push(coordinate);
+        if(polygon != null){
+            const lonLatArr = polygon[0];
+            if(lonLatArr != null){
+                for(let i = 0; i < lonLatArr.length; i++){
+                    const coordinate = {
+                        areaName: areaName,
+                        polygonNumber: polygonNumber,
+                        orderNumber: i,
+                        lon: lonLatArr[i][0],
+                        lat: lonLatArr[i][1]
+                    };
+                    result.push(coordinate);
+                }
             }
         }
 

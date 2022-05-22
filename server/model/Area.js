@@ -11,6 +11,10 @@ const options = {
     timestamps: false
 };
 
+/**
+ * This class represents row of the Area SQL table.
+ * Used by the Sequalize ORM for communicating between Area SQL table and this software.
+ */
 class Area extends Model {}
 
 Area.init({

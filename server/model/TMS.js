@@ -6,41 +6,31 @@ const sequelizeUtil = new SequelizeUtil();
 const sequelize = sequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
-    modelName: 'Address',
+    modelName: 'TMS',
     freezeTableName: true,
     timestamps: false
 };
 
 /**
- * This class represents row of the Address SQL table.
- * Used by the Sequalize ORM for communicating between Address SQL table and this software.
+ * This class represents row of the TMS(=traffic measurement station) SQL table.
+ * Used by the Sequalize ORM for communicating between TMS SQL table and this software.
  */
-class Address extends Model {}
+class TMS extends Model {}
 
-Address.init({
-    addressId: {
+TMS.init({
+    stationId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true
     },
 
-    city: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+    sensor1Id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
 
-    street: {
-        type: DataTypes.STRING(255),
-        allowNull: false
-    },
-
-    building: {
-        type: DataTypes.STRING(10),
-        allowNull: false
-    },
-
-    flat: {
+    sensor2Id: {
         type: DataTypes.INTEGER,
         allowNull: true
     },
@@ -56,4 +46,4 @@ Address.init({
     }
 }, options);
 
-module.exports.Address = Address;
+module.exports = TMS;

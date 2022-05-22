@@ -1,11 +1,20 @@
-const {Data} = require("../model/Data");
+const { Data } = require("../model/Data");
 const StringValidator = require("../util/StringValidator").StringValidator;
 const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
 
+/**
+ * The class provides functionality for manipulating(CRUD operations) with Data SQL table.
+ * This table contains different data in key-value form and last updated date
+ */
 class DataDAO {
+    /**
+     * The method creates new data pair in the Data SQL table
+     * @param {Object} data object, where the name and value fields are manditory
+     * @returns created Data object, if operation was sucessful or null if not
+     */
     async create(data) {
         const { name, value } = data;
 
@@ -26,6 +35,11 @@ class DataDAO {
         }
     }
 
+    /**
+     * The method reads Data object with the provided primary key(name)
+     * @param {String} primaryKey primary key of the data
+     * @returns founded Data object, if operation was sucessful or null if not
+     */
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
             try {
@@ -41,6 +55,10 @@ class DataDAO {
         }
     }
 
+    /**
+     * The method reads all Data objects of the Data SQL table
+     * @returns array of the founded Data objects, if operation was sucessful or null if not
+     */
     async readAll() {
         try {
             const resp = await Data.findAll();
@@ -51,6 +69,11 @@ class DataDAO {
         }
     }
 
+    /**
+     * The method updates existing data in the Data SQL table
+     * @param {Object} data object with the data, such as value or name
+     * @returns true, if the operation was sucessful or false if not
+     */
     async update(data) {
         const { name, value } = data;
 
@@ -72,6 +95,11 @@ class DataDAO {
         }
     }
 
+    /**
+     * The method deletes data with provided primary key(name)
+     * @param {String} primaryKey primary key of the data
+     * @returns true if operation was sucessful or false if not
+     */
     async delete(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
             try {

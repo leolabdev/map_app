@@ -1,10 +1,6 @@
-.formContainer{
+.formContainer {
         display: grid;
         justify-content: center;
         align-items: center;
         gap: 20px;
 }
-
-/* #gg-autocomplete{
-        z-index:902;
-} */

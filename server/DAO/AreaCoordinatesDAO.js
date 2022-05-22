@@ -3,7 +3,16 @@ const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const daoUtil = new DaoUtil();
 
+/**
+ * The class provides functionality for manipulating(CRUD operations) with AreaCoordinates SQL table.
+ * This table contains area objects coordinates(lon, lat) and used for saving GeoJSON polygon and multipolygon objects
+ */
 class AreaCoordinatesDAO {
+    /**
+     * The method creates new area coordinate in the AreaCoordinates SQL table
+     * @param {Object} data object with the area coordinates data, where orderNumber, polygonNumber, lon, lat, areaName fields are manditory
+     * @returns created AreaCoordinates object, if operation was sucessful or null if not
+     */
     async create(data) {
         const { orderNumber, polygonNumber, lon, lat, areaName } = data;
 
@@ -21,6 +30,11 @@ class AreaCoordinatesDAO {
         }
     }
 
+    /**
+     * The method creates multiple new area coordinates in the AreaCoordinates SQL table
+     * @param {Array} data array with object with the area coordinates data, where orderNumber, polygonNumber, lon, lat, areaName fields are manditory
+     * @returns array with created AreaCoordinates objects, if operation was sucessful or null if not
+     */
     async createMultiple(data) {
         try {
             return await AreaCoordinates.bulkCreate(data);
@@ -31,6 +45,11 @@ class AreaCoordinatesDAO {
         }
     }
 
+    /**
+     * The method reads area coordinate with provided primary key(coordinateId)
+     * @param {int} primaryKey primary key of the coordinate
+     * @returns founded AreaCoordinates object, if operation was sucessful or null if not
+     */
     async read(primaryKey) {
         if (primaryKey != null) {
             try {
@@ -47,6 +66,10 @@ class AreaCoordinatesDAO {
         }
     }
 
+    /**
+     * The method reads all the area coordinates from the AreaCoordinates SQL table
+     * @returns array with all founded AreaCoordinates objects, if operation was sucessful or null if not
+     */
     async readAll() {
         try {
             const resp = await AreaCoordinates.findAll();
@@ -58,6 +81,11 @@ class AreaCoordinatesDAO {
         }
     }
 
+    /**
+     * The method updates existing area coordinate data in the AreaCoordinates SQL table
+     * @param {object} data object with the area coordinates data, such as orderNumber, polygonNumber, lon, lat, areaName
+     * @returns true, if the operation was sucessful or false if not
+     */
     async update(data) {
         const { coordinateId } = data;
 
@@ -79,6 +107,11 @@ class AreaCoordinatesDAO {
         }
     }
 
+    /**
+     * The method deletes area coordinate with provided primary key(coordinateId)
+     * @param {int} primaryKey primary key of the area coordinate
+     * @returns true if operation was sucessful or false if not
+     */
     async delete(primaryKey) {
         if (primaryKey != null) {
             try {

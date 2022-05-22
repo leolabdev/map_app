@@ -10,6 +10,7 @@ dotenv.config();
 
 const SequelizeUtil = require("./modules/SequelizeUtil").SequelizeUtil;
 const SettingsUtil = require("./util/SettingsUtil");
+const Util = require("./util/Util");
 
 const address = require('./routes/api/v1/address');
 const routing = require('./routes/api/v1/routing');
@@ -43,10 +44,19 @@ app.use('/dao/area', area);
 const port = process.env.PORT || 8081;
 const sequelizeUtil = new SequelizeUtil();
 const settingsUtil = new SettingsUtil();
+const util = new Util();
 
 app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
        //await settingsUtil.setUp();
+
+
+        //await util.updateTrafficSituation(90);
+        /*
+        setInterval(() => {
+            util.updateTrafficSituation(90);
+        } , 900000);
+        */
     }
 });

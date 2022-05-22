@@ -60,7 +60,7 @@ CREATE TABLE AsDeliveryAddress
     FOREIGN KEY (clientUsername) REFERENCES Client(clientUsername)
 );
 
-CREATE TABLE data
+CREATE TABLE Data
 (
     name VARCHAR(255) NOT NULL PRIMARY KEY,
     value VARCHAR(255),
@@ -81,6 +81,17 @@ CREATE TABLE AreaCoordinates(
     FOREIGN KEY (areaName) REFERENCES Area(areaName)
 );
 
+CREATE TABLE TMS(
+    stationId INT NOT NULL PRIMARY KEY,
+    sensor1Id INT,
+    sensor2Id INT,
+    lon DOUBLE NOT NULL,
+    lat DOUBLE NOT NULL
+);
+
+INSERT INTO AREA (areaName, type) VALUES ('SlowTraffic', 'MultiPolygon');
+
 INSERT INTO DATA (name, value) VALUES ('gasoline', '2.1');
 INSERT INTO DATA (name, value) VALUES ('diesel', '2.2');
 INSERT INTO DATA (name, value) VALUES ('lpg', '1.9');
+INSERT INTO DATA (name, value) VALUES ('TrafficSituation', '');

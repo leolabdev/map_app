@@ -141,11 +141,7 @@ function calcRoutePrice(prices, fuelSpent) {
 async function getCitiesCentersPolygons(orders){
     const cities = Array.from(util.getOrdersCities(orders));
     let polygon;
-    if(cities.length === 1){
-        const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[0] + "Center");
-        if(resp.data.result != null)
-            polygon = resp.data.result;
-    } else if(cities.length > 1){
+    if(cities.length > 0){
         polygon = {type: "MultiPolygon", coordinates: []};
         for(let i=0; i<cities.length; i++){
             const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[i] + "Center");
@@ -202,7 +198,7 @@ function getPointCoordinates(pointData, addressToGet) {
     if(pointData.type != null && pointData.type === "address"){
         result = pointData.coordinates;
     } else if(addressToGet === 1){
-        const shipmentAddress =  pointData.shipmentAddress;
+        const shipmentAddress = pointData.shipmentAddress;
         result = [shipmentAddress.lon, shipmentAddress.lat];
     } else if(addressToGet === 2){
         const deliveryAddress =  pointData.deliveryAddress;
@@ -351,13 +347,15 @@ router.post('/routing', async (req, res) => {
  *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
  *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
  *     fuelusage: 5.7, *optional
- *     isCenterAvoided: true *optional
+ *     isCenterAvoided: true, *optional
+ *     isTrafficSituation: true *optional
  *  }
  */
 router.post('/routing/orders', async (req, res) => {
     try{
         const orderIds = req.body.orderIds;
         const isCenterAvoided = req.body.isCenterAvoided;
+        const isTrafficSituation = req.body.isTrafficSituation;
         const start = req.body.start;
         const end = req.body.end;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
@@ -379,13 +377,26 @@ router.post('/routing/orders', async (req, res) => {
 
         //if needed, add areas to be avoided
         const options = {};
-        if(isCenterAvoided){
-            const polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
-            const polygonMayBeAvoided = polygonUtil.getPolygonWithoutPointsInside(polygonToAvoid, coordinates);
-            if(polygonMayBeAvoided != null && polygonMayBeAvoided.coordinates.length > 0){
-                options.avoid_polygons = polygonMayBeAvoided;
-            }
 
+        let polygonToAvoid;
+        if(isCenterAvoided){
+            polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
+            polygonToAvoid = polygonUtil.getPolygonWithoutPointsInside(polygonToAvoid, coordinates);
+        }
+
+        if(isTrafficSituation){
+            if(polygonToAvoid == null){
+                polygonToAvoid = {type: "MultiPolygon", coordinates: []};
+            }
+            const trafficResp = await axios.get("http://localhost:8081/dao/area/SlowTraffic");
+            const slowTrafficAreaCoordinates = trafficResp.data.result.coordinates;
+            if(slowTrafficAreaCoordinates.length > 0){
+                polygonToAvoid.coordinates.push(...slowTrafficAreaCoordinates);
+            }
+        }
+
+        if(polygonToAvoid != null && polygonToAvoid.coordinates.length > 0){
+            options.avoid_polygons = polygonToAvoid;
         }
 
         makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });

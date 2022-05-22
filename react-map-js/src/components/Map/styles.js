@@ -13,28 +13,21 @@ export default makeStyles(() => ({
     pointer: {
         cursor: 'pointer',
     },
-    showRouteButton:{
+    showRouteButton: {
         zIndex: 999,
-             position: "absolute",
-             left: "10px",
-             top: "170px",
-             backgroundColor: "white"
+        position: "absolute",
+        left: "10px",
+        top: "170px",
+        backgroundColor: "white"
     },
-    summaryOutput:{
+    summaryOutput: {
         zIndex: 999,
-            position: "absolute",
-             left: "10px",
-             top: "210px",
-             backgroundColor: "white",
-             minHeight:"100px",
-             minWidth: "100px"
+        position: "absolute",
+        left: "10px",
+        top: "210px",
+        backgroundColor: "white",
+        minHeight: "100px",
+        minWidth: "100px"
 
     }
-
-    // button: {
-    //     zIndex: 999,
-    //     position: "absolute",
-    //     left: "10px",
-    //     top: "170px"
-    // }
 }));
