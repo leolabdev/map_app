@@ -211,11 +211,10 @@ const ShowRouteForm = ({
              <FormControlLabel
                 control={
                     <Checkbox checked={checkedTrafficSituation} onChange={(event) => {
-                        // setCheckedCenter(event.target.checked)
                         setCheckedTrafficSituation(event.target.checked)
                     }} name="isTrafficSituation" />
                 }
-                label="Check traffic situation?"
+                label="Check traffic situation?(Beta)"
                 labelPlacement="end"
             />
 
