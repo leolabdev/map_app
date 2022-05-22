@@ -35,8 +35,9 @@ const ShowRouteForm = ({
 }) => {
 
 
-    //Checkbox
-    const [checked, setChecked] = useState(false)
+    //Checkboxs
+    const [checkedCenter, setCheckedCenter] = useState(false)
+    const [checkedTrafficSituation,setCheckedTrafficSituation] = useState(false)
 
     const shipmentAddressesInputProps = {
         options: ourShipmentAddresses,
@@ -61,7 +62,8 @@ const ShowRouteForm = ({
             ],
 
             fuelusage: fuelUsage,
-            isCenterAvoided: checked
+            isCenterAvoided: checkedCenter,
+            isTrafficSituation: checkedTrafficSituation
         }
         if (Number.isInteger(ourStart)) {
             RouteRequestData.start = ourStart
@@ -199,11 +201,21 @@ const ShowRouteForm = ({
 
             <FormControlLabel
                 control={
-                    <Checkbox checked={checked} onChange={(event) => {
-                        setChecked(event.target.checked)
+                    <Checkbox checked={checkedCenter} onChange={(event) => {
+                        setCheckedCenter(event.target.checked)
                     }} name="isCenterAvoided" />
                 }
                 label="Avoid Center?"
+                labelPlacement="end"
+            />
+             <FormControlLabel
+                control={
+                    <Checkbox checked={checkedTrafficSituation} onChange={(event) => {
+                        // setCheckedCenter(event.target.checked)
+                        setCheckedTrafficSituation(event.target.checked)
+                    }} name="isTrafficSituation" />
+                }
+                label="Check traffic situation?"
                 labelPlacement="end"
             />
 
