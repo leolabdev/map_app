@@ -13,7 +13,10 @@
     justify-content: center;
     align-items: center
 }
-
+.formContent{
+    text-align: left;
+    padding: 15px;
+}
 .humansContainer{
     height: 25rem;
     overflow: auto;
@@ -23,7 +26,9 @@
     justify-content: center;
     text-align: center;
 }
-
+h1{
+    text-align: left;
+}
 .humanItem{
     display: flex;
        padding: 0px 0px;
@@ -31,9 +36,14 @@
        border:2px solid teal;
        margin: 0 auto;
        margin-top: 15px;
-       justify-content: left       ;
+       justify-content: left;
        /* gap: 2%; */
-       align-items: left;
        text-align: left;
-   }
-   
+}
+.fieldset {
+    width: 100%;
+    margin-bottom: 10px !important;
+    padding: 10px !important;
+    border: 1px solid #ddd !important;
+    border-radius: 5px;
+}

@@ -1,18 +1,28 @@
 import React, { useMemo, useState ,useEffect} from 'react'
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { postNewHuman } from '../../api/humans/PostNewHuman';
-import { CircularProgress, Typography, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
+import {
+    CircularProgress,
+    Typography,
+    InputLabel,
+    MenuItem,
+    Select,
+    FormLabel,
+    FormGroup
+} from '@material-ui/core';
+import { FormControl } from '@mui/material';
 import Box from '@mui/material/Box';
 // import Stack from "@mui/material/Stack";
 import TextField from '@mui/material/TextField';
 // import Autocomplete from '@mui/material/Autocomplete';
 import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 
-import classes from './Registration.module.css';
 import MyButton from '../UI/button/MyButton';
+import ListItem from "./ListItem";
+import HumanList from "./HumanList";
+import classes from './Registration.module.css';
 
 const Registration = () => {
-
     const [humanPost, setHumanPost] = useState({
         username: '', name: '', addressAdd: {
             city: '', street: '', building: '', lat: '', lon: ''
@@ -21,6 +31,7 @@ const Registration = () => {
 
 
     const [humansType, setHumansType] = useState("client");
+    const [userType, setUserType] = useState("client");
     const [isLoading, setIsLoading] = useState(false);
     const [humans, setHumans] = useState([]);
     // const [clients, setClients] = useState([]);
@@ -31,7 +42,7 @@ const Registration = () => {
     useEffect(() => {
         // console.log("hello")
         setIsLoading(true)
-        getHumansData(humansType)
+        getHumansData(userType)
             .then((data) => {
                 setHumans(data)
                 setIsLoading(false)
@@ -44,7 +55,7 @@ const Registration = () => {
         // getHumansData("manufacturer").then((data) => {
         //     setManufacturers(data)
         // })
-    }, [humansType, status])
+    }, [userType, status])
 
 
     function addNewHuman(e) {
@@ -77,66 +88,56 @@ const Registration = () => {
         setUsername("")
     }
 
-
-
     return (
         <div className={classes.container}>
-            <h1 style={{ textAlign: 'center' }}>
-                Registration Form
-            </h1 >
-            <Typography variant='h5'  >Client or Manufacturer CRUD form</Typography>
             {isLoading ? (
                 <div className={classes.loading}>
                     <CircularProgress size="5rem" />
                 </div>
             ) : (
-                <>
+                <FormControl>
+                    <Box
+                        component="form"
+                        onSubmit={addNewHuman}
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '98%' },
 
-                    <FormControl>
-                        <Box
-                            component="form"
-                            onSubmit={addNewHuman}
-                            sx={{
-                                '& .MuiTextField-root': { m: 1, width: '98%' },
+                        }}
+                    >
+                        <div  className={classes.formContent}>
+                            <h1> Registration Form</h1 >
+                            <FormControl className={classes.fieldset} component="fieldset" >
+                                <FormLabel component="Legend">User Information</FormLabel>
+                                <FormGroup row>
+                                    <TextField
+                                        onChange={e => setHumanPost({ ...humanPost, username: e.target.value })}
+                                        value={humanPost.username}
+                                        required
+                                        id="outlined-required"
+                                        label={`Username`}
+                                        autoComplete="current-username"
+                                    />
+                                    <TextField
+                                        onChange={e => setHumanPost({ ...humanPost, name: e.target.value })}
+                                        value={humanPost.name}
+                                        required
+                                        id="outlined-required"
+                                        label="Name"
+                                        helperText="Firstname and Lastname"
+                                    />
+                                    <FormControl style={{ minWidth: '150px', marginBottom: '30px', margin: '1rem' }}>
+                                        <InputLabel>Type</InputLabel>
+                                        <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
+                                            <MenuItem value="client">Client</MenuItem>
+                                            <MenuItem value="manufacturer">Manufacturer</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </FormGroup>
+                            </FormControl>
 
-                            }}
-                        >
-                            <div>
-
-                                <FormControl style={{ minWidth: '150px', marginBottom: '30px', margin: '1rem' }} className={classes.formControl}>
-                                    <InputLabel>Humans's Type</InputLabel>
-                                    <Select value={humansType} onChange={(event) => setHumansType(event.target.value)}>
-
-                                        <MenuItem value="client">Client</MenuItem>
-                                        <MenuItem value="manufacturer">Manufacturer</MenuItem>
-
-                                    </Select>
-
-                                </FormControl>
-                                <TextField
-                                    onChange={e => setHumanPost({ ...humanPost, username: e.target.value })}
-                                    value={humanPost.username}
-                                    required
-                                    id="outlined-required"
-                                    label={`${humansType}Username`}
-                                    autoComplete="current-username"
-                                />
-                                <TextField
-                                    onChange={e => setHumanPost({ ...humanPost, name: e.target.value })}
-                                    value={humanPost.name}
-                                    required
-                                    id="outlined-required"
-                                    label="Name"
-                                    helperText="Firstname and Lastname"
-                                />
-                                <TextField
-
-                                    disabled
-                                    id="filled-disabled"
-                                    label=" Give Address ↓"
-                                    defaultValue="Address"
-                                    variant="filled"
-                                />
+                            <FormControl className={classes.fieldset} component="fieldset" >
+                                <FormLabel component="Legend">Address</FormLabel>
+                                <FormGroup row>
                                 <TextField
                                     required
                                     onChange={e => setHumanPost({
@@ -176,67 +177,29 @@ const Registration = () => {
                                     label="Building's number"
                                     helperText="example: '1B'"
                                 />
-
-
-                                    <MyButton type='submit'> Create new {humansType} </MyButton>
-                                {/* <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button> */}
-                            </div>
-                        </Box>
-                    </FormControl>
-
-                    <FormControl>
-                        <Box
-                            component="form"
-                            onSubmit={remove}
-                            sx={{
-                                '& .MuiTextField-root': { m: 1, width: '100%' },
-
-                            }}
-                        // noValidate
-                        // autoComplete="off"
-                        
-                        >
-                            <br />
-                            <div>
-                                <TextField
-                                    onChange={e => setUsername(e.target.value)}
-                                    value={username}
-                                    required
-                                    id="outlined-required"
-                                    // label="Username"
-                                    label={`${humansType}Username`}
-                                // autoComplete="current-username"
-                                />
-
-                                
-                                <br />
-                                <MyButton type='submit'>Delete {humansType} by username</MyButton>
-                                {/* <button type='submit'>Delete {humansType} by username</button> */}
-                            </div>
-                        </Box>
-                    </FormControl>
-                    <br />
-                    <br />
-                    <div container className={classes.humansContainer}>
-                    
-                        {/* only if we have humans over then map over them */}
-                        {humans?.map((human, index) => (
-                            <div item key={index} className={classes.humanItem}>
-                            {/* // <div item key={index} > */}
-                                <br />
-                                <div>
-                                    <b>Id:</b>{index} <b>{humansType}Username:</b>  {human?.clientUsername || human?.manufacturerUsername}, <b>Name:</b>  {human?.name}, <b>address: </b> {human?.Addresses[0]?.street || "Null"},  <b>FullAddress:</b>  {JSON.stringify(human?.Addresses)} ,
-                                    {/* {human?.Addresses?.building} {human?.Addresses?.city}{human?.Addresses?.flat},{human?.Addresses?.lat} {human?.Addresses?.lon}{human?.Addresses?.street} */}
-
-
-                                </div>
-                                {/* <button>update</button> */}
-                            </div>
-                        ))}
+                                </FormGroup>
+                            </FormControl>
+                            {/* <button style={{ justifyContent: "center" }} type='submit'>Create new {humansType}</button> */}
+                        </div>
+                        <MyButton type='submit'> Create new {humansType} </MyButton>
+                    </Box>
+                    <div  className={classes.formContent}>
+                        <h1>Registered users</h1 >
+                        <FormControl className={classes.fieldset} component="fieldset" >
+                            <FormLabel component="Legend">Users</FormLabel>
+                            <FormGroup column>
+                                <FormControl style={{ minWidth: '150px', marginBottom: '30px', margin: '0px', width: "fit-content"}}>
+                                    <InputLabel>Type</InputLabel>
+                                    <Select value={userType} onChange={(event) => setUserType(event.target.value)}>
+                                        <MenuItem value="client">Client</MenuItem>
+                                        <MenuItem value="manufacturer">Manufacturer</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <HumanList type={userType} humans={humans}/>
+                            </FormGroup>
+                        </FormControl>
                     </div>
-                    <br />
-
-                </>
+                </FormControl>
             )
             }
 
