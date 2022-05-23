@@ -2,6 +2,12 @@ import React, {useEffect, useState} from "react";
 import classes from "./ListItem.module.css";
 import MyModal from "../UI/Modal/MyModal";
 
+/**
+ *
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function ListItem(props) {
     const [modal, setModal] = useState(false);
     let human = props.human;

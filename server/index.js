@@ -51,8 +51,12 @@ app.listen(port, async() => {
         console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
        //await settingsUtil.setUp();
 
+
+        //await util.updateTrafficSituation(90);
+        /*
         setInterval(() => {
             util.updateTrafficSituation(90);
         } , 900000);
+        */
     }
 });
