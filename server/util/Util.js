@@ -27,7 +27,6 @@ class Util {
             };
             for(let i=0; i<slowTrafficStationIds.length; i++){
                 const areaResp = await axios.get("http://localhost:8081/dao/area/tms" + slowTrafficStationIds[i]);
-                console.log("areaResp.data.result.coordinates", areaResp.data.result.coordinates);
                 const polygonCoordinates = areaResp.data.result.coordinates;
                 slowAreasMultiPolygon.coordinates.push(polygonCoordinates);
             }
