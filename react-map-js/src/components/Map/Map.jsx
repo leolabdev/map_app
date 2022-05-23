@@ -110,7 +110,7 @@ function Map({
                     <div><b>Distance: </b>{(routeData?.distance / 1000)?.toFixed(2)} <i>kms</i></div>
                     <div><b>Duration: </b> {secToHours((routeData?.duration))}  </div>
                     <div><b>Fuel usage: </b>{(routeData?.fuelusage)?.toFixed(2)} <i>litres</i></div>
-                    <div><b><i>CO<sub>2</sub>e</i>: </b>{(routeData?.co2)?.toFixed(2)}  </div>
+                    <div><b><i>CO<sub>2</sub> emission</i>: </b>{(routeData?.co2)?.toFixed(2)}  </div>
                     <div><b>Route Cost:</b> dis: {(routeData?.routeCost?.diesel)}€,
                         gas: {routeData?.routeCost?.gasoline}€
                     </div>
