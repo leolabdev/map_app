@@ -1,7 +1,17 @@
+/**
+ * The class provides functionality for working with the GeoJSON polygon or multipolygon objects
+ */
 class PolygonUtil {
     INF = 10000;
 
-    //points in the form [lon, lat]
+    /**
+     * The method determines does the given lines (p1, q1) and (p2, q2) intersects
+     * @param {Array.<number>=} p1 start point coordinates of the first line in form [lon, lat]
+     * @param {Array.<number>=} q1 end point of the first line in form [lon, lat]
+     * @param {Array.<number>=} p2 start point of the second line in form [lon, lat]
+     * @param {Array.<number>=} q2 end point of the second line in form [lon, lat]
+     * @returns {boolean} true if the lines intersects, false if not
+     */
     doIntersect(p1, q1, p2, q2) {
         const o1 = orientation(p1, q1, p2);
         const o2 = orientation(p1, q1, q2);
@@ -26,8 +36,12 @@ class PolygonUtil {
         return false;
     }
 
-    //polygon in form [ [lon, lat], [lon,lat] ]
-    //points in form [lon, lat]
+    /**
+     * The method determines is the given point inside the given polygon
+     * @param {Array.<Array.<number>>} polygon coordinates of the polygon points in the form [lon, lat]
+     * @param {Array.<number>} p point coordinates in the form [lon, lat]
+     * @returns {boolean} true if the point is inside the polygon, false if not
+     */
     isInside(polygon, p) {
         const pointsCount = polygon.length;
         if (pointsCount < 3)
@@ -51,6 +65,13 @@ class PolygonUtil {
         return (count % 2 === 1);
     }
 
+    /**
+     * The method removes all the GeoJSON polygon objects points coordinates, which contain at least one of the given points.
+     * The method is very specific and used to get polygons, which can be avoided in routing.
+     * @param {Object} polygon GeoJSON polygon or multipolygon object
+     * @param {Array.<Array.<number>>} points array of the points coordinates in the form [lon, lat]
+     * @returns {null|Object} given polygon object without polygon coordinates, which contain at least one of the given points.
+     */
     getPolygonWithoutPointsInside(polygon, points){
         if(polygon != null){
             //check is some the points are inside in the avoided area = this area can not be avoided
@@ -87,8 +108,14 @@ class PolygonUtil {
         return null;
     }
 
+    /**
+     * The method generates square form GeoJSON polygon object's coordinates
+     * @param {Array.<number>} centerCoordinates coordinates of the square center in the form [lon, lat]
+     * @param {number} radius radius of the square
+     * @returns {Array.<Array.<number>>|null} coordinates of the square object
+     */
     generateSquarePolygonCoordinates(centerCoordinates, radius){
-        if(centerCoordinates != null && centerCoordinates.length > 0){
+        if(centerCoordinates != null && centerCoordinates.length > 1){
             const result = [[]];
 
             const x1 = centerCoordinates[0] - radius;

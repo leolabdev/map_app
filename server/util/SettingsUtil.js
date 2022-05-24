@@ -5,7 +5,15 @@ const PolygonUtil = require("../util/PolygonUtil");
 const tmsDAO = new TMSDAO();
 const polygonUtil = new PolygonUtil();
 
+/**
+ * The class provides functionality for setting up the software parts
+ */
 class SettingsUtil {
+    /**
+     * The method sets the software up.
+     * It should be called once on the server first run, after the DB SQL script was executed
+     * @returns {Promise<void>}
+     */
     async setUp(){
         try{ await addCityCenters(); } catch (e) { console.log("Failed to add city centers"); }
         try{ await addTMS(); } catch (e) { console.log("Failed to add TMSs"); }
@@ -14,11 +22,23 @@ class SettingsUtil {
 }
 module.exports = SettingsUtil;
 
+/**
+ * The method adds areas of city centers to the DB, which are used for avoid city centers routing option
+ * @returns {Promise<void>}
+ */
 async function addCityCenters() {
-    await axios.post(`http://localhost:8081/dao/area`, HelsinkiCenter);
-    await axios.post(`http://localhost:8081/dao/area`, LahtiCenter);
+    //add city centers (area ORM objects) here, remember that name of the area must be in form "cityName" + "Center" ("HelsinkiCenter", "TurkuCenter" etc.)
+    const cityCenters = [HelsinkiCenter, LahtiCenter];
+
+    for(let i=0; i<cityCenters.length; i++){
+        await axios.post(`http://localhost:8081/dao/area`, cityCenters[i]);
+    }
 }
 
+/**
+ * The method adds TMSs(=traffic measurement stations) data to the DB
+ * @returns {Promise<void>}
+ */
 async function addTMS() {
     const tmsObj = {};
     const tmsData = await axios.get("https://tie.digitraffic.fi/api/v1/data/tms-data", {
@@ -78,6 +98,11 @@ async function addTMS() {
     await tmsDAO.createMultiple(Object.values(tmsObj));
 }
 
+/**
+ * The method adds areas of the TMSs(traffic measurement stations).
+ * They are used to make routing taking into account traffic situation
+ * @returns {Promise<void>}
+ */
 async function addTMSAreas() {
     const stations = await tmsDAO.readAll();
     const areas = [];
@@ -96,7 +121,8 @@ async function addTMSAreas() {
     await axios.post("http://localhost:8081/dao/area/multiple", areas);
 }
 
-//Helsinki center coordinates in Polygon form
+//City center coordinates in area ORM object form (basically GeoJSON Polygon or MultiPolygon object with name)
+//Attention: polygons with holes are not supported, only the first array in coordinates array will be taken into account
 const HelsinkiCenter = {
     "areaName": "HelsinkiCenter",
     "type": "Polygon",

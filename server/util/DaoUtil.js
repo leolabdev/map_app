@@ -3,7 +3,15 @@ const StringValidator = require('./StringValidator').StringValidator;
 
 const stringValidator = new StringValidator();
 
+/**
+ * The class has functionality for helping communicate with DAO package classes
+ */
 class DaoUtil{
+    /**
+     * The method gets all the data values from Sequelize ORM response, i.e. get all data related only to the object(address, client etc.) without extra data
+     * @param {Array} respArr response array from Sequelize ORM
+     * @returns {null|*[]} array with ORM objects
+     */
     getDataValues(respArr){
         if(respArr != null){
             let result = [];
@@ -16,6 +24,11 @@ class DaoUtil{
         }
     }
 
+    /**
+     * The method gets all the data values from Sequelize ORM response for the order request, i.e. get all data related only to the object without extra data
+     * @param {Array} orderResp order response array from Sequelize ORM
+     * @returns {null|*[]} array with order objects
+     */
     unpackOrderResp(orderResp){
         if(orderResp != null){
             let result = [];
@@ -39,6 +52,11 @@ class DaoUtil{
         }
     }
 
+    /**
+     * The method gets all the data values from Sequelize ORM response for the order request, i.e. get all data related only to the object without extra data
+     * @param {Object} order order response object from Sequelize ORM
+     * @returns {null|*[]} order object
+     */
     unpackOrder(order){
         const orderData = { orderId: order.orderId };
         const manufacturer = order.Manufacturer.dataValues;
@@ -54,6 +72,13 @@ class DaoUtil{
         return orderData;
     }
 
+    /**
+     * The method gets address data including coordinates by street address.
+     * @param {String} street street name
+     * @param {String} building building number in form 34 or 45 A
+     * @param {String} city name of the city
+     * @returns {Promise<AxiosResponse<any>|null>} founded address data
+     */
     async getAddressData(street, building, city) {
         if(street != null && building != null && city != null){
             const address = street + " " + building + ", " + city;
@@ -63,6 +88,13 @@ class DaoUtil{
         }
     }
 
+    /**
+     * The method gets all saved information from the Address SQL table by street address
+     * @param {String} street street name
+     * @param {String} building building number in form 34 or 45 A
+     * @param {String} city name of the city
+     * @returns {Promise<AxiosResponse<any>|null>} founded address data as address ORM object
+     */
     async getAddressesDataFromDB(street, building, city){
         if(street != null && building != null && city != null){
             return await axios.get(`http://localhost:8081/dao/address/search/?city=${city}&street=${street}&building=${building}`);
@@ -71,6 +103,11 @@ class DaoUtil{
         }
     }
 
+    /**
+     * The method converts GeoJSON polygon or multipolygon to area object, which later can be saved to the Area SQL table
+     * @param {Object} polygonObj GeoJSON polygon or multipolygon object to convert
+     * @returns {null|Object|Array.<Object>} area ORM object(or array of these objects) or null if something went wrong
+     */
     parsePolygonToAreaCoordinates(polygonObj){
         let result = null;
 
@@ -89,6 +126,11 @@ class DaoUtil{
         return result;
     }
 
+    /**
+     * The method converts area ORM object to the GeoJSON polygon or multipolygon object
+     * @param areaObj area ORM object to convert
+     * @returns {null|Object} GeoJSON polygon or multipolygon object
+     */
     parseAreaCoordinatesToPolygon(areaObj){
         let result = null;
         if(areaObj != null){
@@ -132,6 +174,11 @@ class DaoUtil{
         return result;
     }
 
+    /**
+     * The method checks does given array contains any nulls or not
+     * @param {Array} arr array to be checked
+     * @returns {boolean} does array contains any nulls or not
+     */
     containNoNullArr(arr){
         if(arr != null){
             for(let i = 0; i < arr.length; i++){
@@ -145,6 +192,11 @@ class DaoUtil{
         }
     }
 
+    /**
+     * The method checks does given array contains any blank strings or not
+     * @param {Array.<string>} arr array to be checked
+     * @returns {boolean} does array contains any blank strings or not
+     */
     containNoBlankArr(arr){
         if(arr != null){
             for(let i = 0; i < arr.length; i++){
@@ -161,6 +213,13 @@ class DaoUtil{
     }
 }
 
+/**
+ * The method converts GeoJSON polygon object to the area coordinates ORM object
+ * @param {Object} polygon GeoJSON polygon object
+ * @param {string} areaName area name
+ * @param {number} polygonNumber polygon order number
+ * @returns {*[]} array of the area coordinates objects
+ */
 function convertPolygonToArea(polygon, areaName, polygonNumber) {
         const result = [];
         if(polygon != null){

@@ -5,7 +5,15 @@ const {DataDAO} = require("../DAO/Data");
 const tmsDAO = new TMSDAO();
 const dataDAO = new DataDAO();
 
+/**
+ * The class provides different methods, which can not be separated to the own class
+ */
 class Util {
+    /**
+     * The method generates Set with city names, which can be found from the given order ORM objects array
+     * @param {Array.<Object>} orders array with order ORM objects
+     * @returns {Set<string>} set of the orders cities
+     */
     getOrdersCities(orders){
         const cities = new Set();
         for(let i=0; i<orders.length; i++){
@@ -17,6 +25,11 @@ class Util {
         return cities;
     }
 
+    /**
+     * The method updates traffic situation by requesting data from the Trafi API and generating GeoJSON multipolygon object with slow traffic areas and saving it to the Area SQL table
+     * @param {number} minSpeed minimum traffic speed, all areas with lower than that speed will be considered as slow
+     * @returns {Promise<AxiosResponse<any>>} status of operation
+     */
     async updateTrafficSituation(minSpeed){
         const slowTrafficStationIds = await getSlowTrafficStationIds(minSpeed);
         if(slowTrafficStationIds.length > 0){
@@ -37,6 +50,11 @@ class Util {
     }
 }
 
+/**
+ * The method finds areas with slow traffic, or where traffic speed is below the given speed
+ * @param {number} minSpeed minimum traffic speed
+ * @returns {Promise<*[]>}
+ */
 async function getSlowTrafficStationIds(minSpeed) {
     const tmsData = await axios.get("https://tie.digitraffic.fi/api/v1/data/tms-data", {
         headers: {

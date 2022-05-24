@@ -1,7 +1,7 @@
 class APIRequestUtil {
     /**
-     * Returns default options for https request.
-     * REMEMBER TO ADD options.headers["Content-Length"] = data.length; when trying to post data
+     * The method returns default options object for https request to the Open Route Service API.
+     * Please, remember to add "Content-Length" field to this object header when trying to post data
      * @type {{path: string, headers: {Authorization: string, Accept: string, "Content-Type": string}, protocol: string, hostname: string, method: string, port: number}}
      */
     getORSSettings(path){
@@ -19,6 +19,10 @@ class APIRequestUtil {
         };
     }
 
+    /**
+     * The method returns default query options object for the Gas Price API (GET request)
+     * @returns {{path: string, headers: {authorization: string, "content-type": string}, hostname: string, method: string, port: null}}
+     */
     getFuelSettings(){
         return {
             "method": "GET",

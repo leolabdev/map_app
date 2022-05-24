@@ -1,4 +1,13 @@
+/**
+ * This class provides functionality for working with the VRoom project
+ */
 class OptimizationUtil{
+    /**
+     * The method generate request object for the VRoom project based on the provided coordinates.
+     * The method may be used in case if shipment and delivery addresses are not specified.
+     * @param {Array.<Array>} coordinates array with coordinates in form [lon, lat]
+     * @returns {{jobs: *[], vehicles: *[]}|null} request to the VRoom project service
+     */
     getVROOMRequestObject(coordinates){
         if(coordinates != null){
             const result = {
@@ -9,7 +18,7 @@ class OptimizationUtil{
             coordinates = sortCoordinatesLeftToRight(coordinates);
 
             if(coordinates != null){
-                for(let i=0; i < coordinates.length; i++){
+                for(let i=0; i<coordinates.length; i++){
                     const point = coordinates[i];
                     const job = {
                         "id": i+1,
@@ -29,6 +38,11 @@ class OptimizationUtil{
         return null;
     }
 
+    /**
+     * The method gets array of coordinates from the VROom project service response
+     * @param vroomRes response came from the VRoom project
+     * @returns {null|*[]} array with coordinates in the form [lon, lan]
+     */
     getOptimizedCoordinates(vroomRes){
         if(vroomRes.routes != null && vroomRes.routes[0] != null){
             let result = [];
@@ -45,6 +59,14 @@ class OptimizationUtil{
         return null;
     }
 
+    /**
+     * The method generate request object for the VRoom project based on the provided order objects array.
+     * The method may be used when shipment and delivery addresses are specified.
+     * @param {Array.<Object>} orderArr array of order objects
+     * @param {Array.<number>=} start start coordinate in the form [lon, lat], optional parameter
+     * @param {Array.<number>=} end end coordinate in the form [lon, lat], optional parameter
+     * @returns {null|Object} generated request object for the VRoom project service
+     */
     getShipmentDeliveryRequestBody(orderArr, start, end){
         let result = null;
         if(orderArr != null && orderArr.length > 0){
@@ -75,6 +97,11 @@ class OptimizationUtil{
     }
 }
 
+/**
+ * The method generates array with only unique coordinates from the given array.
+ * @param {Array.<Array.<number>>} coordinates array with coordinates in the form [lon, lat]
+ * @returns {null|Array.<Array.<number>>} array without duplicate coordinates in the form [lon, lat]
+ */
 const deleteDuplicateCoords = (coordinates) => {
     if(coordinates != null){
         const uniques = [];
@@ -90,6 +117,11 @@ const deleteDuplicateCoords = (coordinates) => {
     return null;
 }
 
+/**
+ * The method sorts the given array in the order from west to east (left to right on map) and from north to south(top to bottom on map)
+ * @param {Array.<Array.<number>>} coordinates array with coordinates in the form [lon, lat]
+ * @returns {Array.<Array.<number>>} given array in the sort order
+ */
 const sortCoordinatesLeftToRight = (coordinates) => {
     if(coordinates != null){
         coordinates.sort(function (a, b){
@@ -109,6 +141,14 @@ const sortCoordinatesLeftToRight = (coordinates) => {
     return coordinates;
 }
 
+/**
+ * The method generates driving-car type object for the VRoom project.
+ * For detailed information see the VRoom project documentation vehicle section
+ * @param {number} id id of the vehicle
+ * @param {Array.<number>=} start start position in the form [lon, lat], optional parameter
+ * @param {Array.<number>=} end end position in the form [lon, lat], optional parameter
+ * @returns {{skills: *[], profile: string, id}} driving-car type object for the VRoom project
+ */
 const generateVehicle = (id, start, end) => {
     const result = {
         id: id,
@@ -125,6 +165,13 @@ const generateVehicle = (id, start, end) => {
     return result;
 }
 
+/**
+ * The method generates step object for the Vroom project
+ * For detailed information see the VRoom project documentation step section
+ * @param {number} id id of the step
+ * @param {Object} address address ORM object
+ * @returns {null|Object} step object for the Vroom project
+ */
 const generateShipmentStep = (id, address) => {
     let result = null;
     if(address != null){
