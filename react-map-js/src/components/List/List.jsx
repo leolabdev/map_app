@@ -37,14 +37,14 @@ const List = ({
     const [shipmentAddresses, setShipmentAddresses] = useState([
 
         {
-            city: '', street: '', building: '', annotation: 'Plz choose a manufacturer first',
+            city: '', street: '', building: '', annotation: 'Please choose a manufacturer first',
         }
 
     ])
     const [deliveryAddresses, setDeliveryAddresses] = useState([
 
         {
-            city: '', street: '', building: '', annotation: 'Plz choose a client first',
+            city: '', street: '', building: '', annotation: 'Please choose a client first',
         }
 
     ])

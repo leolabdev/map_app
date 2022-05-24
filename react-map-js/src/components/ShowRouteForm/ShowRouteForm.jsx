@@ -41,7 +41,7 @@ const ShowRouteForm = ({
 
     const shipmentAddressesInputProps = {
         options: ourShipmentAddresses,
-        getOptionLabel: (option) => `${option.city ? option.city : ""}${option.street ? option.street : ""} ${option.building ? option.building : ""}${option.name ? option.name : ""}`,
+        getOptionLabel: (option) => `${option.city ? option.city : ""} ${option.street ? option.street : ""} ${option.building ? option.building : ""}${option.name ? option.name : ""}`,
     }
 
     const deliveryAddressesInputProps = {
@@ -101,9 +101,9 @@ const ShowRouteForm = ({
                         (o) => {
 
                             addOrderMarker(o.deliveryAddress.lat, o.deliveryAddress.lon,
-                                `<b style="color:blue">Client</b><br />
+                                `<b style="color:blue">Delivery Address</b><br />
                                 <b>${o.Client?.name}</b><br />
-                                 OrderId:${o?.orderId}<br /> 
+                                 Order Id: ${o?.orderId}<br /> 
                                  City:     ${o.deliveryAddress?.city}<br /> 
                                  Street: ${o.deliveryAddress?.street} ${o.deliveryAddress?.building}<br />
                                  Flat: ${o.deliveryAddress?.flat}<br /> 
@@ -111,12 +111,11 @@ const ShowRouteForm = ({
                                 "Client"
                             )
                             addOrderMarker(o.shipmentAddress.lat, o.shipmentAddress.lon,
-                                `<b style="color:orange">Manufacturer</b><br />
+                                `<b style="color:orange">Shipment address</b><br />
                                  <b>${o.Manufacturer?.name}</b><br />
-                                 OrderId:${o?.orderId}<br /> 
+                                 Order Id: ${o?.orderId}<br /> 
                                  City:     ${o.shipmentAddress?.city}<br /> 
                                  Street: ${o.shipmentAddress?.street} ${o.shipmentAddress?.building}<br />
-                                 Flat: ${o.shipmentAddress?.flat}<br /> 
                                   `,
                                 "Manufacturer"
                             )
@@ -135,24 +134,24 @@ const ShowRouteForm = ({
                         } else {
                             setAllowPositionMarker(true)
                             addOrderMarker(start.shipmentAddress.lat, start.shipmentAddress.lon,
-                                `<b style="color:green">Start(Manufacturer)</b><br />
+                                `<b style="color:green">Start</b><br />
+                                <b style="color:green">Shipment address</b><br />
                             <b>${start?.Manufacturer?.name}</b><br /> 
-                            OrderId:${start?.orderId}<br /> 
+                            Order Id: ${start?.orderId}<br /> 
                             City:   ${start?.shipmentAddress?.city}<br /> 
-                            Street: ${start?.shipmentAddress?.street} ${start?.shipmentAddress?.building}<br /> 
-                            Flat: ${start?.shipmentAddress?.flat}<br />     
+                            Street: ${start?.shipmentAddress?.street} ${start?.shipmentAddress?.building}<br />    
                             `, "Start");
                         }
                     }
                     //end
                     if (end != null) {
                         addOrderMarker(end.deliveryAddress.lat, end.deliveryAddress.lon,
-                            `<b style="color:red">End(Client)</b><br />
+                            `<b style="color:red">End</b><br />
+                            <b style="color:red">Delivery Address</b><br />
                             <b>${end?.Client?.name}</b><br />
                             OrderId:${end?.orderId}<br />  
                             City:   ${end?.deliveryAddress?.city}<br /> 
                             Street: ${end?.deliveryAddress?.street} ${end?.deliveryAddress?.building}<br />  
-                            Flat: ${end?.deliveryAddress?.flat}<br /> 
                             `, "End");
                     }
 
@@ -196,7 +195,7 @@ const ShowRouteForm = ({
                 value={fuelUsage}
                 required
                 id="outlined-required"
-                label={`CarFuel_Usage`}
+                label={`Car fuel usage`}
             />
 
             <FormControlLabel
@@ -205,7 +204,7 @@ const ShowRouteForm = ({
                         setCheckedCenter(event.target.checked)
                     }} name="isCenterAvoided" />
                 }
-                label="Avoid Center?"
+                label="Avoid city centers?"
                 labelPlacement="end"
             />
              <FormControlLabel

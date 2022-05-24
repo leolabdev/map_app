@@ -21,6 +21,7 @@ export default makeStyles(() => ({
         backgroundColor: "white"
     },
     summaryOutput: {
+        padding: "10px",
         zIndex: 999,
         position: "absolute",
         left: "10px",

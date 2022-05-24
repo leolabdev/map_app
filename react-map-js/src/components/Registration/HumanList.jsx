@@ -11,7 +11,6 @@ function HumanList(props) {
     const [humans, setHumans] = useState(props.humans);
 
     useEffect(() => {
-        console.log("HumanList update")
         getHumansData(props.type)
             .then((data) => {
                 setHumans(data);
@@ -23,8 +22,6 @@ function HumanList(props) {
             setUpdate(true);
         });
     }
-    console.log("Humans:")
-    console.log(humans)
     return (
         <div >{
             humans?.map((human, index) => (
