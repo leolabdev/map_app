@@ -58,12 +58,17 @@ function parseGeoJsonFromORS(geojson) {
     return GeoJson;
 }
 
+/**
+ * The method converts ORS(open route service) reverse geocoding response to the address object
+ * @param {Object} placeData response data from the ORS
+ * @returns {{streetAddress: string, city: string, coordinates: Array.<number>, type: string}}
+ */
 function parseReverseGeocode(placeData) {
-    const coordinates = placeData.geometry.coordinates;
-
     const place = placeData.properties;
     const streetAddress = place.name;
     const city = place.county;
+    const coordinates = placeData.geometry.coordinates;
+
     return {
         type: "address",
         streetAddress: streetAddress,
@@ -241,6 +246,10 @@ router.get('/address/geojson', async (req, res) => {
     });
 });
 
+/**
+ * Get reverse geocode response from the ORS(open route service), i.e. street address by geographical coordinates(lon, lat)
+ * Example url: http://localhost:8081/api/v1?lon=24.456&lat=65.3456
+ */
 router.get('/address/geocode', async (req, res) => {
     const lon = req.query.lon;
     const lat = req.query.lat;

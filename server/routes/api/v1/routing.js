@@ -5,9 +5,7 @@ const axios = require("axios");
 const {ValuesDateChecker} = require("../../../util/ValuesDateChecker");
 const {DataDAO} = require("../../../DAO/Data");
 const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
-const AreaDAO = require("../../../DAO/AreaDAO");
 const {OptimizationUtil} = require("../../../util/OptimizationUtil");
-const {ResponseUtil} = require("../../../util/ResponseUtil");
 const {AddressUtil} = require("../../../util/AddressUtil");
 const {DaoUtil} = require("../../../util/DaoUtil");
 const APIRequestUtil = require("../../../util/APIRequestUtil");
@@ -20,9 +18,7 @@ const apiRequestUtil = new APIRequestUtil();
 const valuesDateChecker = new ValuesDateChecker();
 const dataDAO = new DataDAO();
 const orderDataDAO = new OrderDataDAO();
-const areaDAO = new AreaDAO();
 const optimizationUtil = new OptimizationUtil();
-const responseUtil = new ResponseUtil();
 const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
 const util = new Util();
@@ -30,7 +26,7 @@ const polygonUtil = new PolygonUtil();
 
 
 /**
- * Calculates fuel consumption in route based on route length
+ * Calculates fuel consumption in route based on route length.
  * @param length of route in (m)
  * @param fuelUsage of vehicle (L/100Km)
  * @returns {number} fuel consumption in route
@@ -41,7 +37,7 @@ function calcFuel(length, fuelUsage) {
     return length * fuelUsage;
 }
 /**
- * Calculates your CO2 emission of route
+ * Calculates your CO2 emission of route.
  *
  * Fuel combustion emissions can be calculated using the emissions factor of 2.33 kg CO2e/litre.
  * If your car average 8 L/100 km then you multiply this by 2.33 and divide by 100 to give 186 g CO2e/km
@@ -59,7 +55,7 @@ function calcCO2(length, fuelUsage) {
 }
 
 /**
- * Get fuel price by country
+ * Get fuel price by country.
  * return example:
  *  {
  *    currency: 'euro',
@@ -122,6 +118,12 @@ async function fuelPriceJSON(country) {
     }
 }
 
+/**
+ * The method calculates price of the route(spent fuel price) for different fuels.
+ * @param {Object.<string>} prices fuel prices object
+ * @param {number} fuelSpent fuel spent amount
+ * @returns {{}} object with route prices for different fuels
+ */
 function calcRoutePrice(prices, fuelSpent) {
     const result = {};
     if(prices != null){
@@ -138,6 +140,11 @@ function calcRoutePrice(prices, fuelSpent) {
     return result;
 }
 
+/**
+ * The method queries city centers areas from the Area and AreaCoordinate SQL tables based on addresses from order ORM objects.
+ * @param {Array.<Object>} orders array with order ORM objects.
+ * @returns {Promise<{coordinates: number[], type: string}>} found city centers areas array
+ */
 async function getCitiesCentersPolygons(orders){
     const cities = Array.from(util.getOrdersCities(orders));
     let polygon;
@@ -159,6 +166,12 @@ async function getCitiesCentersPolygons(orders){
     return polygon;
 }
 
+/**
+ * The method put given coordinates to the optimized order(the shortest path) by making request to the VRoom project service.
+ * Read more from Open Route Service documentation optimization section.
+ * @param {Array.<Array.<number>>} coordinates array of coordinates in form [lon, lat]
+ * @returns {Promise<unknown>} response from the VRoom project service
+ */
 async function getOptimizedRoute(coordinates) {
     try{
         return new Promise(async function (resolve, reject) {
@@ -170,6 +183,14 @@ async function getOptimizedRoute(coordinates) {
     }
 }
 
+/**
+ * The method get shipment and delivery addresses from the given orders and put them to the optimized order(the shortest path) by making request to the VRoom project service.
+ * Read more from Open Route Service documentation optimization section.
+ * @param {Array.<Object>} orderArr array of the order ORM objects
+ * @param {Array.<number>=} start start coordinate in the form [lon, lat], optional parameter
+ * @param {Array.<number>=} end end coordinate in the form [lon, lat], optional parameter
+ * @returns {Promise<unknown>} response from the VRoom project service
+ */
 async function getOptimizedShipmentDelivery(orderArr, start, end) {
     try{
         return new Promise(async function (resolve, reject) {
@@ -181,6 +202,11 @@ async function getOptimizedShipmentDelivery(orderArr, start, end) {
     }
 }
 
+/**
+ * The method gets point address based on provided data.
+ * @param {number|Array.<number>} pointReq order id or coordinate array in form [lon, lat]
+ * @returns {Promise<null|Object|Object[]>} address data
+ */
 async function getPointData(pointReq) {
     if(typeof pointReq === "number"){
         //point is order id
@@ -193,6 +219,14 @@ async function getPointData(pointReq) {
         return null;
     }
 }
+
+/**
+ * The method gets points coordinates based on point data.
+ * The point data may be address object with coordinates included or order ORM object.
+ * @param {Object} pointData address object with coordinates field([lon, lat]) or order ORM object
+ * @param {number} addressToGet 1 for shipment address and 2 for delivery address, if order ORM object provided
+ * @returns {Array.<number>} coordinates array in form [lon, lat]
+ */
 function getPointCoordinates(pointData, addressToGet) {
     let result;
     if(pointData.type != null && pointData.type === "address"){
@@ -208,6 +242,13 @@ function getPointCoordinates(pointData, addressToGet) {
     return result;
 }
 
+/**
+ * The method makes request to the VRoom project service.
+ * Read more from the Open Route Service API docs optimization section.
+ * @param {Object} reqBody request body
+ * @param {function} resolve
+ * @returns {Promise<null>}
+ */
 async function makeOptimizationRequest(reqBody, resolve) {
     if (reqBody != null) {
         let data = JSON.stringify(reqBody);
@@ -245,6 +286,16 @@ async function makeOptimizationRequest(reqBody, resolve) {
     }
 }
 
+/**
+ * The method sends request to Open Route Service for making routing based on the provided coordinates.
+ * Read more from Open Route Service API docs directions section.
+ * @param {Array.<Array.<number>>} coordinates array with coordinates in form [lon, lat]
+ * @param {Object} options options objects for the route
+ * @param {Object} req request object
+ * @param {Object} res response object
+ * @param {Object} additionalDataObj additional data need to be sent to the client side
+ * @returns {Promise<null>}
+ */
 async function makeRoutingRequest(coordinates, options, req, res, additionalDataObj){
     if(coordinates != null && coordinates.length > 0){
         let fuelusage = req.body.fuelusage;

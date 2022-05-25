@@ -158,7 +158,7 @@ router.put("/", async(req, res) => {
  * Delete data of the queried client from the database
  * return (in response.data.isSuccess field) true if it was deleted (= affected rows count is more than 0) or false if not
  *
- * Example of the delete query path:
+ * Example of delete query path:
  * http://localhost:8081/dao/client/john
  */
 router.delete("/:clientUsername", async(req, res) => {
