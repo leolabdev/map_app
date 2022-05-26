@@ -10,6 +10,8 @@ const responseUtil = new ResponseUtil();
 const daoUtil = new DaoUtil();
 
 const clientDAO = new ClientDAO();
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 
 /**
  * Create new client in the database
@@ -52,7 +54,7 @@ router.post("/", async(req, res) => {
         responseUtil.sendResultOfQuery(res, result);
     } else {
         axios
-            .post('http://localhost:8081/dao/address', addressAdd)
+            .post(`http://${host}:${port}/dao/address`, addressAdd)
             .then(async response => {
                 req.body.addressAdd = response.data.result;
                 const result = await clientDAO.create(req.body);
@@ -128,7 +130,7 @@ router.put("/", async(req, res) => {
 
     if (addressAdd != null) {
         await axios
-            .post('http://localhost:8081/dao/address', addressAdd)
+            .post(`http://${host}:${port}/dao/address`, addressAdd)
             .then(async response => {
                 req.body.addressAdd = response.data.result;
             })

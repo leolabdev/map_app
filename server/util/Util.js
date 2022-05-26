@@ -4,6 +4,8 @@ const {DataDAO} = require("../DAO/Data");
 
 const tmsDAO = new TMSDAO();
 const dataDAO = new DataDAO();
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 
 /**
  * The class provides different methods, which can not be separated to the own class
@@ -39,13 +41,13 @@ class Util {
                 "coordinates": []
             };
             for(let i=0; i<slowTrafficStationIds.length; i++){
-                const areaResp = await axios.get("http://localhost:8081/dao/area/tms" + slowTrafficStationIds[i]);
+                const areaResp = await axios.get(`http://${host}:${port}/dao/area/tms` + slowTrafficStationIds[i]);
                 const polygonCoordinates = areaResp.data.result.coordinates;
                 slowAreasMultiPolygon.coordinates.push(polygonCoordinates);
             }
 
             await dataDAO.update( {name: "TrafficSituation", value: "updated"} );
-            return await axios.put("http://localhost:8081/dao/area", slowAreasMultiPolygon);
+            return await axios.put(`http://${host}:${port}/dao/area`, slowAreasMultiPolygon);
         }
     }
 }

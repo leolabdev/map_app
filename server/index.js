@@ -41,14 +41,15 @@ app.use('/dao/data', data);
 app.use('/dao/area', area);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
-const port = process.env.PORT || 8081;
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 const sequelizeUtil = new SequelizeUtil();
 const settingsUtil = new SettingsUtil();
 const util = new Util();
 
 app.listen(port, async() => {
     if (sequelizeUtil.isSequelizeConnected()) {
-        console.log(`Server started on port ${port} // http://localhost:${port}/api/v1`);
+        console.log(`Server started on port ${port} // http://${host}:${port}/`);
        //await settingsUtil.setUp();
 
         setInterval(() => {

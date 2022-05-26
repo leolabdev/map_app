@@ -12,7 +12,8 @@ const responseUtil = new ResponseUtil();
 
 const areaDAO = new AreaDAO();
 const areaCoordinatesDAO = new AreaCoordinatesDAO();
-
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 /**
  * Create new area in the Area SQL table
  * The request body must contain areaName and type(Polygon or MultiPolygon, read more from GeoJSON docs) fields
@@ -86,8 +87,6 @@ router.post("/multiple", async(req, res) => {
             delete areas[i].coordinates;
         }
 
-        //console.log("coordinates", coordinates);
-
         const result = await areaDAO.createMultiple(areas);
         await areaCoordinatesDAO.createMultiple(coordinates);
 
@@ -150,7 +149,7 @@ router.put("/", async(req, res) => {
     try{
         const areaObj = req.body;
         await areaDAO.delete(areaObj.areaName);
-        const createResp = await axios.post(`http://localhost:8081/dao/area/`, areaObj);
+        const createResp = await axios.post(`http://${host}:${port}/dao/area/`, areaObj);
         const status = createResp.data.result != null;
         responseUtil.sendStatusOfOperation(res, status);
     }catch(e){
