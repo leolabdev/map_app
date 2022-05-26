@@ -4,6 +4,8 @@ const PolygonUtil = require("../util/PolygonUtil");
 
 const tmsDAO = new TMSDAO();
 const polygonUtil = new PolygonUtil();
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 
 /**
  * The class provides functionality for setting up the software parts
@@ -31,7 +33,7 @@ async function addCityCenters() {
     const cityCenters = [HelsinkiCenter, LahtiCenter];
 
     for(let i=0; i<cityCenters.length; i++){
-        await axios.post(`http://localhost:8081/dao/area`, cityCenters[i]);
+        await axios.post(`http://${host}:${port}/dao/area`, cityCenters[i]);
     }
 }
 
@@ -118,7 +120,7 @@ async function addTMSAreas() {
         areas.push(area);
     }
 
-    await axios.post("http://localhost:8081/dao/area/multiple", areas);
+    await axios.post(`http://${host}:${port}/dao/area/multiple`, areas);
 }
 
 //City center coordinates in area ORM object form (basically GeoJSON Polygon or MultiPolygon object with name)

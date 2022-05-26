@@ -23,7 +23,8 @@ const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
 const util = new Util();
 const polygonUtil = new PolygonUtil();
-
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 
 /**
  * Calculates fuel consumption in route based on route length.
@@ -151,7 +152,7 @@ async function getCitiesCentersPolygons(orders){
     if(cities.length > 0){
         polygon = {type: "MultiPolygon", coordinates: []};
         for(let i=0; i<cities.length; i++){
-            const resp = await axios.get(`http://localhost:8081/dao/area/` + cities[i] + "Center");
+            const resp = await axios.get(`http://${host}:${port}/dao/area/` + cities[i] + "Center");
             const respPolygon = resp.data.result;
             if(respPolygon != null){
                 if(respPolygon.type === "Polygon"){
@@ -439,7 +440,7 @@ router.post('/routing/orders', async (req, res) => {
             if(polygonToAvoid == null){
                 polygonToAvoid = {type: "MultiPolygon", coordinates: []};
             }
-            const trafficResp = await axios.get("http://localhost:8081/dao/area/SlowTraffic");
+            const trafficResp = await axios.get(`http://${host}:${port}/dao/area/SlowTraffic`);
             const slowTrafficAreaCoordinates = trafficResp.data.result.coordinates;
             if(slowTrafficAreaCoordinates.length > 0){
                 polygonToAvoid.coordinates.push(...slowTrafficAreaCoordinates);

@@ -10,7 +10,7 @@ let instance = undefined;
 
 const dbSettings = {
     host: process.env.DATABASE_HOST,
-    dialect: 'mariadb',
+    dialect: process.env.DATABASE_DIALECT || "mariadb",
     logging: false
 }
 

@@ -2,6 +2,8 @@ const axios = require("axios");
 const StringValidator = require('./StringValidator').StringValidator;
 
 const stringValidator = new StringValidator();
+const host = process.env.DATABASE_HOST || "localhost";
+const port = process.env.DATABASE_PORT || 8081;
 
 /**
  * The class has functionality for helping communicate with DAO package classes
@@ -82,7 +84,7 @@ class DaoUtil{
     async getAddressData(street, building, city) {
         if(street != null && building != null && city != null){
             const address = street + " " + building + ", " + city;
-            return await axios.get(`http://localhost:8081/api/v1/address/search?text=` + address);
+            return await axios.get(`http://${host}:${port}/api/v1/address/search?text=` + address);
         } else{
             return null;
         }
@@ -97,7 +99,7 @@ class DaoUtil{
      */
     async getAddressesDataFromDB(street, building, city){
         if(street != null && building != null && city != null){
-            return await axios.get(`http://localhost:8081/dao/address/search/?city=${city}&street=${street}&building=${building}`);
+            return await axios.get(`http://${host}:${port}/dao/address/search/?city=${city}&street=${street}&building=${building}`);
         } else{
             return null;
         }
