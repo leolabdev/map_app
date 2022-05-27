@@ -383,7 +383,7 @@ router.post('/routing', async (req, res) => {
         let coordinates = req.body.coordinates;
         const optimizationResp = await getOptimizedRoute(coordinates);
         coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
-        makeRoutingRequest(coordinates, req, res);
+        makeRoutingRequest(coordinates, undefined, req, res);
     }catch (err){
         console.log(err);
     }
