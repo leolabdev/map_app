@@ -3,7 +3,7 @@ import classes from "./ListItem.module.css";
 import MyModal from "../UI/Modal/MyModal";
 
 /**
- *
+ * ListItem is element to HumanList. Provides private functions to removeHuman and open and close Modal
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -11,20 +11,25 @@ import MyModal from "../UI/Modal/MyModal";
 function ListItem(props) {
     const [modal, setModal] = useState(false);
     let human = props.human;
-
+    /**
+     * Sets modal to true
+     */
     function openModal(){
         setModal(true)
     }
+    /**
+     * Sets modal to false
+     */
     function closeModal(){
         setModal(false)
     }
+    /**
+     * Asks parent to remove human from database, using props
+     */
     function removeHuman(){
         closeModal();
         props.removeHuman(human?.manufacturerUsername || human?.clientUsername);
     }
-    useEffect(() => {
-
-    },[])
     return (
         <div>
             <MyModal className={classes.modal} visible={modal} setVisible={setModal}>

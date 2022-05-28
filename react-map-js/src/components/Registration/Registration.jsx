@@ -1,9 +1,8 @@
-import React, { useMemo, useState ,useEffect} from 'react'
+import React, { useState ,useEffect} from 'react'
 import { getHumansData } from '../../api/humans/GetHumansData'
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import {
     CircularProgress,
-    Typography,
     InputLabel,
     MenuItem,
     Select,
@@ -12,16 +11,17 @@ import {
 } from '@material-ui/core';
 import { FormControl } from '@mui/material';
 import Box from '@mui/material/Box';
-// import Stack from "@mui/material/Stack";
 import TextField from '@mui/material/TextField';
-// import Autocomplete from '@mui/material/Autocomplete';
-import { deleteHumanByUserName } from '../../api/humans/DeleteHumanByUserName';
 
 import MyButton from '../UI/button/MyButton';
-import ListItem from "./ListItem";
 import HumanList from "./HumanList";
 import classes from './Registration.module.css';
 
+/**
+ * Registration element for Registration page shows form and list of humans
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Registration = () => {
     const [humanPost, setHumanPost] = useState({
         username: '', name: '', addressAdd: {
@@ -29,35 +29,28 @@ const Registration = () => {
         }
     })
 
-
     const [humansType, setHumansType] = useState("client");
     const [userType, setUserType] = useState("client");
     const [isLoading, setIsLoading] = useState(false);
     const [humans, setHumans] = useState([]);
-    // const [clients, setClients] = useState([]);
-    // const [manufacturers, setManufacturers] = useState([]);
     const [status, setStatus] = useState(false);
-    const [username, setUsername] = useState("");
 
+    /**
+     * Updates when userType or status switches state and gets humans from database
+     */
     useEffect(() => {
-        // console.log("hello")
         setIsLoading(true)
         getHumansData(userType)
             .then((data) => {
                 setHumans(data)
                 setIsLoading(false)
             })
-
-        // getHumansData("client").then((data) => {
-        //     setClients(data)
-        // })
-
-        // getHumansData("manufacturer").then((data) => {
-        //     setManufacturers(data)
-        // })
     }, [userType, status])
 
-
+    /**
+     * Adds new human to database using postNewHuman() function from react-map-js/.../humans/PostNewHuman.js
+     * @param e
+     */
     function addNewHuman(e) {
         // desabled autoupdating
         e.preventDefault()
@@ -79,13 +72,6 @@ const Registration = () => {
             }
         })
         console.log(humanPost)
-    }
-
-    function remove(e) {
-        e.preventDefault()
-        deleteHumanByUserName(humansType, username)
-        setStatus(!status)
-        setUsername("")
     }
 
     return (
@@ -202,11 +188,8 @@ const Registration = () => {
                 </FormControl>
             )
             }
-
         </div>
-
     )
-
 }
 
 export default Registration
