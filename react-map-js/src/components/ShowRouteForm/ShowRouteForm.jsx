@@ -39,6 +39,7 @@ const ShowRouteForm = ({
     const [checkedCenter, setCheckedCenter] = useState(false)
     const [checkedTrafficSituation,setCheckedTrafficSituation] = useState(false)
 
+    // Props for auto-inputs
     const shipmentAddressesInputProps = {
         options: ourShipmentAddresses,
         getOptionLabel: (option) => `${option.city ? option.city : ""} ${option.street ? option.street : ""} ${option.building ? option.building : ""}${option.name ? option.name : ""}`,
@@ -49,6 +50,7 @@ const ShowRouteForm = ({
         getOptionLabel: (option) => `${option.city}, ${option.street} ${option.building}  `,
     }
 
+    // function for displaying route on the map
     function showRoute() {
         setVisible(false);
         window.scrollTo({
