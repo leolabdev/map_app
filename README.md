@@ -38,12 +38,12 @@ FUEL_API_KEY=your_Gas_Prices_API_key
 
 1. Database related paths:
 
-| Action | Path | Method | Request object example | Response object example |
+| Action | Path | Method |
 | -------- | ---- | ----- |
 | Create a new address | dao/address | POST |
 | Read address by id | dao/address/read/:id | GET |
 | Read all addresses | dao/address | GET | 
-| Search for address | dao/address/ search?city= Helsinki&street=Pohjoinen Rautatiekatu | GET |
+| Search for address | dao/address/search?city=Helsinki&street=Pohjoinen Rautatiekatu | GET |
 | -------- | ---- | ----- |
 | Create a new area | dao/area | POST |
 | Create multiple new areas | dao/area/multiple | POST |
