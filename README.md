@@ -83,5 +83,17 @@ FUEL_API_KEY=your_Gas_Prices_API_key
 | Calculate route by coordinates | api/v1/routing | POST |
 | Calculate route by order ids | api/v1/routing/orders | POST |
 
-
 *If you have questions or problems with some paths description, you can read more in wiki pages in the DAO classes and database description section or in the API detailed description section.
+
+## Used technologies
+1.	Openroute service routing engine, https://openrouteservice.org/
+2.	Vroom project routing optimization, http://vroom-project.org/
+3.	Open street map map, https://www.openstreetmap.org/about
+4.	Leaflet and React leaflet map UI components https://leafletjs.com/  https://react-leaflet.js.org/
+5.	Digitraffic API traffic situation, https://www.digitraffic.fi/en/road-traffic/
+6.	Gas prices API gasoline and diesel prices, https://collectapi.com/api/gasPrice/gas-prices-api
+7.	NodeJS and Express backend frameworks
+8.	Sequelize ORM for JavaScript, https://sequelize.org/
+9.	MariaDB database management system, https://mariadb.org/
+10.	React frontend JavaScript library, https://reactjs.org/
+11.	JavaScript main programming language
