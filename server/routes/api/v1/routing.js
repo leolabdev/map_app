@@ -312,7 +312,11 @@ async function makeRoutingRequest(coordinates, options, req, res, additionalData
         });
         const apiOptions = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
         apiOptions.headers["Content-Length"] = data.length;
-        const price = await fuelPriceJSON("finland");
+        //const price = await fuelPriceJSON("finland");
+        const price = {
+            diesel: "1.9",
+            gasoline: "1.83"
+        };
 
         const request = await https.request(apiOptions, (response) => {
             let data = '';
