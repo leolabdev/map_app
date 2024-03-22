@@ -41,8 +41,8 @@ app.use('/dao/data', data);
 app.use('/dao/area', area);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 const sequelizeUtil = new SequelizeUtil();
 const settingsUtil = new SettingsUtil();
 const util = new Util();
