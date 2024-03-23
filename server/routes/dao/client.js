@@ -1,10 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const axios = require("axios");
+import express from "express";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import DaoUtil from "../../util/DaoUtil.js";
+import ClientDAO from "../../DAO/ClientDAO.js";
 
-const { DaoUtil } = require("../../util/DaoUtil");
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const ClientDAO = require("../../DAO/ClientDAO").ClientDAO;
+const router = express.Router();
+
+
 
 const responseUtil = new ResponseUtil();
 const daoUtil = new DaoUtil();
@@ -168,4 +169,4 @@ router.delete("/:clientUsername", async(req, res) => {
     responseUtil.sendStatusOfOperation(res, status);
 });
 
-module.exports = router;
+export default router;

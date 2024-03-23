@@ -1,11 +1,11 @@
-const express = require('express');
+import express from "express";
+import DaoUtil from "../../util/DaoUtil.js";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import AreaDAO from "../../DAO/AreaDAO.js";
+import AreaCoordinatesDAO from "../../DAO/AreaCoordinatesDAO.js";
+
 const router = express.Router();
 
-const {DaoUtil} = require('../../util/DaoUtil');
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const AreaDAO = require('../../DAO/AreaDAO');
-const AreaCoordinatesDAO = require('../../DAO/AreaCoordinatesDAO');
-const axios = require("axios");
 
 const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
@@ -171,4 +171,4 @@ router.delete("/:areaName", async(req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

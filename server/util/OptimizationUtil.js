@@ -1,7 +1,7 @@
 /**
  * This class provides functionality for working with the VRoom project
  */
-class OptimizationUtil{
+export default class OptimizationUtil{
     /**
      * The method generate request object for the VRoom project based on the provided coordinates.
      * The method may be used in case if shipment and delivery addresses are not specified.
@@ -182,5 +182,3 @@ const generateShipmentStep = (id, address) => {
     }
     return result;
 }
-
-module.exports.OptimizationUtil = OptimizationUtil;

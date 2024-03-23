@@ -1,7 +1,7 @@
 /**
  * The class has functionality for setting responses to the client side
  */
-class ResponseUtil {
+export default class ResponseUtil {
     /**
      * The method sends status of the executed operation.
      * @param res response objects
@@ -51,5 +51,3 @@ class ResponseUtil {
         return result;
     }
 }
-
-module.exports.ResponseUtil = ResponseUtil;

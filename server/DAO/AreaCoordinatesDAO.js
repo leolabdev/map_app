@@ -1,5 +1,4 @@
-const AreaCoordinates = require("../model/AreaCoordinates");
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
+import DaoUtil from "../util/DaoUtil.js";
 
 const daoUtil = new DaoUtil();
 
@@ -7,7 +6,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with AreaCoordinates SQL table.
  * This table contains area objects coordinates(lon, lat) and used for saving GeoJSON polygon and multipolygon objects
  */
-class AreaCoordinatesDAO {
+export default class AreaCoordinatesDAO {
     /**
      * The method creates new area coordinate in the AreaCoordinates SQL table
      * @param {Object} data object with the area coordinates data, where orderNumber, polygonNumber, lon, lat, areaName fields are manditory
@@ -128,5 +127,3 @@ class AreaCoordinatesDAO {
         }
     }
 }
-
-module.exports = AreaCoordinatesDAO;

@@ -2,25 +2,26 @@
  * Main file for server. Configures and starts server
  */
 // Dev Start: npm run dev
-const express = require('express');
-const bodyParser = require('body-parser');
-const dotenv = require("dotenv");
-const cors = require('cors');
+
+import * as dotenv from "dotenv";
 dotenv.config();
+import express from "express";
+import bodyParser from "body-parser";
+import SettingsUtil from "./util/SettingsUtil.js";
+import Util from "./util/Util.js";
+import SequelizeUtil from "./modules/SequelizeUtil.js";
+import * as addressRouter from "./routes/api/v1/address.js";
+import * as routingRouter from "./routes/api/v1/routing.js";
 
-const SequelizeUtil = require("./modules/SequelizeUtil");
-const SettingsUtil = require("./util/SettingsUtil");
-const Util = require("./util/Util");
+import * as manufacturerDaoRouter from "./routes/dao/manufacturer.js";
+import * as clientDaoRouter from "./routes/dao/client.js";
+import * as addressDaoRouter from "./routes/dao/address.js";
+import * as orderDaoRouter from "./routes/dao/order.js";
+import * as dataDaoRouter from "./routes/dao/data.js";
+import * as areaDaoRouter from "./routes/dao/area.js";
+import cors from "cors";
 
-const address = require('./routes/api/v1/address');
-const routing = require('./routes/api/v1/routing');
 
-const manufacturer = require('./routes/dao/manufacturer');
-const client = require('./routes/dao/client');
-const address_dao = require('./routes/dao/address');
-const order = require('./routes/dao/order');
-const data = require('./routes/dao/data');
-const area = require('./routes/dao/area');
 
 const app = express();
 
@@ -29,16 +30,16 @@ app.use(cors());
 app.use(bodyParser.json());
 
 //API routing
-app.use('/api/v1', address);
-app.use('/api/v1', routing);
+app.use('/api/v1', addressRouter.default);
+app.use('/api/v1', routingRouter.default);
 
 //DAO routing
-app.use('/dao/manufacturer', manufacturer);
-app.use('/dao/client', client);
-app.use('/dao/address', address_dao);
-app.use('/dao/order', order);
-app.use('/dao/data', data);
-app.use('/dao/area', area);
+app.use('/dao/manufacturer', manufacturerDaoRouter.default);
+app.use('/dao/client', clientDaoRouter.default);
+app.use('/dao/address', addressDaoRouter.default);
+app.use('/dao/order', orderDaoRouter.default);
+app.use('/dao/data', dataDaoRouter.default);
+app.use('/dao/area', areaDaoRouter.default);
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const host = process.env.API_HOST || "localhost";

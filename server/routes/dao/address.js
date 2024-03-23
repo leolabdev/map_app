@@ -1,9 +1,11 @@
-const express = require('express');
+import express from "express";
+import DaoUtil from "../../util/DaoUtil.js";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import AddressDAO from "../../DAO/AddressDAO.js";
+
+
 const router = express.Router();
 
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const AddressDAO = require("../../DAO/AddressDAO").AddressDAO;
-const DaoUtil = require("../../util/DaoUtil").DaoUtil;
 
 const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
@@ -97,40 +99,4 @@ router.get("/search", async(req, res) => {
     responseUtil.sendResultOfQuery(res, result);
 });
 
-//No need for updating address data through AddressDAO
-/*router.put("/", async (req, res) => {
-    let {street, building, city} = req.body;
-
-    //if there is a changes in street address, update lat, lon as well
-    if(street != null || building != null || city != null){
-        //get coordinates of the street address
-        const addressData = await daoUtil.getAddressData(street, building, city);
-
-        if(await addressData != null){
-            if(addressData.data.length === 1){
-                const coordinates = addressData.data[0].coordinates;
-                req.body.lon = coordinates.lon;
-                req.body.lat = coordinates.lat;
-                const status = await addressDAO.create(req.body);
-                responseUtil.sendStatusOfOperation(res, status);
-            } else{
-                console.error("address: Multiple addresses for this query was found, DB will not be updated");
-                responseUtil.sendStatusOfOperation(res, false);
-            }
-        } else{
-            responseUtil.sendStatusOfOperation(res, false);
-        }
-    } else{
-        const status = await addressDAO.update(req.body);
-        responseUtil.sendStatusOfOperation(res, status);
-    }
-});*/
-
-//No need to delete address through, when deleting client/manufacturer, if nobody is connected to the address it will be removed automatically
-/*
-router.delete("/:addressId", async(req, res) => {
-    const status = await addressDAO.delete(req.params.addressId);
-    responseUtil.sendStatusOfOperation(res, status);
-});*/
-
-module.exports = router;
+export default router;

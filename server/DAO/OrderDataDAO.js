@@ -1,6 +1,5 @@
-const { Op } = require("sequelize");
-const { OrderData } = require("../model/OrderData");
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
+import DaoUtil from "../util/DaoUtil.js";
+import OrderData from "../model/OrderData.js";
 
 const daoUtil = new DaoUtil();
 
@@ -8,7 +7,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
  * This table contains orders data such as manufacturer username, client username, shipment address id and delivery address id
  */
-class OrderDataDAO {
+export default class OrderDataDAO {
     /**
      * The method creates new Order in the OrderData SQL table
      * @param {Object} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are manditory
@@ -144,5 +143,3 @@ class OrderDataDAO {
         }
     }
 }
-
-module.exports.OrderDataDAO = OrderDataDAO;

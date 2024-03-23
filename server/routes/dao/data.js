@@ -1,8 +1,10 @@
-const express = require('express');
+import ResponseUtil from "../../util/ResponseUtil.js";
+import DataDAO from "../../DAO/DataDAO.js";
+import express from "express";
+
 const router = express.Router();
 
-const {DataDAO} = require("../../DAO/Data");
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
+
 
 const responseUtil = new ResponseUtil();
 
@@ -67,4 +69,4 @@ router.delete("/:name", async(req, res) => {
     responseUtil.sendStatusOfOperation(res, status);
 });
 
-module.exports = router;
+export default router;

@@ -1,8 +1,6 @@
-const AreaCoordinates = require("../model/AreaCoordinates");
-const Area = require("../model/Area");
+import StringValidator from "../util/StringValidator.js";
+import DaoUtil from "../util/DaoUtil.js";
 
-const StringValidator = require("../util/StringValidator").StringValidator;
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
@@ -11,7 +9,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Area SQL table.
  * This table contains area objects and used for saving type(polygon or multipolygon) of the GeoJSON objects and name of the area
  */
-class AreaDAO {
+export default class AreaDAO {
     /**
      * The method creates new area in the Area SQL table
      * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are manditory
@@ -131,5 +129,3 @@ class AreaDAO {
         }
     }
 }
-
-module.exports = AreaDAO;

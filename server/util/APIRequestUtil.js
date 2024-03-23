@@ -1,4 +1,4 @@
-class APIRequestUtil {
+export default class APIRequestUtil {
     /**
      * The method returns default options object for https request to the Open Route Service API.
      * Please, remember to add "Content-Length" field to this object header when trying to post data
@@ -36,5 +36,3 @@ class APIRequestUtil {
         };
     }
 }
-
-module.exports = APIRequestUtil;

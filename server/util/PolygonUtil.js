@@ -1,7 +1,7 @@
 /**
  * The class provides functionality for working with the GeoJSON polygon or multipolygon objects
  */
-class PolygonUtil {
+export default class PolygonUtil {
     INF = 10000;
 
     /**
@@ -135,7 +135,6 @@ class PolygonUtil {
         return null;
     }
 }
-module.exports = PolygonUtil;
 
 //points in the form [lon, lat]
 function onSegment(p, q, r) {

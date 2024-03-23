@@ -1,10 +1,6 @@
-const { Address } = require("../model/Address");
-const { AsShipmentAddress } = require("../model/AsShipmentAddress");
-const { OrderData } = require("../model/OrderData");
+import StringValidator from "../util/StringValidator.js";
+import DaoUtil from "../util/DaoUtil.js";
 
-const StringValidator = require("../util/StringValidator").StringValidator;
-const Manufacturer = require("../model/Manufacturer").Manufacturer;
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
@@ -13,7 +9,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Manufacturer SQL table.
  * This table contains manufacturers data such as manufacturer username and name
  */
-class ManufacturerDAO {
+export default class ManufacturerDAO {
     /**
      * The method creates new Manufacturer in the Manufacturer SQL table
      * @param {Object} data object with the manufacturer data, where manufacturerUsername field is manditory
@@ -162,5 +158,3 @@ class ManufacturerDAO {
         }
     }
 }
-
-module.exports.ManufacturerDAO = ManufacturerDAO;

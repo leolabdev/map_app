@@ -1,5 +1,5 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil");
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
 
 const sequelize = SequelizeUtil.getSequelizeInstance();
@@ -14,7 +14,7 @@ const options = {
  * This class represents row of the Client SQL table.
  * Used by the Sequalize ORM for communicating between Client SQL table and this software.
  */
-class Client extends Model {}
+export default class Client extends Model {}
 
 Client.init({
     clientUsername: {
@@ -28,5 +28,3 @@ Client.init({
         allowNull: true
     }
 }, options);
-
-module.exports.Client = Client;

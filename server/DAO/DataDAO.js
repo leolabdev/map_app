@@ -1,6 +1,5 @@
-const { Data } = require("../model/Data");
-const StringValidator = require("../util/StringValidator").StringValidator;
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
+import StringValidator from "../util/StringValidator.js";
+import DaoUtil from "../util/DaoUtil.js";
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
@@ -9,7 +8,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Data SQL table.
  * This table contains different data in key-value form and last updated date
  */
-class DataDAO {
+export default class DataDAO {
     /**
      * The method creates new data pair in the Data SQL table
      * @param {Object} data object, where the name and value fields are manditory
@@ -116,5 +115,3 @@ class DataDAO {
         }
     }
 }
-
-module.exports.DataDAO = DataDAO;

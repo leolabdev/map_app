@@ -1,8 +1,9 @@
-const express = require('express');
+import express from "express";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import OrderDataDAO from "../../DAO/OrderDataDAO.js";
+
 const router = express.Router();
 
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const OrderDataDAO = require('../../DAO/OrderDataDAO').OrderDataDAO;
 
 const responseUtil = new ResponseUtil();
 const orderDataDAO = new OrderDataDAO();
@@ -84,4 +85,4 @@ router.delete("/:orderId", async(req, res) => {
     responseUtil.sendStatusOfOperation(res, status);
 });
 
-module.exports = router;
+export default router;

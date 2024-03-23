@@ -1,6 +1,7 @@
-const axios = require("axios");
-const TMSDAO = require("../DAO/TMSDAO");
-const PolygonUtil = require("../util/PolygonUtil");
+import TMSDAO from "../DAO/TMSDAO.js";
+import PolygonUtil from "./PolygonUtil.js";
+import axios from "axios";
+
 
 const tmsDAO = new TMSDAO();
 const polygonUtil = new PolygonUtil();
@@ -10,7 +11,7 @@ const port = process.env.DATABASE_PORT || 8081;
 /**
  * The class provides functionality for setting up the software parts
  */
-class SettingsUtil {
+export default class SettingsUtil {
     /**
      * The method sets the software up.
      * It should be called once on the server first run, after the DB SQL script was executed
@@ -22,7 +23,6 @@ class SettingsUtil {
         try{ await addTMSAreas(); } catch (e) { console.log("Failed to add TMS areas"); }
     }
 }
-module.exports = SettingsUtil;
 
 /**
  * The method adds areas of city centers to the DB, which are used for avoid city centers routing option

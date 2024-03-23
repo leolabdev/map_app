@@ -1,8 +1,9 @@
-const { DataTypes, Model } = require('sequelize');
-const { Manufacturer } = require("./Manufacturer");
-const { Client } = require('./Client');
-const { Address } = require("./Address");
-const SequelizeUtil = require("../modules/SequelizeUtil");
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
+import Manufacturer from "./Manufacturer.js";
+import Address from "./Address.js";
+import Client from "./Client.js";
+
 
 const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
@@ -16,7 +17,7 @@ const options = {
  * This class represents row of the Order Data SQL table.
  * Used by the Sequalize ORM for communicating between Order data SQL table and this software.
  */
-class OrderData extends Model {}
+export default class OrderData extends Model {}
 
 OrderData.init({
     orderId: {
@@ -56,5 +57,3 @@ OrderData.belongsTo(Manufacturer, { foreignKey: 'manufacturerUsername' });
 OrderData.belongsTo(Client, { foreignKey: 'clientUsername' });
 OrderData.belongsTo(Address, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
 OrderData.belongsTo(Address, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
-
-module.exports.OrderData = OrderData;

@@ -1,6 +1,7 @@
 {
   "name": "map_app",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "server/index.js",
   "dependencies": {
