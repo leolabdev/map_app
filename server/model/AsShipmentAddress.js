@@ -1,11 +1,9 @@
 const { DataTypes, Model } = require('sequelize');
 const { Address } = require("./Address");
 const { Manufacturer } = require("./Manufacturer");
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+const SequelizeUtil = require("../modules/SequelizeUtil");
 
-const sequelizeUtil = new SequelizeUtil();
-
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'AsShipmentAddress',
