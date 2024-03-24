@@ -29,38 +29,47 @@ const addressDAO = new AddressDAO();
  *      lon: 40.1234    //optional
  *   }
  */
-router.post("/", async(req, res) => {
+router.post("/", async (req, res) => {
     let { street, building, city, lon, lat } = req.body;
-    if(daoUtil.containNoNullArr([city, street, building]) && daoUtil.containNoBlankArr([city, street, building])){
-        const existingAddresses = await daoUtil.getAddressesDataFromDB(street, building, city);
 
-        //if such address is not exists, create it
-        if (existingAddresses.data.result.length === 0) {
-            //if coordinates are not provided
-            if (lon == null || lat == null) {
-                //get coordinates of the street address
-                const addressData = await daoUtil.getAddressData(street, building, city);
-                if (await addressData != null) {
-                    const coordinates = addressData.data[0].coordinates;
-                    req.body.lon = coordinates.lon;
-                    req.body.lat = coordinates.lat;
-                    const result = await addressDAO.create(req.body);
-                    responseUtil.sendResultOfQuery(res, result);
-                } else {
-                    responseUtil.sendResultOfQuery(res, null);
-                }
-            } else {
-                const result = await addressDAO.create(req.body);
-                responseUtil.sendResultOfQuery(res, result);
-            }
-        } else {
-            responseUtil.sendResultOfQuery(res, existingAddresses.data.result[0]);
-        }
-    } else{
+    if(!daoUtil.containNoNullArr([city, street, building]) || !daoUtil.containNoBlankArr([city, street, building])){
         console.log("address: wrong parameters provided");
         responseUtil.sendResultOfQuery(res, null);
+        return;
     }
 
+    try{
+        const existingAddresses = await daoUtil.getAddressesDataFromDB(street, building, city);
+
+        if (existingAddresses.data.result.length !== 0){
+            responseUtil.sendResultOfQuery(res, existingAddresses.data.result[0]);
+            return;
+        }
+
+        //if such address is not exists, create it
+        if (lon != null || lat != null) {
+            const result = await addressDAO.create(req.body);
+            responseUtil.sendResultOfQuery(res, result);
+            return;
+        }
+
+        //if coordinates are not provided
+        //get coordinates of the street address
+        const addressData = await daoUtil.getAddressData(street, building, city);
+
+        if(addressData == null){
+            responseUtil.sendResultOfQuery(res, null);
+            return;
+        }
+
+        const coordinates = addressData.data[0].coordinates;
+        req.body.lon = coordinates.lon;
+        req.body.lat = coordinates.lat;
+        const result = await addressDAO.create(req.body);
+        responseUtil.sendResultOfQuery(res, result);
+    } catch (e) {
+        responseUtil.sendResultOfQuery(res, null);
+    }
 });
 
 /**
