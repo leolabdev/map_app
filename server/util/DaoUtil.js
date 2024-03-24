@@ -3,8 +3,8 @@ import axios from "axios";
 
 
 const stringValidator = new StringValidator();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * The class has functionality for helping communicate with DAO package classes

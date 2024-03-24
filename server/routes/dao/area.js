@@ -13,8 +13,8 @@ const responseUtil = new ResponseUtil();
 
 const areaDAO = new AreaDAO();
 const areaCoordinatesDAO = new AreaCoordinatesDAO();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 /**
  * Create new area in the Area SQL table
  * The request body must contain areaName and type(Polygon or MultiPolygon, read more from GeoJSON docs) fields

@@ -5,8 +5,8 @@ import DataDAO from "../DAO/DataDAO.js";
 
 const tmsDAO = new TMSDAO();
 const dataDAO = new DataDAO();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * The class provides different methods, which can not be separated to the own class

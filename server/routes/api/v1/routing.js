@@ -23,8 +23,8 @@ const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
 const util = new Util();
 const polygonUtil = new PolygonUtil();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * Calculates fuel consumption in route based on route length.
