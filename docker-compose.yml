@@ -47,7 +47,8 @@ services:
       - map-app-db:/var/lib/mysql
 
   adminer:
-    image: adminer
+    build:
+      dockerfile: adminer.Dockerfile
     networks:
       - db
     ports:
