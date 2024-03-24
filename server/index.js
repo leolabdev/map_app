@@ -1,8 +1,6 @@
 /**
  * Main file for server. Configures and starts server
  */
-// Dev Start: npm run dev
-
 import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
@@ -20,8 +18,6 @@ import * as orderDaoRouter from "./routes/dao/order.js";
 import * as dataDaoRouter from "./routes/dao/data.js";
 import * as areaDaoRouter from "./routes/dao/area.js";
 import cors from "cors";
-
-
 
 const app = express();
 

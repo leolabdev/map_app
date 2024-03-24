@@ -1,5 +1,7 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
+import AreaCoordinates from "../model/AreaCoordinates.js";
+import Area from "../model/Area.js";
 
 
 const stringValidator = new StringValidator();
@@ -68,7 +70,7 @@ export default class AreaDAO {
 
     /**
      * The method reads all the areas from the Area SQL table
-     * @returns array with all founded Area objects, if operation was sucessful or null if not
+     * @returns array with all founded Area objects, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -83,7 +85,7 @@ export default class AreaDAO {
     /**
      * The method updates existing area data in the Area SQL table
      * @param {Object} data object with the area data, such as areaName or type
-     * @returns true, if the operation was sucessful or false if not
+     * @returns true, if the operation was successful or false if not
      */
     async update(data) {
         const { areaName } = data;
@@ -109,7 +111,7 @@ export default class AreaDAO {
     /**
      * The method deletes area with provided primary key(areaName)
      * @param {String} primaryKey primary key of the area
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {

@@ -3,6 +3,7 @@ import DaoUtil from "../../util/DaoUtil.js";
 import ResponseUtil from "../../util/ResponseUtil.js";
 import AreaDAO from "../../DAO/AreaDAO.js";
 import AreaCoordinatesDAO from "../../DAO/AreaCoordinatesDAO.js";
+import axios from "axios";
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
+import Data from "../model/Data.js";
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();

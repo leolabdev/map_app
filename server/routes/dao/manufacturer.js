@@ -2,6 +2,7 @@ import express from "express";
 import ResponseUtil from "../../util/ResponseUtil.js";
 import DaoUtil from "../../util/DaoUtil.js";
 import ManufacturerDAO from "../../DAO/ManufacturerDAO.js";
+import axios from "axios";
 
 const router = express.Router();
 

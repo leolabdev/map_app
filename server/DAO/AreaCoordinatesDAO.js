@@ -1,4 +1,5 @@
 import DaoUtil from "../util/DaoUtil.js";
+import AreaCoordinates from "../model/AreaCoordinates.js";
 
 const daoUtil = new DaoUtil();
 

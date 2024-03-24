@@ -1,6 +1,9 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Address from "../model/Address.js";
+import Client from "../model/Client.js";
+import AsDeliveryAddress from "../model/AsDeliveryAddress.js";
+import OrderData from "../model/OrderData.js";
 
 
 const stringValidator = new StringValidator();
