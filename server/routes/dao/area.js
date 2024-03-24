@@ -35,18 +35,30 @@ const port = process.env.API_PORT || 8081;
  *     ]
  * }
  */
-router.post("/", async(req, res) => {
+router.post("/", async (req, res) => {
     try{
         const reqBody = req.body;
         const coordinates = daoUtil.parsePolygonToAreaCoordinates(reqBody);
         delete reqBody.coordinates;
 
-        const result = await areaDAO.create(reqBody).then(async (area) => {
-            return {
-                ...area.dataValues,
-                coordinates: await areaCoordinatesDAO.createMultiple(coordinates)
-            };
-        });
+        const areaResp = await areaDAO.create(reqBody);
+
+        if(areaResp == null){
+            responseUtil.sendResultOfQuery(res, null);
+            return;
+        }
+
+        const coordsResp = await areaCoordinatesDAO.createMultiple(coordinates);
+        if(coordsResp == null){
+            responseUtil.sendResultOfQuery(res, null);
+            return;
+        }
+
+        const result = {
+            ...areaResp.dataValues,
+            coordinates: coordsResp
+        }
+
         responseUtil.sendResultOfQuery(res, result);
     }catch (e) {
         console.log(e);
