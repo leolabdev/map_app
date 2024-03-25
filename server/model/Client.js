@@ -26,5 +26,10 @@ Client.init({
     name: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+
+    addressId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 }, options);

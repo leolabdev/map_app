@@ -1,5 +1,7 @@
 import SequelizeUtil from "../modules/SequelizeUtil.js";
 import {DataTypes, Model} from "sequelize";
+import Client from "./Client.js";
+import Manufacturer from "./Manufacturer.js";
 
 
 
@@ -55,3 +57,9 @@ Address.init({
         allowNull: false
     }
 }, options);
+
+Address.hasOne(Client, { foreignKey: 'addressId' });
+Address.hasOne(Manufacturer, { foreignKey: 'addressId' });
+
+Client.belongsTo(Address, { foreignKey: 'addressId' });
+Manufacturer.belongsTo(Address, { foreignKey: 'addressId' });
