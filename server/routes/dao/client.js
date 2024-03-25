@@ -124,7 +124,7 @@ router.get("/", async(req, res) => {
  *      addressIdDelete: 1 }   //address reference to be nulled in Client table
  */
 router.put("/", async(req, res) => {
-    const { addressAdd, addressDelete } = req.body;
+    const { addressAdd } = req.body;
 
     let request = {...req.body};
 

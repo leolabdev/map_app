@@ -50,23 +50,27 @@ const port = process.env.API_PORT || 8081;
  */
 router.post("/", async(req, res) => {
     const { addressAdd } = req.body;
-    if (addressAdd == null) {
-        const result = await manufacturerDAO.create(req.body);
-        responseUtil.sendResultOfQuery(res, result);
-    } else {
-        axios
-            .post(`http://${host}:${port}/dao/address`, addressAdd)
-            .then(async response => {
-                req.body.addressAdd = response.data.result;
-                const result = await manufacturerDAO.create(req.body);
-                result.dataValues.addressAdd = response.data.result;
-                responseUtil.sendResultOfQuery(res, result);
-            })
-            .catch(e => {
-                console.error("manufacturer: can not create address");
-                console.log(e);
-            });
+
+    const manufacturerResp = await manufacturerDAO.create(req.body);
+
+    if(!manufacturerResp || !manufacturerResp.dataValues || !addressAdd){
+        responseUtil.sendResultOfQuery(res, manufacturerResp);
+        return;
     }
+
+    const manufacturer = manufacturerResp.dataValues;
+
+    const addedAddressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
+    const address = addedAddressResp?.data.result;
+
+    if(address == null){
+        responseUtil.sendResultOfQuery(res, manufacturer);
+        return;
+    }
+
+    await manufacturerDAO.update({manufacturerUsername: manufacturer.manufacturerUsername, addressId: address.addressId});
+
+    responseUtil.sendResultOfQuery(res, {...manufacturer, addressAdd: address});
 });
 
 /**
@@ -127,33 +131,16 @@ router.get("/", async(req, res) => {
  *      } }
  */
 router.put("/", async(req, res) => {
-    const { addressAdd, addressDelete } = req.body;
+    const { addressAdd } = req.body;
+
+    let request = {...req.body};
 
     if (addressAdd != null) {
-        await axios
-            .post(`http://${host}:${port}/dao/address`, addressAdd)
-            .then(async response => {
-                req.body.addressAdd = response.data.result;
-            })
-            .catch(e => {
-                console.error("manufacturer: can not create address");
-                console.log(e);
-            });
+        const addressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
+        request["addressId"] = addressResp?.data.addressId;
     }
 
-    if (addressDelete != null) {
-        const { street, building, city } = addressDelete;
-        if (street && building && city) {
-            const response = await daoUtil.getAddressesDataFromDB(street, building, city);
-            if (response.data.result != null && response.data.result.length > 0) {
-                req.body.addressDelete = response.data.result[0];
-            } else {
-                console.error("manufacturer: can not find this address from the data base");
-            }
-        }
-    }
-
-    const status = await manufacturerDAO.update(req.body);
+    const status = await manufacturerDAO.update(request);
     responseUtil.sendStatusOfOperation(res, status);
 });
 

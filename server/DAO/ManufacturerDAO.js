@@ -1,7 +1,6 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Manufacturer from "../model/Manufacturer.js";
-import AsShipmentAddress from "../model/AsShipmentAddress.js";
 import OrderData from "../model/OrderData.js";
 import Address from "../model/Address.js";
 
@@ -16,38 +15,28 @@ const daoUtil = new DaoUtil();
 export default class ManufacturerDAO {
     /**
      * The method creates new Manufacturer in the Manufacturer SQL table
-     * @param {Object} data object with the manufacturer data, where manufacturerUsername field is manditory
-     * @returns created Manufacturer object, if operation was sucessful or null if not
+     * @param {Manufacturer} data object with the manufacturer data, where manufacturerUsername field is manditory
+     * @returns created Manufacturer object, if operation was successful or null if not
      */
     async create(data) {
-        const { manufacturerUsername, addressAdd } = data;
+        const { manufacturerUsername } = data;
 
-        if (daoUtil.containNoNullArr([manufacturerUsername]) && daoUtil.containNoBlankArr([manufacturerUsername])) {
-            try {
-                if (addressAdd != null) {
-                    delete data.addressAdd;
-                    const resp = await Manufacturer.create(data);
-                    await resp.addAddress(addressAdd.addressId);
-
-                    return resp;
-                } else {
-                    const resp = await Manufacturer.create(data);
-                    return resp;
-                }
-            } catch (e) {
-                console.error("ManufacturerDAO: Could not execute the query");
-                return null;
-            }
-        } else {
+        if(!daoUtil.containNoNullArr([manufacturerUsername]) || !daoUtil.containNoBlankArr([manufacturerUsername])){
             console.error("ManufacturerDAO: Wrong parameter provided");
+            return null;
+        }
+        try {
+            return await Manufacturer.create({manufacturerUsername, name});
+        } catch (e) {
+            console.error("ManufacturerDAO create: Could not execute the query");
             return null;
         }
     }
 
     /**
      * The method reads Manufacturer with provided primary key(manufacturerUsername)
-     * @param {String} primaryKey primary key of the manufacturer
-     * @returns founded Manufacturer object, if operation was sucessful or null if not
+     * @param {string} primaryKey primary key of the manufacturer
+     * @returns founded Manufacturer object, if operation was successful or null if not
      */
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
@@ -66,7 +55,7 @@ export default class ManufacturerDAO {
 
     /**
      * The method reads all Manufacturer of the Manufacturer SQL table
-     * @returns array of the founded Manufacturer objects, if operation was sucessful or null if not
+     * @returns array of the founded Manufacturer objects, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -80,84 +69,51 @@ export default class ManufacturerDAO {
 
     /**
      * The method updates existing manufacturer data in the Manufacturer SQL table
-     * @param {Object} data object with the manufacturer data, such as manufacturerUsername or name
-     * @returns true, if the operation was sucessful or false if not
+     * @param {Manufacturer} data object with the manufacturer data, such as manufacturerUsername or name
+     * @returns true, if the operation was successful or false if not
      */
     async update(data) {
-        const { manufacturerUsername, addressAdd, addressDelete } = data;
+        const { addressIdDelete, ...manufacturer } = data;
 
-        if (manufacturerUsername != null && !stringValidator.isBlank(manufacturerUsername)) {
-            try {
-                delete data.manufacturerUsername;
-                delete data.addressAdd;
-                delete data.addressDelete;
-                const resp = await Manufacturer.update(
-                    data, { where: { manufacturerUsername: manufacturerUsername } }
-                );
+        if (!manufacturer || manufacturer.manufacturerUsername == null || stringValidator.isBlank(manufacturer.manufacturerUsername)) {
+            console.error("ManufacturerDAO update: Wrong parameter provided");
+            return false;
+        }
 
-                if (addressAdd != null || addressDelete != null) {
-                    const updatedManufacturer = await Manufacturer.findByPk(manufacturerUsername);
+        try {
+            if(addressIdDelete)
+                manufacturer.addressId = null;
 
-                    if (updatedManufacturer != null) {
-                        if (addressAdd != null) {
-                            await updatedManufacturer.addAddress(addressAdd.addressId);
-                        }
-                        if (addressDelete != null) {
-                            await updatedManufacturer.removeAddress(addressDelete.addressId);
-                        }
-                    } else {
-                        console.log("ManufacturerDAO: can not find client with the manufacturerUsername");
-                    }
-                }
+            const resp = await Manufacturer.update(
+                manufacturer, { where: { manufacturerUsername: manufacturer.manufacturerUsername } }
+            );
 
-                return resp[0] > 0;
-            } catch (e) {
-                console.log("ManufacturerDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.log("ManufacturerDAO: Wrong parameter provided");
+            return resp[0] > 0;
+        } catch (e) {
+            console.error("ManufacturerDAO update: Could not execute the query");
+            console.log(e);
             return false;
         }
     }
 
     /**
      * The method deletes manufacturer with provided primary key(manufacturerUsername)
-     * @param {String} primaryKey primary key of the manufacturer
-     * @returns true if operation was sucessful or false if not
+     * @param {string} primaryKey primary key of the manufacturer
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const allManufacturerAddresses = await AsShipmentAddress.findAll({ where: { manufacturerUsername: primaryKey } });
-                await AsShipmentAddress.destroy({ where: { manufacturerUsername: primaryKey } });
+        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
+            console.error("ManufacturerDAO delete: Wrong parameter provided");
+            return false;
+        }
 
-                await OrderData.destroy({ where: { manufacturerUsername: primaryKey } });
-
-                const resp = await Manufacturer.destroy({ where: { manufacturerUsername: primaryKey } });
-
-                if (allManufacturerAddresses != null) {
-                    for (let i = 0; i < allManufacturerAddresses.length; i++) {
-                        const asAddress = allManufacturerAddresses[i];
-                        const address = await Address.findByPk(asAddress.addressId);
-
-                        const manufacturers = await address.getManufacturers();
-                        const clients = await address.getClients();
-
-                        if (manufacturers.length === 0 && clients.length === 0) {
-                            Address.destroy({ where: { addressId: address.addressId } });
-                        }
-                    }
-                }
-
-                return resp > 0;
-            } catch (e) {
-                console.error("ManufacturerDAO: Could not execute the query");
-                return false;
-            }
-        } else {
-            console.error("ManufacturerDAO: Wrong parameter provided");
+        try {
+            await OrderData.destroy({ where: { manufacturerUsername: primaryKey } });
+            const resp = await Manufacturer.destroy({ where: { manufacturerUsername: primaryKey } });
+            return resp > 0;
+        } catch (e) {
+            console.error("ManufacturerDAO delete: Could not execute the query");
+            console.log(e);
             return false;
         }
     }
