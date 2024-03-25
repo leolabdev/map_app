@@ -2,7 +2,6 @@ import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Address from "../model/Address.js";
 import Client from "../model/Client.js";
-import AsDeliveryAddress from "../model/AsDeliveryAddress.js";
 import OrderData from "../model/OrderData.js";
 
 
@@ -16,37 +15,27 @@ const daoUtil = new DaoUtil();
 export default class ClientDAO {
     /**
      * The method creates new client in the Client SQL table
-     * @param {Object} data object with the client data, where clientUsername field is manditory
+     * @param {Client} data object with the client data, where clientUsername field is manditory
      * @returns created Client object, if operation was sucessful or null if not
      */
     async create(data) {
-        const { clientUsername, addressAdd } = data;
+        const { clientUsername, name } = data;
 
-        if (daoUtil.containNoNullArr([clientUsername]) && daoUtil.containNoBlankArr([clientUsername])) {
-            try {
-                if (addressAdd != null) {
-                    delete data.addressAdd;
-                    const resp = await Client.create(data);
-                    await resp.addAddress(addressAdd.addressId);
-
-                    return resp;
-                } else {
-                    const resp = await Client.create(data);
-                    return resp;
-                }
-            } catch (e) {
-                console.error("ClientDAO: Could not execute the query");
-                return null;
-            }
-        } else {
+        if(!daoUtil.containNoNullArr([clientUsername]) || !daoUtil.containNoBlankArr([clientUsername])){
             console.error("ClientDAO: Wrong parameter provided");
+            return null;
+        }
+        try {
+            return await Client.create({clientUsername, name});
+        } catch (e) {
+            console.error("ClientDAO create: Could not execute the query");
             return null;
         }
     }
 
     /**
      * The method reads Client with provided primary key(clientUsername)
-     * @param {String} primaryKey primary key of the client
+     * @param {string} primaryKey primary key of the client
      * @returns founded Client object, if operation was sucessful or null if not
      */
     async read(primaryKey) {
@@ -59,7 +48,7 @@ export default class ClientDAO {
                 return null;
             }
         } else {
-            console.error("ClientDAO: Wrong parameter provided");
+            console.error("ClientDAO read: Wrong parameter provided");
             return null;
         }
     }
@@ -73,92 +62,58 @@ export default class ClientDAO {
             const resp = await Client.findAll({ include: Address });
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.error("ClientDAO: Could not execute the query");
+            console.error("ClientDAO readAll: Could not execute the query");
             return false;
         }
     }
 
     /**
      * The method updates existing client data in the Client SQL table
-     * @param {Object} data object with the client data, such as clientUsername or name
+     * @param {Client} data object with the client data, such as clientUsername or name
      * @returns true, if the operation was sucessful or false if not
      */
     async update(data) {
-        const { clientUsername, addressAdd, addressDelete } = data;
+        const { addressIdDelete, ...client } = data;
 
-        if (clientUsername != null && !stringValidator.isBlank(clientUsername)) {
-            try {
-                delete data.clientUsername;
-                delete data.addressDelete;
-                delete data.addAddress;
-                const resp = await Client.update(
-                    data, { where: { clientUsername: clientUsername } }
-                );
+        if (!client || client.clientUsername == null || stringValidator.isBlank(client.clientUsername)) {
+            console.error("ClientDAO update: Wrong parameter provided");
+            return false;
+        }
 
-                if (addressAdd != null || addressDelete != null) {
-                    const updatedClient = await Client.findByPk(clientUsername);
+        try {
+            if(addressIdDelete)
+                client.addressId = null;
 
-                    if (updatedClient != null) {
-                        if (addressAdd != null) {
-                            await updatedClient.addAddress(addressAdd.addressId);
-                        }
-                        if (addressDelete != null) {
-                            await updatedClient.removeAddress(addressDelete.addressId);
-                        }
-                    } else {
-                        console.log("ClientDAO: can not find client with the clientUsername");
-                    }
-                }
+            const resp = await Client.update(
+                client, { where: { clientUsername: client.clientUsername } }
+            );
 
-                return resp[0] > 0;
-            } catch (e) {
-                console.error("ClientDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.error("ClientDAO: Wrong parameter provided");
+            return resp[0] > 0;
+        } catch (e) {
+            console.error("ClientDAO update: Could not execute the query");
+            console.log(e);
             return false;
         }
     }
 
     /**
      * The method deletes client with provided primary key(clientUsername)
-     * @param {String} primaryKey primary key of the client
+     * @param {string} primaryKey primary key of the client
      * @returns true if operation was sucessful or false if not
      */
     async delete(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const allClientAddresses = await AsDeliveryAddress.findAll({ where: { clientUsername: primaryKey } });
-                await AsDeliveryAddress.destroy({ where: { clientUsername: primaryKey } });
+        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
+            console.error("ClientDAO delete: Wrong parameter provided");
+            return false;
+        }
 
-                await OrderData.destroy({ where: { clientUsername: primaryKey } });
-
-                const resp = await Client.destroy({ where: { clientUsername: primaryKey } });
-
-                if (allClientAddresses != null) {
-                    for (let i = 0; i < allClientAddresses.length; i++) {
-                        const asAddress = allClientAddresses[i];
-                        const address = await Address.findByPk(asAddress.addressId);
-
-                        const manufacturers = await address.getManufacturers();
-                        const clients = await address.getClients();
-
-                        if (manufacturers.length === 0 && clients.length === 0) {
-                            Address.destroy({ where: { addressId: address.addressId } });
-                        }
-                    }
-                }
-
-                return resp > 0;
-            } catch (e) {
-                console.error("ClientDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.error("ClientDAO: Wrong parameter provided");
+        try {
+            await OrderData.destroy({ where: { clientUsername: primaryKey } });
+            const resp = await Client.destroy({ where: { clientUsername: primaryKey } });
+            return resp > 0;
+        } catch (e) {
+            console.error("ClientDAO delete: Could not execute the query");
+            console.log(e);
             return false;
         }
     }

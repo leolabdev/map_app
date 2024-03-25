@@ -49,25 +49,29 @@ const port = process.env.API_PORT || 8081;
  *          lon: 40.1234    //optional
  *      } }
  */
-router.post("/", async(req, res) => {
+router.post("/", async (req, res) => {
     const { addressAdd } = req.body;
-    if (addressAdd == null) {
-        const result = await clientDAO.create(req.body);
-        responseUtil.sendResultOfQuery(res, result);
-    } else {
-        axios
-            .post(`http://${host}:${port}/dao/address`, addressAdd)
-            .then(async response => {
-                req.body.addressAdd = response.data.result;
-                const result = await clientDAO.create(req.body);
-                result.dataValues.addressAdd = response.data.result;
-                responseUtil.sendResultOfQuery(res, result);
-            })
-            .catch(e => {
-                console.error("client: can not create address");
-                console.log(e);
-            });
+
+    const clientResp = await clientDAO.create(req.body);
+
+    if(!clientResp || !clientResp.dataValues || !addressAdd){
+        responseUtil.sendResultOfQuery(res, clientResp);
+        return;
     }
+
+    const client = clientResp.dataValues;
+
+    const addedAddressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
+    const address = addedAddressResp?.data.result;
+
+    if(address == null){
+        responseUtil.sendResultOfQuery(res, client);
+        return;
+    }
+
+    await clientDAO.update({clientUsername: client.clientUsername, addressId: address.addressId});
+
+    responseUtil.sendResultOfQuery(res, {...client, addressAdd: address});
 });
 
 /**
@@ -104,7 +108,8 @@ router.get("/", async(req, res) => {
  * Examples of valid request objects (= request body). In 2. and 3. examples you can also provide lat, lon and flat(optional):
  *
  * 1. { clientUsername: "john",
- *      name: "John Smith"}
+ *      name: "John Smith",
+ *      addressId: 1}
  *
  * 2. { clientUsername: "john",
  *      name: "John Smith",
@@ -116,45 +121,19 @@ router.get("/", async(req, res) => {
  *
  * 3. { clientUsername: "john",
  *      name: "John Smith",
- *      addressAdd: {       //address to be added
- *          city: "Helsinki",
- *          street: "Pohjoinen Rautatiekatu",
- *          building: "13"
- *      },
- *      addressDelete: {    //address to be deleted
- *          city: "Helsinki",
- *          street: "Pohjoinen Rautatiekatu",
- *          building: "13"
- *      } }
+ *      addressIdDelete: 1 }   //address reference to be nulled in Client table
  */
 router.put("/", async(req, res) => {
     const { addressAdd, addressDelete } = req.body;
 
+    let request = {...req.body};
+
     if (addressAdd != null) {
-        await axios
-            .post(`http://${host}:${port}/dao/address`, addressAdd)
-            .then(async response => {
-                req.body.addressAdd = response.data.result;
-            })
-            .catch(e => {
-                console.error("client: can not create address");
-                console.log(e);
-            });
+        const addressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
+        request["addressId"] = addressResp?.data.addressId;
     }
 
-    if (addressDelete != null) {
-        const { street, building, city } = addressDelete;
-        if (street && building && city) {
-            const response = await daoUtil.getAddressesDataFromDB(street, building, city);
-            if (response.data.result != null && response.data.result.length > 0) {
-                req.body.addressDelete = response.data.result[0];
-            } else {
-                console.error("client: can not find this address from the data base");
-            }
-        }
-    }
-
-    const status = await clientDAO.update(req.body);
+    const status = await clientDAO.update(request);
     responseUtil.sendStatusOfOperation(res, status);
 });
 
