@@ -26,7 +26,7 @@ export default class ManufacturerDAO {
             return null;
         }
         try {
-            return await Manufacturer.create({manufacturerUsername, name});
+            return await Manufacturer.create(data);
         } catch (e) {
             console.error("ManufacturerDAO create: Could not execute the query");
             return null;
