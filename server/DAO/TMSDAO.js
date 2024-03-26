@@ -11,36 +11,34 @@ const daoUtil = new DaoUtil();
 export default class TMSDAO {
     /**
      * The method creates new TMS(traffic measurement station) in the TMS SQL table
-     * @param {Object} data object with the order data, where stationId, sensor1Id, sensor2Id, lon, lat fields are manditory
-     * @returns created TMS object, if operation was sucessful or null if not
+     * @param {TMS} data object with the order data, where stationId, sensor1Id, sensor2Id, lon, lat fields are mandatory
+     * @returns created TMS object, if operation was successful or null if not
      */
     async create(data) {
-        const { stationId, sensor1Id, sensor2Id, lon, lat } = data;
+        if(!daoUtil.containNoNullArr([...data])){
+            console.log("TMSDAO create: Wrong parameter provided");
+            return null;
+        }
 
-        if (daoUtil.containNoNullArr([stationId, sensor1Id, sensor2Id, lon, lat])) {
-            try {
-                return await TMS.create(data);
-            } catch (e) {
-                console.log("TMSDAO: Could not execute the query");
-                console.log(e);
-                return null;
-            }
-        } else {
-            console.log("TMSDAO: Wrong parameter provided");
+        try {
+            return await TMS.create(data);
+        } catch (e) {
+            console.log("TMSDAO create: Could not execute the query");
+            console.log(e);
             return null;
         }
     }
 
     /**
      * The method creates multiple TMSs(traffic measurement stations) in the TMS SQL table
-     * @param {Array} data array with object with the TMS data, where stationId, sensor1Id, sensor2Id, lon, lat fields are manditory
-     * @returns array with created TMSs objects, if operation was sucessful or null if not
+     * @param {TMS[]} data array with object with the TMS data, where stationId, sensor1Id, sensor2Id, lon, lat fields are mandatory
+     * @returns array with created TMSs objects, if operation was successful or null if not
      */
     async createMultiple(data) {
         try {
             return await TMS.bulkCreate(data);
         } catch (e) {
-            console.log("TMSDAO: Could not execute the query");
+            console.log("TMSDAO createMultiple: Could not execute the query");
             console.log(e);
             return null;
         }
@@ -52,17 +50,17 @@ export default class TMSDAO {
      * @returns founded Order object, if operation was sucessful or null if not
      */
     async read(primaryKey) {
-        if (primaryKey != null) {
-            try {
-                const resp = await TMS.findByPk(primaryKey);
-                return resp != null ? resp.dataValues : null;
-            } catch (e) {
-                console.log("TMSDAO: Could not execute the query");
-                console.log(e);
-                return null;
-            }
-        } else {
-            console.error("TMSDAO: Wrong parameter provided");
+        if(primaryKey == null){
+            console.error("TMSDAO read: Wrong parameter provided");
+            return null;
+        }
+
+        try {
+            const resp = await TMS.findByPk(primaryKey);
+            return resp != null ? resp.dataValues : null;
+        } catch (e) {
+            console.log("TMSDAO read: Could not execute the query");
+            console.log(e);
             return null;
         }
     }
@@ -76,7 +74,7 @@ export default class TMSDAO {
             const resp = await TMS.findAll();
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.log("TMSDAO: Could not execute the query");
+            console.log("TMSDAO readAll: Could not execute the query");
             console.log(e);
             return false;
         }
@@ -88,17 +86,17 @@ export default class TMSDAO {
      * @returns true if operation was sucessful or false if not
      */
     async delete(primaryKey) {
-        if (primaryKey != null) {
-            try {
-                const resp = await TMS.destroy({ where: { stationId: primaryKey } });
-                return resp > 0;
-            } catch (e) {
-                console.log("TMSDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.log("TMSDAO: Wrong parameter provided");
+        if(primaryKey == null){
+            console.log("TMSDAO delete: Wrong parameter provided");
+            return false;
+        }
+
+        try {
+            const resp = await TMS.destroy({ where: { stationId: primaryKey } });
+            return resp > 0;
+        } catch (e) {
+            console.log("TMSDAO delete: Could not execute the query");
+            console.log(e);
             return false;
         }
     }
