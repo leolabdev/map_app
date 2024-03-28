@@ -22,6 +22,8 @@ services:
       - DATABASE_PASSWORD=password
       - ORS_API_KEY=your_Open_Route_Service_key
       - FUEL_API_KEY=your_Gas_Prices_API_key
+      - MAPS_API_KEY=my_key
+      - GEOAPIFY_API_KEY=my_key
     volumes:
       - type: bind
         source: ./server
