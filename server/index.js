@@ -10,6 +10,8 @@ import Util from "./util/Util.js";
 import SequelizeUtil from "./modules/SequelizeUtil.js";
 import * as addressRouter from "./routes/api/v1/address.js";
 import * as routingRouter from "./routes/api/v1/routing.js";
+import * as addressRouter2 from "./routes/api/v2/address.js";
+import * as routingRouter2 from "./routes/api/v2/routing.js";
 
 import * as manufacturerDaoRouter from "./routes/dao/manufacturer.js";
 import * as clientDaoRouter from "./routes/dao/client.js";
@@ -28,6 +30,9 @@ app.use(bodyParser.json());
 //API routing
 app.use('/api/v1', addressRouter.default);
 app.use('/api/v1', routingRouter.default);
+
+app.use('/api/v2/address', addressRouter2.default);
+app.use('/api/v2/route', routingRouter2.default);
 
 //DAO routing
 app.use('/dao/manufacturer', manufacturerDaoRouter.default);
