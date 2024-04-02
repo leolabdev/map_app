@@ -22,6 +22,8 @@ import * as areaDaoRouter from "./routes/dao/area.js";
 import cors from "cors";
 
 const app = express();
+//for ip access through proxy
+app.set('trust proxy', 1);
 
 //middleware
 app.use(cors());
