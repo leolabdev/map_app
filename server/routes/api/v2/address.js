@@ -1,18 +1,23 @@
 import express from "express";
 import ThrottlingQueue from "../../../util/throttlingQueue.js";
 import rateLimit from "express-rate-limit";
+import APILimitTracker from "../../../util/APILimitTracker.js";
 
 
 const router = express.Router();
 
-//TODO: throttling for every endpoint, maps.co 1s, geoapifi 2-3s/IP
+//TODO: throttling for every endpoint, maps.co 1s in queue, geoapifi 2-3s/IP and 1s in queue
 
 const validateQueue = new ThrottlingQueue(1500);
 router.get('/validate', async (req, res, next) => {
+    const areRequests = APILimitTracker.areRequestsLeft('maps', 'search');
+    if(!areRequests)
+        return sendDailyLimitExceeded(res);
+
     const {street, building, city} = req.query;
     const searchText = `${building}+${street}+${city}+Finland`
 
-    const key = process.env.MAPS_API_KEY;
+    const key = '66058c21b59d8312623700mogc18534';
     const url = `https://geocode.maps.co/search?q=${searchText}&api_key=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);
@@ -21,10 +26,14 @@ router.get('/validate', async (req, res, next) => {
 
 const reverseQueue = new ThrottlingQueue(1500);
 router.get('/reverse', async (req, res, next) => {
+    const areRequests = APILimitTracker.areRequestsLeft('maps', 'reverse');
+    if(!areRequests)
+        return sendDailyLimitExceeded(res);
+
     const {lon, lat} = req.query;
 
     //60.2078669, 24.8918027
-    const key = process.env.MAPS_API_KEY;
+    const key = '66058c21b59d8312623700mogc18534';
     const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&api_key=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);
@@ -42,6 +51,10 @@ const limiter = rateLimit({
 });
 const autocompleteQueue = new ThrottlingQueue(1500);
 router.get('/autocomplete', limiter, async (req, res, next) => {
+    const areRequests = APILimitTracker.areRequestsLeft('geoapify', 'autocomplete');
+    if(!areRequests)
+        return sendDailyLimitExceeded(res);
+
     const {search, city} = req.query;
 
     const cityId = determineGeoapifyCityId(city);
@@ -72,6 +85,10 @@ function apiRequestFunction(url, res) {
             res.status(500).send({error: 'Failed to fetch geocoding data'});
         }
     }
+}
+
+function sendDailyLimitExceeded(res) {
+    res.status(429).send({error: 'Daily limit exceeded'});
 }
 
 /**
