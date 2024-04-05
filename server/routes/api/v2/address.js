@@ -17,7 +17,7 @@ router.get('/validate', async (req, res, next) => {
     const {street, building, city} = req.query;
     const searchText = `${building}+${street}+${city}+Finland`
 
-    const key = '66058c21b59d8312623700mogc18534';
+    const key = process.env.MAPS_API_KEY;
     const url = `https://geocode.maps.co/search?q=${searchText}&api_key=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);
@@ -33,7 +33,7 @@ router.get('/reverse', async (req, res, next) => {
     const {lon, lat} = req.query;
 
     //60.2078669, 24.8918027
-    const key = '66058c21b59d8312623700mogc18534';
+    const key = process.env.MAPS_API_KEY;
     const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&api_key=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);

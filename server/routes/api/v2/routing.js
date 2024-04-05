@@ -48,24 +48,22 @@ const port = process.env.API_PORT || 8081;
  *
  * responses back geoJSON
  */
-router.post('/routing', async (req, res, next) => {
-    try{
-        let coordinates = req.body.coordinates;
-        if(!coordinates){
-            res.status(400).send({
-                message: 'coordinates field is required',
-                status: 400
-            });
-            return next();
-        }
+router.post('/', async (req, res, next) => {
+    const {coordinates, fuelusage} = req.body;
+    if(!coordinates)
+        res.status(400).send({error: "coordinates field is required", status: 400});
 
-        const optimizationResp = await getOptimizedRoute(coordinates);
-        coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
-        await makeRoutingRequest(coordinates, undefined, req, res);
-    }catch (err){
-        console.log(err);
-    }
+    const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe'
+    //const key = process.env.ORS_API_KEY;
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
+
+    const optimizedCoords = await optimizeRoute(coordinates, key);
+    if(!optimizedCoords)
+        return res.status(500).send({error: "could not optimize the route", status: 500});
+
+    await orsRequestResponse(url, key, {coordinates: optimizedCoords}, res);
 });
+
 
 /**
  * orderIds ids of the orders
@@ -81,7 +79,7 @@ router.post('/routing', async (req, res, next) => {
  *     isTrafficSituation: true *optional
  *  }
  */
-router.post('/routing/orders', async (req, res) => {
+router.post('/orders', async (req, res) => {
     try{
         const orderIds = req.body.orderIds;
         const isCenterAvoided = req.body.isCenterAvoided;
@@ -135,338 +133,66 @@ router.post('/routing/orders', async (req, res) => {
     }
 });
 
-/**
- * Calculates fuel consumption in route based on route length.
- * @param {number} length of route in (m)
- * @param {number} fuelUsage of vehicle (L/100Km)
- * @returns {number} fuel consumption in route
- */
-function calcFuel(length, fuelUsage) {
-    const lengthKmPerL = length / 1000 / 100;
-    return lengthKmPerL * fuelUsage;
-}
-/**
- * Calculates your CO2 emission of route.
- *
- * Fuel combustion emissions can be calculated using the emissions factor of 2.33 kg CO2e/litre.
- * If your car average 8 L/100 km then you multiply this by 2.33 and divide by 100 to give 186 g CO2e/km
- * for combustion emissions.
- *
- * @param {number} length of route in (m)
- * @param {number} fuelUsage of vehicle (L/100Km)
- * @returns {number} C02 emission from route. eg. 4.1kg CO2e (unit is kg CO2e)
- */
-function calcCO2(length, fuelUsage) {
-    const CO2 = 2.33; // kg CO2e/litre
-    // Convert m to km
-    const lengthKm = length / 1000.0;
-    return ((fuelUsage*CO2)/100)*lengthKm;
+async function orsRequestResponse(url, token, body, res) {
+    const resp = await orsRequest(url, token, body);
+    if(!resp)
+        return res.status(500).send({error: 'Failed to fetch routing data'});
+
+    res.status(200).send(resp);
 }
 
-/**
- * Get fuel price by country.
- * return example:
- *  {
- *    currency: 'euro',
- *    lpg: '-',
- *    diesel: '2,260',
- *    gasoline: '2,156',
- *    country: 'Finland'
- *  }
- * @param {string} country
- * @returns {Promise<null | {
- *    currency: 'euro',
- *    lpg: '-',
- *    diesel: string,
- *    gasoline: string,
- *    country: string
-   }>}
- */
-async function fuelPriceJSON(country) {
-    const data = await dataDAO.readAll();
-    const areValuesOld = valuesDateChecker.areValuesOld(["diesel", "gasoline"], data);
-
-    if(!areValuesOld){
-        const result = data.reduce((acc, {name, value}) => ({...acc, [name]: value}), {});
-        result.country = "Finland";
-        result.currency = "euro";
-        return result;
-    }
-
-    const options = apiRequestUtil.getFuelSettings();
-
+async function orsRequest(url, token, body) {
     try {
-        const response = await fetch(options.url, { method: options.method, headers: options.headers });
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json; charset=utf-8',
+                'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8'
+            },
+            body: JSON.stringify(body)
+        });
         if (!response.ok)
-            return null;
+            throw new Error(`Request failed with status: ${response.status}`);
 
-        const jsonData = await response.json();
-
-        for (let index in jsonData.results) {
-            if (jsonData.results[index].country.toLowerCase() === country.toLowerCase()) {
-                const {country, currency, ...fuelPrices} = jsonData.results[index];
-
-                const fuelNames = Object.keys(fuelPrices);
-                for (let i = 0; i < fuelNames.length; i++) {
-                    await dataDAO.update({
-                        "name": fuelNames[i],
-                        "value": fuelPrices[fuelNames[i]]
-                    });
-                }
-                return fuelPrices;
-            }
-        }
+        return await response.json();
     } catch (error) {
-        console.error("Error fetching fuel prices:", error);
+        console.error(error);
         return null;
     }
 }
 
-/**
- * The method calculates price of the route(spent fuel price) for different fuels.
- * @param {Object.<string>} prices fuel prices object
- * @param {number} fuelSpent fuel spent amount
- * @returns {{diesel: string; gasoline: string} | null} object with route prices for different fuels
- */
-function calcRoutePrice(prices, fuelSpent) {
-    if(!prices)
-        return null;
-
-    const dieselPriceStr = prices.diesel.replace(",", ".");
-    const dieselPrice = parseFloat(dieselPriceStr) * fuelSpent;
-
-    const gasolinePriceStr = prices.gasoline.replace(",", ".");
-    const gasolinePrice = parseFloat(gasolinePriceStr) * fuelSpent;
-
-    return {
-        diesel: dieselPrice.toFixed(2),
-        gasoline: gasolinePrice.toFixed(2)
-    };
+function isIndexValid(index, array) {
+    return index !== undefined && index !== null && (index < array.length) && (index >= 0);
 }
-
-/**
- * The method queries city centers areas from the Area and AreaCoordinate SQL tables based on addresses from order ORM objects.
- * @param {OrderData[]} orders array with order ORM objects.
- * @returns {Promise<{coordinates: number[], type: string}> | null} found city centers areas array
- */
-async function getCitiesCentersPolygons(orders){
-    const cities = Array.from(util.getOrdersCities(orders));
-    if(!cities || cities.length === 0)
-        return null;
-
-    for (let city of cities) {
-        try {
-            const response = await fetch(`http://${host}:${port}/dao/area/${encodeURIComponent(city)}Center`);
-            if (!response.ok)
-                return null;
-
-            const respPolygon = await response.json().then(data => data.result);
-            if(!respPolygon)
-                return null;
-
-            const polygon = {type: "MultiPolygon", coordinates: []};
-            if (respPolygon.type === "Polygon")
-                polygon.coordinates.push(respPolygon.coordinates);
-            else if (respPolygon.type === "MultiPolygon")
-                polygon.coordinates.push(...respPolygon.coordinates);
-
-            return polygon;
-        } catch (error) {
-            console.error("Error fetching city center polygon:", error);
-            return null;
-        }
-    }
-}
-
-/**
- * The method put given coordinates to the optimized order(the shortest path) by making request to the VRoom project service.
- * Read more from Open Route Service documentation optimization section.
- * @param {Array.<Array.<number>>} coordinates array of coordinates in form [lon, lat]
- * @returns {Promise<unknown>} response from the VRoom project service
- */
-async function getOptimizedRoute(coordinates) {
-    try{
-        return new Promise(async function (resolve, reject) {
-            const reqBody = optimizationUtil.getVROOMRequestObject(coordinates);
-            await makeOptimizationRequest(reqBody, resolve);
-        });
-    }catch (err){
-        console.log(err);
+async function optimizeRoute(coordinates, key, startIndex, endIndex, estimatedStopTimeS=300) {
+    if(!coordinates || coordinates.length === 0 || !key){
+        console.error('No coordinates or key provided');
         return null;
     }
-}
 
-/**
- * The method get shipment and delivery addresses from the given orders and put them to the optimized order(the shortest path) by making request to the VRoom project service.
- * Read more from Open Route Service documentation optimization section.
- * @param {Array.<Object>} orderArr array of the order ORM objects
- * @param {Array.<number>=} start start coordinate in the form [lon, lat], optional parameter
- * @param {Array.<number>=} end end coordinate in the form [lon, lat], optional parameter
- * @returns {Promise<unknown>} response from the VRoom project service
- */
-async function getOptimizedShipmentDelivery(orderArr, start, end) {
-    try{
-        return new Promise(async function (resolve, reject) {
-            const reqBody = optimizationUtil.getShipmentDeliveryRequestBody(orderArr, start, end);
-            makeOptimizationRequest(reqBody, resolve);
-        });
-    }catch (err){
-        console.log(err);
-    }
-}
+    // Prepare the jobs array from coordinates
+    const jobs = coordinates.map((coord, index) => ({
+        id: index + 1,
+        service: estimatedStopTimeS, //default service time
+        location: coord
+    }));
 
-/**
- * The method gets point address based on provided data.
- * @param {number|Array.<number>} pointReq order id or coordinate array in form [lon, lat]
- * @returns {Promise<null|Object|Object[]>} address data
- */
-async function getPointData(pointReq) {
-    if(typeof pointReq === "number"){
-        //point is order id
-        const result = await orderDataDAO.read(pointReq);
-        return daoUtil.unpackOrder(result);
-    } else if(Array.isArray(pointReq)){
-        //point is [lon, lat] array (=coordinates)
-        return await addressUtil.getAddressByCoordinates(pointReq);
-    } else{
-        return null;
-    }
-}
+    const start = isIndexValid(startIndex, coordinates) ? coordinates[startIndex] : coordinates[0];
+    const end = isIndexValid(endIndex, coordinates) ? coordinates[endIndex] : coordinates[coordinates.length-1];
 
-/**
- * The method gets points coordinates based on point data.
- * The point data may be address object with coordinates included or order ORM object.
- * @param {Object} pointData address object with coordinates field([lon, lat]) or order ORM object
- * @param {number} addressToGet 1 for shipment address and 2 for delivery address, if order ORM object provided
- * @returns {Array.<number>} coordinates array in form [lon, lat]
- */
-function getPointCoordinates(pointData, addressToGet) {
-    let result;
-    if(pointData.type != null && pointData.type === "address"){
-        result = pointData.coordinates;
-    } else if(addressToGet === 1){
-        const shipmentAddress = pointData.shipmentAddress;
-        result = [shipmentAddress.lon, shipmentAddress.lat];
-    } else if(addressToGet === 2){
-        const deliveryAddress =  pointData.deliveryAddress;
-        result = [deliveryAddress.lon, deliveryAddress.lat];
-    }
+    const vehicles = [ { id: 1, profile: 'driving-car', start, end } ]
 
-    return result;
-}
-
-/**
- * The method makes request to the VRoom project service.
- * Read more from the Open Route Service API docs optimization section.
- * @param {Object} reqBody request body
- * @param {function} resolve
- * @returns {Promise<null>}
- */
-async function makeOptimizationRequest(reqBody, resolve) {
-    if(!reqBody)
+    // The request payload
+    const body = { jobs, vehicles };
+    const optimizationResp = await orsRequest('https://api.openrouteservice.org/optimization', key, body);
+    if(!optimizationResp || !optimizationResp.routes)
         return null;
 
-    let data = JSON.stringify(reqBody);
-    const options = apiRequestUtil.getORSSettings('/optimization');
-
-    options.headers["Content-Length"] = data.length;
-    console.log(options);
-
-    const request = await https.request(options, (response) => {
-        let data = '';
-
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        response.on('end', () => {
-            let JsonData;
-            try {
-                JsonData = JSON.parse(data);
-                resolve(JsonData);
-            } catch (err) {
-                console.log(err);
-            }
-        });
-
-    }).on("error", (err) => {
-        console.log("Error: ", err.message);
-    });
-
-    request.write(data);
-    request.end();
-}
-
-/**
- * The method sends request to Open Route Service for making routing based on the provided coordinates.
- * Read more from Open Route Service API docs directions section.
- * @param {Array.<Array.<number>>} coordinates array with coordinates in form [lon, lat]
- * @param {Object} options options objects for the route
- * @param {Object} req request object
- * @param {Object} res response object
- * @param {Object} additionalDataObj additional data need to be sent to the client side
- * @returns {Promise<null>}
- */
-async function makeRoutingRequest(coordinates, options, req, res, additionalDataObj){
-    if(coordinates != null && coordinates.length > 0){
-        let fuelusage = req.body.fuelusage;
-        if(fuelusage == null){
-            fuelusage = 8.9;
-        }
-        let data = JSON.stringify({
-            coordinates:coordinates,
-            continue_straight:true,
-            instructions:true,
-            options: options,
-            units:"m"
-        });
-        const apiOptions = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
-        apiOptions.headers["Content-Length"] = data.length;
-        //const price = await fuelPriceJSON("finland");
-        const price = {
-            diesel: "1.9",
-            gasoline: "1.83"
-        };
-
-        const request = await https.request(apiOptions, (response) => {
-            let data = '';
-
-            response.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            response.on('end', () => {
-                try {
-                    const JsonData = JSON.parse(data);
-                    const routeDistance = JsonData.features[0].properties.summary.distance;
-                    const fuelSpent = calcFuel(routeDistance, fuelusage);
-
-                    JsonData.features[0].properties.summary.fuelusage = fuelSpent;
-                    JsonData.features[0].properties.summary.pricedata = price;
-                    JsonData.features[0].properties.summary.routeCost = calcRoutePrice(price, fuelSpent);
-                    JsonData.features[0].properties.summary.co2 = calcCO2(routeDistance, fuelusage);
-
-                    if(additionalDataObj != null){
-                        for(const property in additionalDataObj){
-                            JsonData.features[0].properties.summary[property] = additionalDataObj[property];
-                        }
-                    }
-
-                    res.send(JsonData);
-                }catch (err) {
-                    res.send(undefined);
-                }
-            });
-
-        }).on("error", (err) => {
-            console.log("Error: ", err.message);
-        });
-
-        request.write(data);
-        request.end();
-    } else {
-        return null;
-    }
+    // Extract the ordered coordinates from the response
+    return optimizationResp.routes.map(route =>
+        route.steps.filter(step => step.type === 'job').map(step => step.location)
+    ).flat();
 }
 
 export default router;
