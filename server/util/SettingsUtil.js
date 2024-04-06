@@ -1,6 +1,8 @@
 import TMSDAO from "../DAO/TMSDAO.js";
 import PolygonUtil from "./PolygonUtil.js";
 import axios from "axios";
+import { readFile } from 'fs/promises';
+import path from 'path';
 
 
 const tmsDAO = new TMSDAO();
@@ -12,28 +14,76 @@ const port = process.env.API_PORT || 8081;
  * The class provides functionality for setting up the software parts
  */
 export default class SettingsUtil {
+
+    constructor({cityCentersFileLocation}) {
+        this.#cityCentersFileLocation = cityCentersFileLocation;
+    }
+    #cityCentersFileLocation = null;
+
     /**
      * The method sets the software up.
      * It should be called once on the server first run, after the DB SQL script was executed
      * @returns {Promise<void>}
      */
     async setUp(){
-        try{ await addCityCenters(); } catch (e) { console.log("Failed to add city centers"); }
-        try{ await addTMS(); } catch (e) { console.log("Failed to add TMSs"); }
-        try{ await addTMSAreas(); } catch (e) { console.log("Failed to add TMS areas"); }
+        await this.#addCityCenters();
+        //try{ await addTMS(); } catch (e) { console.log("Failed to add TMSs"); }
+        //try{ await addTMSAreas(); } catch (e) { console.log("Failed to add TMS areas"); }
+    }
+
+    /**
+     * The method adds areas of city centers to the DB, which are used for avoid city centers routing option
+     * @returns {Promise<void>}
+     */
+    async #addCityCenters() {
+        const cityCenters = await convertCityCentersFileToGeoJson(this.#cityCentersFileLocation);
+        if(!cityCenters){
+            console.error(`No ${this.#cityCentersFileLocation} file found or it is in wrong format`);
+            return;
+        }
+
+        for(const key in cityCenters){
+            const cityCenter = cityCenters[key];
+
+            const areaName = key + 'Center';
+
+            await fetch(`http://${host}:${port}/dao/area`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({...cityCenter, areaName}),
+                }
+            );
+        }
     }
 }
 
-/**
- * The method adds areas of city centers to the DB, which are used for avoid city centers routing option
- * @returns {Promise<void>}
- */
-async function addCityCenters() {
-    //add city centers (area ORM objects) here, remember that name of the area must be in form "cityName" + "Center" ("HelsinkiCenter", "TurkuCenter" etc.)
-    const cityCenters = [HelsinkiCenter, LahtiCenter];
 
-    for(let i=0; i<cityCenters.length; i++){
-        await axios.post(`http://${host}:${port}/dao/area`, cityCenters[i]);
+
+async function convertCityCentersFileToGeoJson(filePath) {
+    try {
+        if(!filePath || !filePath.includes(".json"))
+            return null;
+
+        // Read the file asynchronously
+        const fileContent = await readFile(filePath, 'utf8');
+        // Parse the JSON content
+        const inputJson = JSON.parse(fileContent);
+
+        const cityCenters = {};
+
+        for (const city in inputJson) {
+            if (inputJson.hasOwnProperty(city)) {
+                cityCenters[city] = {
+                    type: "Polygon",
+                    coordinates: inputJson[city].coordinates
+                };
+            }
+        }
+
+        return cityCenters;
+    } catch (error) {
+        console.error("An error occurred:", error);
+        return null;
     }
 }
 

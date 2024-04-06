@@ -20,6 +20,8 @@ import * as orderDaoRouter from "./routes/dao/order.js";
 import * as dataDaoRouter from "./routes/dao/data.js";
 import * as areaDaoRouter from "./routes/dao/area.js";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from 'url';
 
 const app = express();
 //for ip access through proxy
@@ -47,13 +49,18 @@ app.use('/dao/area', areaDaoRouter.default);
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const host = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 8081;
-const settingsUtil = new SettingsUtil();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const settingsUtil = new SettingsUtil(
+    {cityCentersFileLocation: path.join(__dirname, 'config', 'cityCenters.json')},
+);
 const util = new Util();
 
 app.listen(port, async() => {
     if (SequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://${host}:${port}/`);
-       //await settingsUtil.setUp();
+       await settingsUtil.setUp();
 
         //TODO: fix later
         // setInterval(() => {

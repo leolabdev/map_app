@@ -38,6 +38,7 @@ const port = process.env.API_PORT || 8081;
 router.post("/", async (req, res) => {
     try{
         const reqBody = req.body;
+        console.log(reqBody);
         const coordinates = daoUtil.parsePolygonToAreaCoordinates(reqBody);
         delete reqBody.coordinates;
 

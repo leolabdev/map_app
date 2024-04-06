@@ -20,6 +20,8 @@ export default class AreaDAO {
     async create(data) {
         const { areaName, type } = data;
 
+        //console.log(areaName, type);
+
         if (daoUtil.containNoNullArr([areaName, type]) && daoUtil.containNoBlankArr([areaName, type])) {
             try {
                 return await Area.create(data);

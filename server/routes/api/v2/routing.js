@@ -49,15 +49,14 @@ const port = process.env.API_PORT || 8081;
  * responses back geoJSON
  */
 router.post('/', async (req, res, next) => {
-    const {coordinates, fuelusage} = req.body;
+    const {coordinates, fuelusage, startCoordinateIndex, endCoordinateIndex} = req.body;
     if(!coordinates)
         res.status(400).send({error: "coordinates field is required", status: 400});
 
-    const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe'
-    //const key = process.env.ORS_API_KEY;
+    const key = process.env.ORS_API_KEY;
     const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
 
-    const optimizedCoords = await optimizeRoute(coordinates, key);
+    const optimizedCoords = await optimizeRoute(coordinates, key, startCoordinateIndex, endCoordinateIndex);
     if(!optimizedCoords)
         return res.status(500).send({error: "could not optimize the route", status: 500});
 
