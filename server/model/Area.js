@@ -23,8 +23,8 @@ Area.init({
         primaryKey: true
     },
 
-    type: {
-        type: DataTypes.STRING,
+    polygon: {
+        type: DataTypes.TEXT,
         allowNull: false
     }
 }, options);

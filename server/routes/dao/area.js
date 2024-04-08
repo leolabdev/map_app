@@ -2,8 +2,6 @@ import express from "express";
 import DaoUtil from "../../util/DaoUtil.js";
 import ResponseUtil from "../../util/ResponseUtil.js";
 import AreaDAO from "../../DAO/AreaDAO.js";
-import AreaCoordinatesDAO from "../../DAO/AreaCoordinatesDAO.js";
-import axios from "axios";
 
 const router = express.Router();
 
@@ -12,7 +10,6 @@ const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
 
 const areaDAO = new AreaDAO();
-const areaCoordinatesDAO = new AreaCoordinatesDAO();
 const host = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 8081;
 /**
@@ -37,75 +34,16 @@ const port = process.env.API_PORT || 8081;
  */
 router.post("/", async (req, res) => {
     try{
-        const reqBody = req.body;
-        console.log(reqBody);
-        const coordinates = daoUtil.parsePolygonToAreaCoordinates(reqBody);
-        delete reqBody.coordinates;
-
-        const areaResp = await areaDAO.create(reqBody);
-
-        if(areaResp == null){
-            responseUtil.sendResultOfQuery(res, null);
-            return;
+        const {areaName, polygon} = req.body;
+        if(!areaName || !polygon){
+            console.error('No area name or polygon fields provided');
+            return null;
         }
 
-        const coordsResp = await areaCoordinatesDAO.createMultiple(coordinates);
-        if(coordsResp == null){
-            responseUtil.sendResultOfQuery(res, null);
-            return;
-        }
+        const areaResp = await areaDAO.create({areaName, polygon});
 
-        const result = {
-            ...areaResp.dataValues,
-            coordinates: coordsResp
-        }
-
-        responseUtil.sendResultOfQuery(res, result);
-    }catch (e) {
-        console.log(e);
-        responseUtil.sendResultOfQuery(res, null);
-    }
-});
-
-/**
- * Create multiple new areas in the Area SQL table
- * The request body must contain array of objects with areaName and type(Polygon or MultiPolygon, read more from GeoJSON docs) fields
- * It is also possible to add area coordinates via this route
- * Basically, the normal request's body should look like array of GeoJSON Polygon or MultiPolygon objects without holes and with area name in addition
- * Example url: http://localhost:8081/dao/area
- * Example request body:
- * [
- * {
- *     "areaName": "SomeArea", *primary key, must be unique
- *     "type": "Polygon", *Polygon or MultiPolygon
- *     "coordinates": [
- *         [
- *             [25.654878616333004,60.98514074901049], *[lon, lat]
- *             [25.671615600585938,60.979353511636425],
- *             [25.668354034423825,60.98426648575919],
- *             [25.654878616333004,60.98514074901049]
- *         ]
- *      ]
- * },
- * etc.
- * ]
- */
-router.post("/multiple", async(req, res) => {
-    try{
-        const areas = req.body;
-        const coordinates = [];
-        for(let i=0; i<areas.length; i++){
-            const parsedCoordinates = daoUtil.parsePolygonToAreaCoordinates(areas[i]);
-
-            coordinates.push(...parsedCoordinates);
-            delete areas[i].coordinates;
-        }
-
-        const result = await areaDAO.createMultiple(areas);
-        await areaCoordinatesDAO.createMultiple(coordinates);
-
-        responseUtil.sendResultOfQuery(res, result);
-    }catch (e) {
+        responseUtil.sendResultOfQuery(res, areaResp);
+    } catch (e){
         console.log(e);
         responseUtil.sendResultOfQuery(res, null);
     }
@@ -117,9 +55,8 @@ router.post("/multiple", async(req, res) => {
  * Example url: http://localhost:8081/dao/area/SomeArea
  */
 router.get("/:areaName", async(req, res) => {
-    const areaObj = await areaDAO.read(req.params.areaName);
-    const result = daoUtil.parseAreaCoordinatesToPolygon(areaObj);
-    responseUtil.sendResultOfQuery(res, result);
+    const areaResp = await areaDAO.read(req.params.areaName);
+    responseUtil.sendResultOfQuery(res, areaResp);
 });
 
 /**
@@ -128,15 +65,7 @@ router.get("/:areaName", async(req, res) => {
  * Example url: http://localhost:8081/dao/area
  */
 router.get("/", async(req, res) => {
-    const result = await areaDAO.readAll().then((areaObjects)=>{
-        const result = [];
-        for(let i = 0; i < areaObjects.length; i++){
-            result[i] = daoUtil.parseAreaCoordinatesToPolygon(areaObjects[i]);
-        }
-
-        return result;
-    });
-
+    const result = await areaDAO.readAll();
     responseUtil.sendResultOfQuery(res, result);
 });
 
@@ -161,11 +90,8 @@ router.get("/", async(req, res) => {
  */
 router.put("/", async(req, res) => {
     try{
-        const areaObj = req.body;
-        await areaDAO.delete(areaObj.areaName);
-        const createResp = await axios.post(`http://${host}:${port}/dao/area/`, areaObj);
-        const status = createResp.data.result != null;
-        responseUtil.sendStatusOfOperation(res, status);
+        const updateResp = await areaDAO.update(req.body);
+        responseUtil.sendStatusOfOperation(res, updateResp);
     }catch(e){
         console.log(e);
     }
