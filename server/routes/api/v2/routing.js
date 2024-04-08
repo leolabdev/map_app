@@ -10,6 +10,7 @@ import PolygonUtil from "../../../util/PolygonUtil.js";
 import express from "express";
 import * as https from "https";
 import axios from "axios";
+import CityCenterUtil from "../../../util/CityCenterUtil.js";
 
 const router = express.Router();
 
@@ -55,6 +56,8 @@ router.post('/', async (req, res, next) => {
 
     const key = process.env.ORS_API_KEY;
     const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
+
+    const center = await CityCenterUtil.getCityCenter('Helsinki');
 
     const optimizedCoords = await optimizeRoute(coordinates, key, startCoordinateIndex, endCoordinateIndex);
     if(!optimizedCoords)

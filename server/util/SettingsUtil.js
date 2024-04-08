@@ -2,7 +2,7 @@ import TMSDAO from "../DAO/TMSDAO.js";
 import PolygonUtil from "./PolygonUtil.js";
 import axios from "axios";
 import { readFile } from 'fs/promises';
-import path from 'path';
+import AreaDAO from "../DAO/AreaDAO.js";
 
 
 const tmsDAO = new TMSDAO();
@@ -17,8 +17,10 @@ export default class SettingsUtil {
 
     constructor({cityCentersFileLocation}) {
         this.#cityCentersFileLocation = cityCentersFileLocation;
+        this.#areaDAO = new AreaDAO();
     }
     #cityCentersFileLocation = null;
+    #areaDAO = null;
 
     /**
      * The method sets the software up.
@@ -43,16 +45,18 @@ export default class SettingsUtil {
         }
 
         for(const key in cityCenters){
-            const cityCenter = cityCenters[key];
-
+            const polygon = cityCenters[key];
             const areaName = key + 'Center';
 
-            await fetch(`http://${host}:${port}/dao/area`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({...cityCenter, areaName}),
-                }
-            );
+            try {
+                const areaFound = await this.#areaDAO.read(areaName);
+                if(areaFound)
+                    continue;
+
+                await this.#areaDAO.create({areaName, polygon});
+            } catch (e) {
+                console.error('SettingsUtil: Could not create or read city centers');
+            }
         }
     }
 }
