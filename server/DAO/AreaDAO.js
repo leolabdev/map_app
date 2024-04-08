@@ -1,6 +1,5 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
-import AreaCoordinates from "../model/AreaCoordinates.js";
 import Area from "../model/Area.js";
 
 
@@ -18,34 +17,17 @@ export default class AreaDAO {
      * @returns created Area object, if operation was sucessful or null if not
      */
     async create(data) {
-        const { areaName, type } = data;
+        const { areaName, polygon } = data;
 
-        //console.log(areaName, type);
-
-        if (daoUtil.containNoNullArr([areaName, type]) && daoUtil.containNoBlankArr([areaName, type])) {
-            try {
-                return await Area.create(data);
-            } catch (e) {
-                console.error("AreaDAO: Could not execute the query");
-                return null;
-            }
-        } else {
-            console.error("AreaDAO: Wrong parameter provided");
+        if(!areaName || !polygon || typeof polygon !== 'object'){
+            console.error('DataDAO create: Wrong parameter provided');
             return null;
         }
-    }
 
-    /**
-     * The method creates multiple new area in the Area SQL table
-     * @param {Array} data array with object with the area data, where areaName and type(polygon or multipolygon) fields are manditory
-     * @returns array with created Area objects, if operation was sucessful or null if not
-     */
-    async createMultiple(data) {
         try {
-            return await Area.bulkCreate(data);
+            return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
         } catch (e) {
-            console.log("AreaDAO: Could not execute the query");
-            console.log(e);
+            console.error('AreaDAO: Could not execute the query');
             return null;
         }
     }
@@ -56,16 +38,16 @@ export default class AreaDAO {
      * @returns founded Area object, if operation was sucessful or null if not
      */
     async read(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const resp = await Area.findByPk(primaryKey, { include: AreaCoordinates });
-                return resp != null ? resp.dataValues : null;
-            } catch (e) {
-                console.error("AreaDAO: Could not execute the query");
-                return null;
-            }
-        } else {
-            console.error("AreaDAO: Wrong parameter provided");
+        if(primaryKey == null){
+            console.error('ClientDAO read: Wrong parameter provided');
+            return null;
+        }
+
+        try {
+            const resp = await Area.findByPk(primaryKey);
+            return resp != null ? resp.dataValues : null;
+        } catch (e) {
+            console.error('AreaDAO: Could not execute the query');
             return null;
         }
     }
@@ -76,10 +58,10 @@ export default class AreaDAO {
      */
     async readAll() {
         try {
-            const resp = await Area.findAll({ include: AreaCoordinates });
+            const resp = await Area.findAll();
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.error("AreaDAO: Could not execute the query");
+            console.error('AreaDAO: Could not execute the query');
             return false;
         }
     }
@@ -90,22 +72,23 @@ export default class AreaDAO {
      * @returns true, if the operation was successful or false if not
      */
     async update(data) {
-        const { areaName } = data;
+        const { areaName, polygon } = data;
 
-        if (areaName != null && !stringValidator.isBlank(areaName)) {
-            try {
-                const resp = await Area.update(
-                    data, { where: { areaName: areaName } }
-                );
+        if(!areaName || !polygon || typeof polygon !== 'object'){
+            console.error('AreaDAO: Wrong parameter provided');
+            return false;
+        }
 
-                return resp[0] > 0;
-            } catch (e) {
-                console.error("AreaDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.error("AreaDAO: Wrong parameter provided");
+        try {
+            const resp = await Area.update(
+                { areaName, polygon: JSON.stringify(polygon) },
+                { where: { areaName } }
+            );
+
+            return resp[0] > 0;
+        } catch (e) {
+            console.error('AreaDAO: Could not execute the query');
+            console.log(e);
             return false;
         }
     }
@@ -116,19 +99,17 @@ export default class AreaDAO {
      * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                await AreaCoordinates.destroy({ where: { areaName: primaryKey } });
-                const resp = await Area.destroy({ where: { areaName: primaryKey } });
+        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
+            console.error('ClientDAO delete: Wrong parameter provided');
+            return false;
+        }
 
-                return resp > 0;
-            } catch (e) {
-                console.error("AreaDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.error("AreaDAO: Wrong parameter provided");
+        try {
+            const resp = await Area.destroy({ where: { areaName: primaryKey } });
+            return resp > 0;
+        } catch (e) {
+            console.error('AreaDAO: Could not execute the query');
+            console.log(e);
             return false;
         }
     }
