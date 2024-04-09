@@ -8,7 +8,6 @@ import DaoUtil from "../../../util/DaoUtil.js";
 import Util from "../../../util/Util.js";
 import PolygonUtil from "../../../util/PolygonUtil.js";
 import express from "express";
-import * as https from "https";
 import axios from "axios";
 import CityCenterUtil from "../../../util/CityCenterUtil.js";
 
@@ -50,16 +49,25 @@ const port = process.env.API_PORT || 8081;
  * responses back geoJSON
  */
 router.post('/', async (req, res, next) => {
-    const {coordinates, fuelusage, startCoordinateIndex, endCoordinateIndex} = req.body;
+    const {coordinates, fuelusage, startCoordinateIndex, endCoordinateIndex, avoidCityCenters, cityCentersToAvoid} = req.body;
     if(!coordinates)
         res.status(400).send({error: "coordinates field is required", status: 400});
 
     const key = process.env.ORS_API_KEY;
     const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
 
-    const center = await CityCenterUtil.getCityCenter('Helsinki');
+    let avoidedCenters = [];
+    if(avoidCityCenters)
+        avoidedCenters = await CityCenterUtil.getAllCityCentersArr();
+    else if(cityCentersToAvoid && cityCentersToAvoid.length > 0)
+        avoidedCenters = await CityCenterUtil.getCityCentersByNames(cityCentersToAvoid);
 
-    const optimizedCoords = await optimizeRoute(coordinates, key, startCoordinateIndex, endCoordinateIndex);
+    const optimizedCoords = await optimizeRoute(coordinates, key, {
+        startIndex: startCoordinateIndex,
+        endIndex: endCoordinateIndex,
+        polygonsToAvoid: avoidedCenters
+    });
+
     if(!optimizedCoords)
         return res.status(500).send({error: "could not optimize the route", status: 500});
 
@@ -167,7 +175,7 @@ async function orsRequest(url, token, body) {
 function isIndexValid(index, array) {
     return index !== undefined && index !== null && (index < array.length) && (index >= 0);
 }
-async function optimizeRoute(coordinates, key, startIndex, endIndex, estimatedStopTimeS=300) {
+async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedStopTimeS=300, polygonsToAvoid=[]} = {}) {
     if(!coordinates || coordinates.length === 0 || !key){
         console.error('No coordinates or key provided');
         return null;
@@ -184,9 +192,12 @@ async function optimizeRoute(coordinates, key, startIndex, endIndex, estimatedSt
     const end = isIndexValid(endIndex, coordinates) ? coordinates[endIndex] : coordinates[coordinates.length-1];
 
     const vehicles = [ { id: 1, profile: 'driving-car', start, end } ]
+    const options = {};
+    if(polygonsToAvoid && polygonsToAvoid.length > 0)
+        options.avoid_polygons = polygonsToAvoid;
 
     // The request payload
-    const body = { jobs, vehicles };
+    const body = { jobs, vehicles, options };
     const optimizationResp = await orsRequest('https://api.openrouteservice.org/optimization', key, body);
     if(!optimizationResp || !optimizationResp.routes)
         return null;
