@@ -91,6 +91,54 @@ async function convertCityCentersFileToGeoJson(filePath) {
     }
 }
 
+
+/*
+* Sensors data
+* https://tie.digitraffic.fi/api/tms/v1/stations/data
+* {
+* dataUpdatedTime: "2024-04-09T15:16:42Z",
+* stations: [
+    * {
+    * id: 20002,
+    * dataUpdatedTime	"2024-04-09T15:16:42Z"
+    * sensorValues: [
+    * {
+        * id: 5158
+        * name: "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1_VVAPAAS1",
+        * value: 98
+    * },
+    * {
+        * id: 5161
+        * name: "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA2_VVAPAAS2",
+        * value: 98
+    * },
+    * ...about 33
+    * ]
+    * },
+    * ...about 520
+* ]
+* }
+* */
+
+
+/*
+* Stations data
+* https://tie.digitraffic.fi/api/tms/v1/stations
+* {
+* dataUpdatedTime: "2024-04-09T15:16:42Z",
+* features: [
+*   {
+*       id: 20002,
+*       geometry: {
+*           coordinates: [24.637997, 60.220898, 30]
+*       },
+*       ...about 520
+*   }
+* ]
+* }
+* */
+
+
 /**
  * The method adds TMSs(=traffic measurement stations) data to the DB
  * @returns {Promise<void>}
