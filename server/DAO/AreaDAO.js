@@ -1,6 +1,7 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Area from "../model/Area.js";
+import {Op} from "sequelize";
 
 
 const stringValidator = new StringValidator();
@@ -106,6 +107,17 @@ export default class AreaDAO {
 
         try {
             const resp = await Area.destroy({ where: { areaName: primaryKey } });
+            return resp > 0;
+        } catch (e) {
+            console.error('AreaDAO: Could not execute the query');
+            console.log(e);
+            return false;
+        }
+    }
+
+    async deleteAllCityCenters() {
+        try {
+            const resp = await Area.destroy({ where: { areaName: {[Op.like]: '%Center'} } });
             return resp > 0;
         } catch (e) {
             console.error('AreaDAO: Could not execute the query');
