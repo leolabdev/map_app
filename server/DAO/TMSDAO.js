@@ -15,11 +15,6 @@ export default class TMSDAO {
      * @returns created TMS object, if operation was successful or null if not
      */
     async create(data) {
-        if(!daoUtil.containNoNullArr([...data])){
-            console.log("TMSDAO create: Wrong parameter provided");
-            return null;
-        }
-
         try {
             return await TMS.create(data);
         } catch (e) {
@@ -96,6 +91,17 @@ export default class TMSDAO {
             return resp > 0;
         } catch (e) {
             console.log("TMSDAO delete: Could not execute the query");
+            console.log(e);
+            return false;
+        }
+    }
+
+    async deleteAll() {
+        try {
+            const resp = await TMS.destroy({ where: { } });
+            return resp > 0;
+        } catch (e) {
+            console.log("TMSDAO deleteAll: Could not execute the query");
             console.log(e);
             return false;
         }
