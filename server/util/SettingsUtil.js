@@ -1,14 +1,12 @@
 import TMSDAO from "../DAO/TMSDAO.js";
 import PolygonUtil from "./PolygonUtil.js";
-import axios from "axios";
 import { readFile } from 'fs/promises';
 import AreaDAO from "../DAO/AreaDAO.js";
+import SequelizeUtil from "../modules/SequelizeUtil.js";
 
 
 const tmsDAO = new TMSDAO();
-const polygonUtil = new PolygonUtil();
-const host = process.env.API_HOST || "localhost";
-const port = process.env.API_PORT || 8081;
+const areaDAO = new AreaDAO();
 
 /**
  * The class provides functionality for setting up the software parts
@@ -28,21 +26,30 @@ export default class SettingsUtil {
      * @returns {Promise<void>}
      */
     async setUp(){
-        await this.#addCityCenters();
-        //try{ await addTMS(); } catch (e) { console.log("Failed to add TMSs"); }
-        //try{ await addTMSAreas(); } catch (e) { console.log("Failed to add TMS areas"); }
+        if(!await this.#addCityCenters())
+            console.error('Failed to add city centers');
+        if(!await addTMSDataToDB())
+            console.error('Failed to add TMSs');
     }
 
     /**
      * The method adds areas of city centers to the DB, which are used for avoid city centers routing option
-     * @returns {Promise<void>}
+     * @returns {Promise<boolean>}
      */
-    async #addCityCenters() {
+    async #addCityCenters(force=false) {
+        if(!force){
+            const cityCentersFound = await countAll('Area', 'areaName');
+            if(cityCentersFound > 0)
+                return true;
+        }
+
         const cityCenters = await convertCityCentersFileToGeoJson(this.#cityCentersFileLocation);
         if(!cityCenters){
             console.error(`No ${this.#cityCentersFileLocation} file found or it is in wrong format`);
-            return;
+            return false;
         }
+
+        await areaDAO.deleteAllCityCenters();
 
         for(const key in cityCenters){
             const polygon = cityCenters[key];
@@ -56,8 +63,13 @@ export default class SettingsUtil {
                 await this.#areaDAO.create({areaName, polygon});
             } catch (e) {
                 console.error('SettingsUtil: Could not create or read city centers');
+                return false;
             }
         }
+
+        const centersCount = Object.keys(cityCenters).length;
+        const centersCreated = await countAll('Area', 'areaName');
+        return centersCreated === centersCount;
     }
 }
 
@@ -119,7 +131,45 @@ async function convertCityCentersFileToGeoJson(filePath) {
 * ]
 * }
 * */
+export async function getSlowTMSIds(maxAcceptableValue = 90) {
+    const url = 'https://tie.digitraffic.fi/api/tms/v1/stations/data';
+    try {
+        const tmsResp = await fetch(url);
+        if (!tmsResp.ok) {
+            console.error(`Could not get response of traffic situation from ${url}`);
+            return null;
+        }
+        const tmsData = await tmsResp.json();
+        if (!tmsData || !tmsData.stations || !Array.isArray(tmsData.stations)) {
+            console.error('Could not get any traffic data');
+            return null;
+        }
 
+        const result = [];
+        for (const station of tmsData.stations) {
+            if (!station || !station.id || !station.sensorValues) {
+                continue;
+            }
+
+            for (const sensor of station.sensorValues) {
+                if(!sensor.name || !sensor.value || !sensor.id)
+                    continue;
+
+                if (sensor.name === 'KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1_VVAPAAS1' || sensor.name === 'KESKINOPEUS_5MIN_LIUKUVA_SUUNTA2_VVAPAAS2') {
+                    if (sensor.value < maxAcceptableValue) {
+                        result.push(sensor.id);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    } catch (e) {
+        console.error('Error on getting traffic data:', e);
+        return null;
+    }
+}
 
 /*
 * Stations data
@@ -138,124 +188,80 @@ async function convertCityCentersFileToGeoJson(filePath) {
 * }
 * */
 
+export async function addTMSDataToDB(force=false, tmsAreaSizeM=15) {
+    if(!force){
+        const tmsCount = await countAll('TMS', 'stationId');
+        if(tmsCount > 0)
+            return true;
+    }
 
-/**
- * The method adds TMSs(=traffic measurement stations) data to the DB
- * @returns {Promise<void>}
- */
-async function addTMS() {
-    const tmsObj = {};
-    const tmsData = await axios.get("https://tie.digitraffic.fi/api/v1/data/tms-data", {
-        headers: {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate, br'
+    await tmsDAO.deleteAll();
+
+    const tmsData = await getTMSData(tmsAreaSizeM);
+    if(!tmsData)
+        return false;
+
+    await tmsDAO.createMultiple(tmsData);
+    const tmsCount = await countAll('TMS', 'stationId');
+    return tmsCount === tmsData.length;
+}
+
+export async function getTMSData(tmsAreaSizeM=15){
+    const url = 'https://tie.digitraffic.fi/api/tms/v1/stations';
+    try {
+        const tmsResp = await fetch(url);
+        if (!tmsResp.ok) {
+            console.error(`Could not get response with TMS data from ${url}`);
+            return null;
         }
-    });
+        const tmsData = await tmsResp.json();
+        if (!tmsData || !tmsData.features || !Array.isArray(tmsData.features)) {
+            console.error('Could not get any TMS data');
+            return null;
+        }
 
-    const stations = tmsData.data.tmsStations;
-    for(let i=0; i<stations.length; i++){
-        const currentStation = stations[i];
+        const result = [];
+        for (const station of tmsData.features) {
 
-        const tms = { stationId: currentStation.id };
-
-        let isSensor1Found = false;
-        let isSensor2Found = false;
-        for(let j=0; j<currentStation.sensorValues.length; j++){
-            const sensor = currentStation.sensorValues[j];
-            if(sensor.name === "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1_VVAPAAS1"){
-                tms.sensor1Id = sensor.id;
-                isSensor1Found = true;
-                if(isSensor2Found){
-                    break;
-                }
+            if (!station || !station.id || !station.geometry || !station.geometry.coordinates || (station.geometry.coordinates.length < 2))
                 continue;
-            }
-            if(sensor.name === "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA2_VVAPAAS2"){
-                tms.sensor2Id = sensor.id;
-                isSensor2Found = true;
-                if(isSensor1Found){
-                    break;
-                }
-            }
+
+            const [lon, lat] = station.geometry.coordinates;
+            const polygonCoordinates = JSON.stringify(generateSquareFromPoint({lon, lat}, tmsAreaSizeM));
+            result.push({stationId: station.id, lon, lat, polygonCoordinates});
         }
 
-        if(isSensor1Found || isSensor2Found){
-            tmsObj[currentStation.id] = tms;
-        }
+        return result;
+    } catch (e) {
+        console.error('Error on getting TMS data:', e);
+        return null;
     }
-
-    const metaData = await axios.get("https://tie.digitraffic.fi/api/v3/metadata/tms-stations", {
-        headers: {
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate, br'
-        }
-    });
-    const stationsMeta = metaData.data.features;
-    for(let i=0; i<stationsMeta.length; i++){
-        const id = stationsMeta[i].id;
-        if(tmsObj[id] != null && tmsObj[id].stationId === id){
-            tmsObj[id].lon = stationsMeta[i].geometry.coordinates[0];
-            tmsObj[id].lat = stationsMeta[i].geometry.coordinates[1];
-        }
-    }
-
-    await tmsDAO.createMultiple(Object.values(tmsObj));
 }
 
-/**
- * The method adds areas of the TMSs(traffic measurement stations).
- * They are used to make routing taking into account traffic situation
- * @returns {Promise<void>}
- */
-async function addTMSAreas() {
-    const stations = await tmsDAO.readAll();
-    const areas = [];
-    for(let i=0; i<stations.length; i++){
-        const centerCoordinates = [stations[i].lon, stations[i].lat];
-        const polygonCoordinates = polygonUtil.generateSquarePolygonCoordinates(centerCoordinates, 0.0001415);
-
-        const area = {
-            "areaName": "tms"+stations[i].stationId,
-            "type": "Polygon",
-            "coordinates": polygonCoordinates
-        }
-        areas.push(area);
-    }
-
-    await axios.post(`http://${host}:${port}/dao/area/multiple`, areas);
+async function countAll(table, field='*') {
+    const [results, metadata] = await SequelizeUtil.getSequelizeInstance().query(`SELECT COUNT(${field}) FROM ${table}`);
+    return results[0][`COUNT(${field})`];
 }
 
-//City center coordinates in area ORM object form (basically GeoJSON Polygon or MultiPolygon object with name)
-//Attention: polygons with holes are not supported, only the first array in coordinates array will be taken into account
-const HelsinkiCenter = {
-    "areaName": "HelsinkiCenter",
-    "type": "Polygon",
-    "coordinates": [
-        [
-            [24.92188453674316,60.1720009743249],
-            [24.924287796020508,60.16260738958614],
-            [24.930896759033203,60.1623511632902],
-            [24.93475914001465,60.158123140977864],
-            [24.956903457641598,60.16021586646705],
-            [24.95510101318359,60.16896970183465],
-            [24.92188453674316,60.1720009743249]
-        ]
-    ]
-};
+//[lon, lat]
+export function generateSquareFromPoint(center, sizeM) {
+    const {lon, lat} = center;
+    // Earth’s radius, in meters
+    const R = 6378137;
 
-const LahtiCenter = {
-    "areaName": "LahtiCenter",
-    "type": "Polygon",
-    "coordinates": [
-        [
-            [25.654878616333004,60.98514074901049],
-            [25.65007209777832,60.98268442445237],
-            [25.65007209777832,60.980852465601075],
-            [25.65582275390625,60.98056100786631],
-            [25.655651092529297,60.979020401155694],
-            [25.671615600585938,60.979353511636425],
-            [25.668354034423825,60.98426648575919],
-            [25.654878616333004,60.98514074901049]
-        ]
-    ]
-};
+    // Convert size from meters to degrees (approximately)
+    const deltaDegree = (sizeM / 2) / (Math.PI / 180 * R);
+
+    // Calculate approximate offsets in latitude and longitude
+    const deltaLat = deltaDegree;  // Change in latitude in degrees
+    const deltaLon = deltaDegree / Math.cos(lat * Math.PI / 180);  // Change in longitude in degrees, corrected
+
+    // Define the coordinates of the square (GeoJSON polygons require the first and last positions to be the same)
+    return [
+        [lon - deltaLon, lat - deltaLat], // bottom-left
+        [lon - deltaLon, lat + deltaLat], // top-left
+        [lon + deltaLon, lat + deltaLat], // top-right
+        [lon + deltaLon, lat - deltaLat], // bottom-right
+        [lon - deltaLon, lat - deltaLat]  // closing the polygon at bottom-left
+    ];
+}
