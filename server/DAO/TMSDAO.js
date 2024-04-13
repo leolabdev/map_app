@@ -1,5 +1,6 @@
 import DaoUtil from "../util/DaoUtil.js";
 import TMS from "../model/TMS.js";
+import { Op } from "sequelize";
 
 
 const daoUtil = new DaoUtil();
@@ -60,6 +61,29 @@ export default class TMSDAO {
         }
     }
 
+    async readMultipleByIds(ids) {
+        if(ids == null){
+            console.error("TMSDAO read: Wrong parameter provided");
+            return null;
+        }
+
+        const query = [];
+        for(const id of ids)
+            query.push({stationId: id});
+
+        try {
+            const resp = await TMS.findAll({
+                where: { [Op.or]: query },
+                attributes: ['polygonCoordinates']
+            });
+            return resp != null ? resp.dataValues : null;
+        } catch (e) {
+            console.log("TMSDAO read: Could not execute the query");
+            console.log(e);
+            return null;
+        }
+    }
+
     /**
      * The method reads all TMSs(traffic measurement stations) of the TMS SQL table
      * @returns array of the founded TMS objects, if operation was sucessful or null if not
@@ -87,7 +111,7 @@ export default class TMSDAO {
         }
 
         try {
-            const resp = await TMS.destroy({ where: { stationId: primaryKey } });
+            const resp = await TMS.destroy({ where: { stationId: primaryKey }});
             return resp > 0;
         } catch (e) {
             console.log("TMSDAO delete: Could not execute the query");

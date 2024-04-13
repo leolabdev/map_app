@@ -104,6 +104,20 @@ async function convertCityCentersFileToGeoJson(filePath) {
 }
 
 
+export async function updateTrafficSituation(maxAcceptableValue){
+    const slowStationIds = await getSlowTMSIds(maxAcceptableValue);
+    const stationPolygonCoordinates = await TMSDAO.readMultipleByIds(slowStationIds);
+
+    const geojsonMultiPolygon = {
+        type: 'MultiPolygon',
+        coordinates: []
+    }
+    for(const coords of stationPolygonCoordinates)
+        geojsonMultiPolygon.coordinates.push([JSON.parse(coords)]);
+
+    const areaResp = await areaDAO.create({areaName: 'SlowTraffic', polygon: geojsonMultiPolygon});
+}
+
 /*
 * Sensors data
 * https://tie.digitraffic.fi/api/tms/v1/stations/data

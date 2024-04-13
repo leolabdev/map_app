@@ -60,6 +60,7 @@ const util = new Util();
 app.listen(port, async() => {
     if (SequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://${host}:${port}/`);
+        //TODO: Bug on the first start. This line need to be executed after DB was initialized
        await settingsUtil.setUp();
 
         //TODO: fix later
