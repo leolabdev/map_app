@@ -76,7 +76,8 @@ export default class TMSDAO {
                 where: { [Op.or]: query },
                 attributes: ['polygonCoordinates']
             });
-            return resp != null ? resp.dataValues : null;
+            
+            return daoUtil.getDataValues(resp);
         } catch (e) {
             console.log("TMSDAO read: Could not execute the query");
             console.log(e);

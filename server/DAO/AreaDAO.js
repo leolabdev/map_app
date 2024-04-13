@@ -20,13 +20,16 @@ export default class AreaDAO {
     async create(data) {
         const { areaName, polygon } = data;
 
-        if(!areaName || !polygon || typeof polygon !== 'object'){
-            console.error('DataDAO create: Wrong parameter provided');
+        if(!areaName || !polygon){
+            console.error('AreaDAO create: Wrong parameter provided');
             return null;
         }
 
         try {
-            return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
+            if(typeof polygon === 'object')
+                return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
+            if(typeof polygon === 'string')
+                return await Area.create({ areaName, polygon });
         } catch (e) {
             console.error('AreaDAO: Could not execute the query');
             return null;

@@ -105,17 +105,20 @@ async function convertCityCentersFileToGeoJson(filePath) {
 
 
 export async function updateTrafficSituation(maxAcceptableValue){
-    const slowStationIds = await getSlowTMSIds(maxAcceptableValue);
-    const stationPolygonCoordinates = await TMSDAO.readMultipleByIds(slowStationIds);
+    const areaName = 'SlowTraffic';
+    areaDAO.delete(areaName);
 
-    const geojsonMultiPolygon = {
+    const slowStationIds = await getSlowTMSIds(maxAcceptableValue);
+    const stationPolygon = await tmsDAO.readMultipleByIds(slowStationIds);
+
+    const multiPolygon = {
         type: 'MultiPolygon',
         coordinates: []
     }
-    for(const coords of stationPolygonCoordinates)
-        geojsonMultiPolygon.coordinates.push([JSON.parse(coords)]);
+    for(const p of stationPolygon)
+        multiPolygon.coordinates.push([JSON.parse(p.polygonCoordinates)]);
 
-    const areaResp = await areaDAO.create({areaName: 'SlowTraffic', polygon: geojsonMultiPolygon});
+    await areaDAO.create({areaName, polygon: multiPolygon});
 }
 
 /*
@@ -171,7 +174,7 @@ export async function getSlowTMSIds(maxAcceptableValue = 90) {
 
                 if (sensor.name === 'KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1_VVAPAAS1' || sensor.name === 'KESKINOPEUS_5MIN_LIUKUVA_SUUNTA2_VVAPAAS2') {
                     if (sensor.value < maxAcceptableValue) {
-                        result.push(sensor.id);
+                        result.push(station.id);
                         break;
                     }
                 }

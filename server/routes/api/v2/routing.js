@@ -10,12 +10,14 @@ import PolygonUtil from "../../../util/PolygonUtil.js";
 import express from "express";
 import axios from "axios";
 import CityCenterUtil from "../../../util/CityCenterUtil.js";
+import AreaDAO from "../../../DAO/AreaDAO.js";
 
 const router = express.Router();
 
 const apiRequestUtil = new APIRequestUtil();
 const valuesDateChecker = new ValuesDateChecker();
 const dataDAO = new DataDAO();
+const areaDAO = new AreaDAO();
 const orderDataDAO = new OrderDataDAO();
 const optimizationUtil = new OptimizationUtil();
 const addressUtil = new AddressUtil();
@@ -49,11 +51,20 @@ const port = process.env.API_PORT || 8081;
  * responses back geoJSON
  */
 router.post('/', async (req, res, next) => {
-    const {coordinates, fuelusage, startCoordinateIndex, endCoordinateIndex, avoidCityCenters, cityCentersToAvoid} = req.body;
+    const {
+        coordinates, 
+        fuelusage, 
+        startCoordinateIndex, 
+        endCoordinateIndex, 
+        avoidCityCenters, 
+        cityCentersToAvoid,
+        isTrafficSituation
+    } = req.body;
     if(!coordinates)
         res.status(400).send({error: "coordinates field is required", status: 400});
 
-    const key = process.env.ORS_API_KEY;
+    //const key = process.env.ORS_API_KEY;
+    const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe';
     const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
 
     let avoidedCenters = [];
@@ -62,10 +73,19 @@ router.post('/', async (req, res, next) => {
     else if(cityCentersToAvoid && cityCentersToAvoid.length > 0)
         avoidedCenters = await CityCenterUtil.getCityCentersByNames(cityCentersToAvoid);
 
+    let slowTrafficMultiPolygon = null;
+    if(isTrafficSituation){
+        const slowArea = await areaDAO.read('SlowTraffic');
+        slowTrafficMultiPolygon = JSON.parse(slowArea.polygon);
+        if(slowTrafficMultiPolygon)
+            slowTrafficMultiPolygon.coordinates.push([...[...avoidedCenters.coordinates]]);
+    }
+
+
     const optimizedCoords = await optimizeRoute(coordinates, key, {
         startIndex: startCoordinateIndex,
         endIndex: endCoordinateIndex,
-        polygonsToAvoid: avoidedCenters
+        polygonsToAvoid: slowTrafficMultiPolygon ?? avoidedCenters
     });
 
     if(!optimizedCoords)
@@ -175,7 +195,7 @@ async function orsRequest(url, token, body) {
 function isIndexValid(index, array) {
     return index !== undefined && index !== null && (index < array.length) && (index >= 0);
 }
-async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedStopTimeS=300, polygonsToAvoid=[]} = {}) {
+async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedStopTimeS=300, polygonsToAvoid=null} = {}) {
     if(!coordinates || coordinates.length === 0 || !key){
         console.error('No coordinates or key provided');
         return null;
@@ -193,7 +213,7 @@ async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedS
 
     const vehicles = [ { id: 1, profile: 'driving-car', start, end } ]
     const options = {};
-    if(polygonsToAvoid && polygonsToAvoid.length > 0)
+    if(polygonsToAvoid)
         options.avoid_polygons = polygonsToAvoid;
 
     // The request payload

@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import bodyParser from "body-parser";
-import SettingsUtil from "./util/SettingsUtil.js";
+import SettingsUtil, { updateTrafficSituation } from "./util/SettingsUtil.js";
 import Util from "./util/Util.js";
 import SequelizeUtil from "./modules/SequelizeUtil.js";
 import * as addressRouter from "./routes/api/v1/address.js";
@@ -64,8 +64,8 @@ app.listen(port, async() => {
        await settingsUtil.setUp();
 
         //TODO: fix later
-        // setInterval(() => {
-        //     util.updateTrafficSituation(90);
-        // } , 900000);
+        setInterval(async () => {
+            await updateTrafficSituation(90);
+         } , 900000);
     }
 });
