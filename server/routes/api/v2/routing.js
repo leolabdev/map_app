@@ -1,31 +1,10 @@
-import APIRequestUtil from "../../../util/APIRequestUtil.js";
-import ValuesDateChecker from "../../../util/ValuesDateChecker.js";
-import DataDAO from "../../../DAO/DataDAO.js";
-import OrderDataDAO from "../../../DAO/OrderDataDAO.js";
-import OptimizationUtil from "../../../util/OptimizationUtil.js";
-import AddressUtil from "../../../util/AddressUtil.js";
-import DaoUtil from "../../../util/DaoUtil.js";
-import Util from "../../../util/Util.js";
-import PolygonUtil from "../../../util/PolygonUtil.js";
 import express from "express";
-import axios from "axios";
 import CityCenterUtil from "../../../util/CityCenterUtil.js";
 import AreaDAO from "../../../DAO/AreaDAO.js";
 
 const router = express.Router();
 
-const apiRequestUtil = new APIRequestUtil();
-const valuesDateChecker = new ValuesDateChecker();
-const dataDAO = new DataDAO();
 const areaDAO = new AreaDAO();
-const orderDataDAO = new OrderDataDAO();
-const optimizationUtil = new OptimizationUtil();
-const addressUtil = new AddressUtil();
-const daoUtil = new DaoUtil();
-const util = new Util();
-const polygonUtil = new PolygonUtil();
-const host = process.env.API_HOST || "localhost";
-const port = process.env.API_PORT || 8081;
 
 /**
  * Sends api query to openrouteservice to calculate route. Uses openrouteservices directions service.
@@ -52,123 +31,49 @@ const port = process.env.API_PORT || 8081;
  */
 router.post('/', async (req, res, next) => {
     const {
-        coordinates, 
-        fuelusage, 
-        startCoordinateIndex, 
-        endCoordinateIndex, 
-        avoidCityCenters, 
-        cityCentersToAvoid,
-        isTrafficSituation
+        coordinates,
+        startCoordinateIndex, endCoordinateIndex,
+        avoidCityCenters, cityCentersToAvoid, isTrafficSituation,
+        fuelusage
     } = req.body;
+
     if(!coordinates)
         res.status(400).send({error: "coordinates field is required", status: 400});
 
     //const key = process.env.ORS_API_KEY;
     const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe';
-    const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
-
-    let avoidedCenters = [];
-    if(avoidCityCenters)
-        avoidedCenters = await CityCenterUtil.getAllCityCentersArr();
-    else if(cityCentersToAvoid && cityCentersToAvoid.length > 0)
-        avoidedCenters = await CityCenterUtil.getCityCentersByNames(cityCentersToAvoid);
-
-    let slowTrafficMultiPolygon = null;
-    if(isTrafficSituation){
-        const slowArea = await areaDAO.read('SlowTraffic');
-        slowTrafficMultiPolygon = JSON.parse(slowArea.polygon);
-        if(slowTrafficMultiPolygon)
-            slowTrafficMultiPolygon.coordinates.push([...[...avoidedCenters.coordinates]]);
-    }
-
 
     const optimizedCoords = await optimizeRoute(coordinates, key, {
         startIndex: startCoordinateIndex,
         endIndex: endCoordinateIndex,
-        polygonsToAvoid: slowTrafficMultiPolygon ?? avoidedCenters
     });
-
     if(!optimizedCoords)
         return res.status(500).send({error: "could not optimize the route", status: 500});
 
-    await orsRequestResponse(url, key, {coordinates: optimizedCoords}, res);
-});
-
-
-/**
- * orderIds ids of the orders
- * start car start point, where car is at the start of the travel, not required (if no start provided, random shipment address will be the start point)
- * end car end point, where car should end the travel, not required (if no end provided, end will be the last address of the built travel)
- * fuelusage fuel usage of the car per 100 km, not required
- * {
- *     orderIds: [1,2], (int)
- *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
- *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
- *     fuelusage: 5.7, *optional
- *     isCenterAvoided: true, *optional
- *     isTrafficSituation: true *optional
- *  }
- */
-router.post('/orders', async (req, res) => {
-    try{
-        const orderIds = req.body.orderIds;
-        const isCenterAvoided = req.body.isCenterAvoided;
-        const isTrafficSituation = req.body.isTrafficSituation;
-        const start = req.body.start;
-        const end = req.body.end;
-        const queriedOrders = await orderDataDAO.readByIds(orderIds);
-
-        //generate start and end points information for the client side
-        let respStart, respEnd, startReq, endReq;
-        if(start != null) {
-            respStart = await getPointData(start);
-            startReq = getPointCoordinates(respStart, 1);
-        }
-        if(end != null){
-            respEnd = await getPointData(end);
-            endReq = getPointCoordinates(respEnd, 2);
-        }
-
-        //optimize the route via vroom
-        const optimizationResp = await getOptimizedShipmentDelivery(queriedOrders, startReq, endReq);
-        const coordinates = optimizationUtil.getOptimizedCoordinates(optimizationResp);
-
-        //if needed, add areas to be avoided
-        const options = {};
-
-        let polygonToAvoid;
-        if(isCenterAvoided){
-            polygonToAvoid = await getCitiesCentersPolygons(queriedOrders);
-            polygonToAvoid = polygonUtil.getPolygonWithoutPointsInside(polygonToAvoid, coordinates);
-        }
-
-        if(isTrafficSituation){
-            if(polygonToAvoid == null){
-                polygonToAvoid = {type: "MultiPolygon", coordinates: []};
-            }
-            const trafficResp = await axios.get(`http://${host}:${port}/dao/area/SlowTraffic`);
-            const slowTrafficAreaCoordinates = trafficResp.data.result.coordinates;
-            if(slowTrafficAreaCoordinates.length > 0){
-                polygonToAvoid.coordinates.push(...slowTrafficAreaCoordinates);
-            }
-        }
-
-        if(polygonToAvoid != null && polygonToAvoid.coordinates.length > 0){
-            options.avoid_polygons = polygonToAvoid;
-        }
-
-        makeRoutingRequest(coordinates, options, req, res, { orders: queriedOrders, start: respStart, end: respEnd });
-    }catch (err){
-        console.log(err);
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
+    const routingBody = {
+        coordinates: optimizedCoords,
+        instructions: false
     }
+    let avoidMultiPolygon = await determineAvoidPolygon(avoidCityCenters, cityCentersToAvoid, isTrafficSituation);
+    if(avoidMultiPolygon)
+        routingBody.options = {avoid_polygons: avoidMultiPolygon};
+
+    await orsRequestResponse(url, key, routingBody, res);
 });
+
 
 async function orsRequestResponse(url, token, body, res) {
     const resp = await orsRequest(url, token, body);
     if(!resp)
         return res.status(500).send({error: 'Failed to fetch routing data'});
 
-    res.status(200).send(resp);
+    const {features} = resp;
+    const send = {
+        route: features[0],
+        info: features[0]?.properties?.summary
+    }
+    res.status(200).send(features[0]);
 }
 
 async function orsRequest(url, token, body) {
@@ -182,6 +87,7 @@ async function orsRequest(url, token, body) {
             },
             body: JSON.stringify(body)
         });
+
         if (!response.ok)
             throw new Error(`Request failed with status: ${response.status}`);
 
@@ -212,12 +118,9 @@ async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedS
     const end = isIndexValid(endIndex, coordinates) ? coordinates[endIndex] : coordinates[coordinates.length-1];
 
     const vehicles = [ { id: 1, profile: 'driving-car', start, end } ]
-    const options = {};
-    if(polygonsToAvoid)
-        options.avoid_polygons = polygonsToAvoid;
 
     // The request payload
-    const body = { jobs, vehicles, options };
+    const body = { jobs, vehicles };
     const optimizationResp = await orsRequest('https://api.openrouteservice.org/optimization', key, body);
     if(!optimizationResp || !optimizationResp.routes)
         return null;
@@ -226,6 +129,28 @@ async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedS
     return optimizationResp.routes.map(route =>
         route.steps.filter(step => step.type === 'job').map(step => step.location)
     ).flat();
+}
+
+async function determineAvoidPolygon(avoidCityCenters, cityCentersToAvoid, isTrafficSituation) {
+    let avoidMultiPolygon = { type: "MultiPolygon", coordinates: [] };
+    let cities = null;
+    if(avoidCityCenters)
+        cities = await CityCenterUtil.getAllCityCentersArr();
+    else if(cityCentersToAvoid && cityCentersToAvoid.length > 0)
+        cities = await CityCenterUtil.getCityCentersByNames(cityCentersToAvoid);
+
+    let slowTraffic = null;
+    if(isTrafficSituation){
+        const slowArea = await areaDAO.read('SlowTraffic');
+        slowTraffic = JSON.parse(slowArea.polygon);
+    }
+
+    if(cities)
+        avoidMultiPolygon.coordinates = [...cities.map(p => p.coordinates)];
+    if(slowTraffic)
+        avoidMultiPolygon.coordinates = avoidMultiPolygon.coordinates.concat(slowTraffic.coordinates);
+
+    return avoidMultiPolygon.coordinates.length !== 0 ? avoidMultiPolygon : null;
 }
 
 export default router;

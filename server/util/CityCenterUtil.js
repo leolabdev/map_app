@@ -40,7 +40,7 @@ export default class CityCenterUtil {
         const result = [];
         for(let key in instance.#cityCenters){
             const polygon = instance.#cityCenters[key];
-            result.push(polygon);
+            result.push(JSON.parse(polygon));
         }
 
         return result;
