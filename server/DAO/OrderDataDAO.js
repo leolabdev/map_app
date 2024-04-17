@@ -1,5 +1,6 @@
 import DaoUtil from "../util/DaoUtil.js";
 import OrderData from "../model/OrderData.js";
+import {Op} from "sequelize";
 
 const daoUtil = new DaoUtil();
 
@@ -58,7 +59,7 @@ export default class OrderDataDAO {
      * @returns array with founded Order objects, if operation was sucessful or null if not
      */
     async readByIds(primaryKeys) {
-        if(primaryKey == null || primaryKeys.length === 0){
+        if(!primaryKeys || primaryKeys.length === 0){
             console.error("OrderDataDAO readByIds: Wrong parameter provided");
             return null;
         }

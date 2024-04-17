@@ -1,6 +1,8 @@
 import express from "express";
 import CityCenterUtil from "../../../util/CityCenterUtil.js";
 import AreaDAO from "../../../DAO/AreaDAO.js";
+import OrderDataDAO from "../../../DAO/OrderDataDAO.js";
+import OptimizationUtil from "../../../util/OptimizationUtil.js";
 
 const router = express.Router();
 
@@ -63,6 +65,62 @@ router.post('/', async (req, res, next) => {
 });
 
 
+const orderDataDAO = new OrderDataDAO();
+const optimizationUtil = new OptimizationUtil();
+/**
+ * orderIds ids of the orders
+ * start car start point, where car is at the start of the travel, not required (if no start provided, random shipment address will be the start point)
+ * end car end point, where car should end the travel, not required (if no end provided, end will be the last address of the built travel)
+ * fuelusage fuel usage of the car per 100 km, not required
+ * {
+ *     orderIds: [1,2], (int)
+ *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
+ *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
+ *     fuelusage: 5.7, *optional
+ *     isCenterAvoided: true, *optional
+ *     isTrafficSituation: true *optional
+ *  }
+ */
+router.post('/orders', async (req, res) => {
+    try{
+        const {
+            orderIds, start, end,
+            avoidCityCenters, cityCentersToAvoid, isTrafficSituation,
+            fuelusage
+        } = req.body;
+        const queriedOrders = await orderDataDAO.readByIds(orderIds);
+
+        //optimize the route via vroom
+        const ordersBody = optimizationUtil.getShipmentDeliveryRequestBody(queriedOrders);
+        if(!ordersBody)
+            return res.status(500).send({error: 'Could not organize orders', status: 500});
+
+        const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe';
+        const optimizationUrl = 'https://api.openrouteservice.org/optimization';
+
+        const optimizationResp = await orsRequest(optimizationUrl, key, ordersBody);
+        if(!optimizationResp)
+            return res.status(500).send({error: 'Could not optimize the route', status: 500});
+        const coordinates = optimizationResp.routes[0].steps.map(step => step.location);
+
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
+        const routingBody = {
+            coordinates: coordinates,
+            instructions: false
+        }
+        let avoidMultiPolygon = await determineAvoidPolygon(avoidCityCenters, cityCentersToAvoid, isTrafficSituation);
+        if(avoidMultiPolygon)
+            routingBody.options = {avoid_polygons: avoidMultiPolygon};
+
+        await orsRequestResponse(url, key, routingBody, res);
+
+        // return res.status(200).send({result: coordinates});
+    } catch (err){
+        console.log(err);
+    }
+});
+
+
 async function orsRequestResponse(url, token, body, res) {
     const resp = await orsRequest(url, token, body);
     if(!resp)
@@ -101,7 +159,7 @@ async function orsRequest(url, token, body) {
 function isIndexValid(index, array) {
     return index !== undefined && index !== null && (index < array.length) && (index >= 0);
 }
-async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedStopTimeS=300, polygonsToAvoid=null} = {}) {
+async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedStopTimeS=300} = {}) {
     if(!coordinates || coordinates.length === 0 || !key){
         console.error('No coordinates or key provided');
         return null;
@@ -117,7 +175,7 @@ async function optimizeRoute(coordinates, key, {startIndex, endIndex, estimatedS
     const start = isIndexValid(startIndex, coordinates) ? coordinates[startIndex] : coordinates[0];
     const end = isIndexValid(endIndex, coordinates) ? coordinates[endIndex] : coordinates[coordinates.length-1];
 
-    const vehicles = [ { id: 1, profile: 'driving-car', start, end } ]
+    const vehicles = [ { id: 1, profile: 'driving-car', start, end } ];
 
     // The request payload
     const body = { jobs, vehicles };
