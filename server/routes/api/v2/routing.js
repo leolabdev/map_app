@@ -84,14 +84,23 @@ const optimizationUtil = new OptimizationUtil();
 router.post('/orders', async (req, res) => {
     try{
         const {
-            orderIds, start, end,
+            orderIds, startOrderId, endOrderId,
             avoidCityCenters, cityCentersToAvoid, isTrafficSituation,
             fuelusage
         } = req.body;
         const queriedOrders = await orderDataDAO.readByIds(orderIds);
 
+        let startAddress, endAddress;
+        if(startOrderId)
+            startAddress = await orderDataDAO.read(startOrderId);
+        if(endOrderId)
+            endAddress = await orderDataDAO.read(endOrderId);
+
+        const startCoord = startAddress ? [startAddress.lon, startAddress.lat] : null;
+        const endCoord = endAddress ? [endAddress.lon, endAddress.lat] : null;
+
         //optimize the route via vroom
-        const ordersBody = optimizationUtil.getShipmentDeliveryRequestBody(queriedOrders);
+        const ordersBody = optimizationUtil.getShipmentDeliveryRequestBody(queriedOrders, startCoord, endCoord);
         if(!ordersBody)
             return res.status(500).send({error: 'Could not organize orders', status: 500});
 
@@ -99,22 +108,17 @@ router.post('/orders', async (req, res) => {
         const optimizationUrl = 'https://api.openrouteservice.org/optimization';
 
         const optimizationResp = await orsRequest(optimizationUrl, key, ordersBody);
-        if(!optimizationResp)
+        if(!(optimizationResp?.routes[0]?.steps?.length === 0))
             return res.status(500).send({error: 'Could not optimize the route', status: 500});
         const coordinates = optimizationResp.routes[0].steps.map(step => step.location);
 
         const url = `https://api.openrouteservice.org/v2/directions/driving-car/geojson`;
-        const routingBody = {
-            coordinates: coordinates,
-            instructions: false
-        }
+        const routingBody = { coordinates, instructions: false };
         let avoidMultiPolygon = await determineAvoidPolygon(avoidCityCenters, cityCentersToAvoid, isTrafficSituation);
         if(avoidMultiPolygon)
             routingBody.options = {avoid_polygons: avoidMultiPolygon};
 
         await orsRequestResponse(url, key, routingBody, res);
-
-        // return res.status(200).send({result: coordinates});
     } catch (err){
         console.log(err);
     }
