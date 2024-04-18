@@ -1,7 +1,7 @@
 import express from "express";
 import ResponseUtil from "../../util/ResponseUtil.js";
 import DaoUtil from "../../util/DaoUtil.js";
-import ClientDAO from "../../DAO/ClientDAO.js";
+import ClientService from "../../service/ClientService.js";
 import axios from "axios";
 
 const router = express.Router();
@@ -11,7 +11,7 @@ const router = express.Router();
 const responseUtil = new ResponseUtil();
 const daoUtil = new DaoUtil();
 
-const clientDAO = new ClientDAO();
+const clientDAO = new ClientService();
 const host = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 8081;
 

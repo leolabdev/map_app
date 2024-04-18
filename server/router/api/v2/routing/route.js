@@ -1,12 +1,12 @@
 import express from "express";
-import CityCenterUtil from "../../../util/CityCenterUtil.js";
-import AreaDAO from "../../../DAO/AreaDAO.js";
-import OrderDataDAO from "../../../DAO/OrderDataDAO.js";
-import OptimizationUtil from "../../../util/OptimizationUtil.js";
+import CityCenterUtil from "../../../../util/CityCenterUtil.js";
+import AreaService from "../../../../service/AreaService.js";
+import OrderDataService from "../../../../service/OrderDataService.js";
+import OptimizationUtil from "../../../../util/OptimizationUtil.js";
 
 const router = express.Router();
 
-const areaDAO = new AreaDAO();
+const areaDAO = new AreaService();
 
 /**
  * Sends api query to openrouteservice to calculate route. Uses openrouteservices directions service.
@@ -43,7 +43,7 @@ router.post('/', async (req, res, next) => {
         res.status(400).send({error: "coordinates field is required", status: 400});
 
     //const key = process.env.ORS_API_KEY;
-    const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe';
+    const key = process.env.ORS_API_KEY;
 
     const optimizedCoords = await optimizeRoute(coordinates, key, {
         startIndex: startCoordinateIndex,
@@ -65,7 +65,7 @@ router.post('/', async (req, res, next) => {
 });
 
 
-const orderDataDAO = new OrderDataDAO();
+const orderDataDAO = new OrderDataService();
 const optimizationUtil = new OptimizationUtil();
 /**
  * orderIds ids of the orders
@@ -74,8 +74,8 @@ const optimizationUtil = new OptimizationUtil();
  * fuelusage fuel usage of the car per 100 km, not required
  * {
  *     orderIds: [1,2], (int)
- *     start : [24.573798698987527,60.19074881467758] or 1, (lon, lat) or orderId *optional
- *     end : [24.573798698987527,60.19074881467758] or 2, (lon, lat) or orderId *optional
+ *     startOrderId :  1, orderId *optional
+ *     endOrderId : 2, orderId *optional
  *     fuelusage: 5.7, *optional
  *     isCenterAvoided: true, *optional
  *     isTrafficSituation: true *optional
@@ -96,19 +96,23 @@ router.post('/orders', async (req, res) => {
         if(endOrderId)
             endAddress = await orderDataDAO.read(endOrderId);
 
-        const startCoord = startAddress ? [startAddress.lon, startAddress.lat] : null;
-        const endCoord = endAddress ? [endAddress.lon, endAddress.lat] : null;
+        const {lon: startLon, lat: startLat} = startAddress?.shipmentAddress?.dataValues;
+        const {lon: endLon, lat: endLat} = endAddress?.deliveryAddress?.dataValues;
+
+        const startCoord = startLon && startLat ? [startLon, startLat] : null;
+        const endCoord = endLon && endLat ? [endLon, endLat] : null;
 
         //optimize the route via vroom
         const ordersBody = optimizationUtil.getShipmentDeliveryRequestBody(queriedOrders, startCoord, endCoord);
         if(!ordersBody)
             return res.status(500).send({error: 'Could not organize orders', status: 500});
 
-        const key = '5b3ce3597851110001cf62484aa58858909f4d949a4d7f231d54a9fe';
+        const key = process.env.ORS_API_KEY;
         const optimizationUrl = 'https://api.openrouteservice.org/optimization';
 
         const optimizationResp = await orsRequest(optimizationUrl, key, ordersBody);
-        if(!(optimizationResp?.routes[0]?.steps?.length === 0))
+
+        if(optimizationResp?.routes[0]?.steps?.length === 0)
             return res.status(500).send({error: 'Could not optimize the route', status: 500});
         const coordinates = optimizationResp.routes[0].steps.map(step => step.location);
 
@@ -121,6 +125,7 @@ router.post('/orders', async (req, res) => {
         await orsRequestResponse(url, key, routingBody, res);
     } catch (err){
         console.log(err);
+        return res.status(500).send({error: 'Failed to fetch routing data'});
     }
 });
 

@@ -1,7 +1,7 @@
 import express from "express";
 import DaoUtil from "../../util/DaoUtil.js";
 import ResponseUtil from "../../util/ResponseUtil.js";
-import AddressDAO from "../../DAO/AddressDAO.js";
+import AddressService from "../../service/AddressService.js";
 
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
 
-const addressDAO = new AddressDAO();
+const addressDAO = new AddressService();
 
 /**
  * Create new address in the database

@@ -1,5 +1,5 @@
 import ResponseUtil from "../../util/ResponseUtil.js";
-import DataDAO from "../../DAO/DataDAO.js";
+import DataService from "../../service/DataService.js";
 import express from "express";
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 
 const responseUtil = new ResponseUtil();
 
-const dataDAO = new DataDAO();
+const dataDAO = new DataService();
 
 /**
  * Create new row in the Data SQL table, which is basically key-value pair

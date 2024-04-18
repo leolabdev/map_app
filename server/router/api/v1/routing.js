@@ -1,7 +1,7 @@
 import APIRequestUtil from "../../../util/APIRequestUtil.js";
 import ValuesDateChecker from "../../../util/ValuesDateChecker.js";
-import DataDAO from "../../../DAO/DataDAO.js";
-import OrderDataDAO from "../../../DAO/OrderDataDAO.js";
+import DataService from "../../../service/DataService.js";
+import OrderDataService from "../../../service/OrderDataService.js";
 import OptimizationUtil from "../../../util/OptimizationUtil.js";
 import AddressUtil from "../../../util/AddressUtil.js";
 import DaoUtil from "../../../util/DaoUtil.js";
@@ -15,8 +15,8 @@ const router = express.Router();
 
 const apiRequestUtil = new APIRequestUtil();
 const valuesDateChecker = new ValuesDateChecker();
-const dataDAO = new DataDAO();
-const orderDataDAO = new OrderDataDAO();
+const dataDAO = new DataService();
+const orderDataDAO = new OrderDataService();
 const optimizationUtil = new OptimizationUtil();
 const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();

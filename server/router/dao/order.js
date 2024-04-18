@@ -1,12 +1,12 @@
 import express from "express";
 import ResponseUtil from "../../util/ResponseUtil.js";
-import OrderDataDAO from "../../DAO/OrderDataDAO.js";
+import OrderDataService from "../../service/OrderDataService.js";
 
 const router = express.Router();
 
 
 const responseUtil = new ResponseUtil();
-const orderDataDAO = new OrderDataDAO();
+const orderDataDAO = new OrderDataService();
 
 /**
  * Create new order in the database

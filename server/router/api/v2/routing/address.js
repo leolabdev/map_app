@@ -1,12 +1,10 @@
 import express from "express";
-import ThrottlingQueue from "../../../util/throttlingQueue.js";
+import ThrottlingQueue from "../../../../util/throttlingQueue.js";
 import rateLimit from "express-rate-limit";
-import APILimitTracker from "../../../util/APILimitTracker.js";
+import APILimitTracker from "../../../../util/APILimitTracker.js";
 
 
 const router = express.Router();
-
-//TODO: throttling for every endpoint, maps.co 1s in queue, geoapifi 2-3s/IP and 1s in queue
 
 const validateQueue = new ThrottlingQueue(1500);
 router.get('/validate', async (req, res, next) => {
@@ -33,8 +31,8 @@ router.get('/reverse', async (req, res, next) => {
     const {lon, lat} = req.query;
 
     //60.2078669, 24.8918027
-    const key = process.env.MAPS_API_KEY;
-    const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&api_key=${key}`;
+    const key =  process.env.GEOAPIFY_API_KEY;
+    const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&apiKey=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);
     reverseQueue.addRequest(requestFunction);

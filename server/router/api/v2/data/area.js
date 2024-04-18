@@ -1,17 +1,12 @@
 import express from "express";
-import DaoUtil from "../../util/DaoUtil.js";
-import ResponseUtil from "../../util/ResponseUtil.js";
-import AreaDAO from "../../DAO/AreaDAO.js";
+import ResponseUtil from "../../../../util/ResponseUtil.js";
+import AreaService from "../../../../service/AreaService.js";
 
 const router = express.Router();
 
-
-const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
 
-const areaDAO = new AreaDAO();
-const host = process.env.API_HOST || "localhost";
-const port = process.env.API_PORT || 8081;
+const areaDAO = new AreaService();
 /**
  * Create new area in the Area SQL table
  * The request body must contain areaName and type(Polygon or MultiPolygon, read more from GeoJSON docs) fields
