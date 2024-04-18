@@ -11,7 +11,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Area SQL table.
  * This table contains area objects and used for saving type(polygon or multipolygon) of the GeoJSON objects and name of the area
  */
-export default class AreaDAO {
+export default class AreaService {
     /**
      * The method creates new area in the Area SQL table
      * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are manditory
