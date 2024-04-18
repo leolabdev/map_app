@@ -9,7 +9,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with TMS SQL table.
  * This table contains TMS(=traffic measurement station) data such as station id, sensor1(average speed, pointed to direction 1) id , sensor2(average speed, pointed to direction 2) id, lon, lat
  */
-export default class TMSDAO {
+export default class TMSService {
     /**
      * The method creates new TMS(traffic measurement station) in the TMS SQL table
      * @param {TMS} data object with the order data, where stationId, sensor1Id, sensor2Id, lon, lat fields are mandatory

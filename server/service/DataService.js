@@ -9,7 +9,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Data SQL table.
  * This table contains different data in key-value form and last updated date
  */
-export default class DataDAO {
+export default class DataService {
     /**
      * The method creates new data pair in the Data SQL table
      * @param {Data} data object, where the name and value fields are mandatory

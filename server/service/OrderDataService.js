@@ -8,7 +8,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
  * This table contains orders data such as manufacturer username, client username, shipment address id and delivery address id
  */
-export default class OrderDataDAO {
+export default class OrderDataService {
     /**
      * The method creates new Order in the OrderData SQL table
      * @param {OrderData} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are manditory

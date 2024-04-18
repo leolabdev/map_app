@@ -10,7 +10,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Address SQL table.
  * This table contains addresses data such as city, street, building number, flat and coordinates(lon, lat)
  */
-export default class AddressDAO {
+export default class AddressService {
     /**
      * The method creates new address in the Address SQL table
      * @param {Object} data object with the address data, where city, street, building, lon, lat fields are manditory

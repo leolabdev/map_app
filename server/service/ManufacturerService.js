@@ -12,7 +12,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Manufacturer SQL table.
  * This table contains manufacturers data such as manufacturer username and name
  */
-export default class ManufacturerDAO {
+export default class ManufacturerService {
     /**
      * The method creates new Manufacturer in the Manufacturer SQL table
      * @param {Manufacturer} data object with the manufacturer data, where manufacturerUsername field is manditory

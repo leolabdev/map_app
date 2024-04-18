@@ -12,7 +12,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
  * This table contains clients data such as client username and name
  */
-export default class ClientDAO {
+export default class ClientService {
     /**
      * The method creates new client in the Client SQL table
      * @param {Client} data object with the client data, where clientUsername field is manditory
