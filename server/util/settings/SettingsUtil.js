@@ -1,21 +1,20 @@
-import TMSDAO from "../DAO/TMSDAO.js";
-import PolygonUtil from "./PolygonUtil.js";
+import TMSService from "../../service/TMSService.js";
 import { readFile } from 'fs/promises';
-import AreaDAO from "../DAO/AreaDAO.js";
-import SequelizeUtil from "../modules/SequelizeUtil.js";
+import AreaService from "../../service/AreaService.js";
+import SequelizeUtil from "../../modules/SequelizeUtil.js";
 
 
-const tmsDAO = new TMSDAO();
-const areaDAO = new AreaDAO();
+const tmsDAO = new TMSService();
+const areaDAO = new AreaService();
 
 /**
  * The class provides functionality for setting up the software parts
  */
 export default class SettingsUtil {
 
-    constructor({cityCentersFileLocation}) {
+    constructor({cityCentersFileLocation}){
         this.#cityCentersFileLocation = cityCentersFileLocation;
-        this.#areaDAO = new AreaDAO();
+        this.#areaDAO = new AreaService();
     }
     #cityCentersFileLocation = null;
     #areaDAO = null;
@@ -121,33 +120,7 @@ export async function updateTrafficSituation(maxAcceptableValue){
     await areaDAO.create({areaName, polygon: multiPolygon});
 }
 
-/*
-* Sensors data
-* https://tie.digitraffic.fi/api/tms/v1/stations/data
-* {
-* dataUpdatedTime: "2024-04-09T15:16:42Z",
-* stations: [
-    * {
-    * id: 20002,
-    * dataUpdatedTime	"2024-04-09T15:16:42Z"
-    * sensorValues: [
-    * {
-        * id: 5158
-        * name: "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1_VVAPAAS1",
-        * value: 98
-    * },
-    * {
-        * id: 5161
-        * name: "KESKINOPEUS_5MIN_LIUKUVA_SUUNTA2_VVAPAAS2",
-        * value: 98
-    * },
-    * ...about 33
-    * ]
-    * },
-    * ...about 520
-* ]
-* }
-* */
+
 export async function getSlowTMSIds(maxAcceptableValue = 90) {
     const url = 'https://tie.digitraffic.fi/api/tms/v1/stations/data';
     try {
@@ -187,23 +160,6 @@ export async function getSlowTMSIds(maxAcceptableValue = 90) {
         return null;
     }
 }
-
-/*
-* Stations data
-* https://tie.digitraffic.fi/api/tms/v1/stations
-* {
-* dataUpdatedTime: "2024-04-09T15:16:42Z",
-* features: [
-*   {
-*       id: 20002,
-*       geometry: {
-*           coordinates: [24.637997, 60.220898, 30]
-*       },
-*       ...about 520
-*   }
-* ]
-* }
-* */
 
 export async function addTMSDataToDB(force=false, tmsAreaSizeM=15) {
     if(!force){
