@@ -1,57 +1,24 @@
 import express from "express";
-import Joi from "joi";
+import validate from "./validation/validate.js";
+import {ClientReq, ClientRes} from "./serialization/dto/client.js";
+import {client} from "./validation/schema/client.js";
+import {serializeReq} from "./serialization/serializeReq.js";
+import {serializeRes} from "./serialization/serializeRes.js";
+import {addController} from "./util/addController.js";
+import {APIError} from "../../../../util/error/APIError.js";
+import {ErrorReason} from "../../../../util/error/ErrorReason.js";
 
 const asyncHandler = fn => (req, res, next) =>
     Promise.resolve(fn(req, res, next)).catch(next);
 
-// Joi validation schema
-const clientSchema = Joi.object({
-    clientUsername: Joi.string().required(),
-    name: Joi.string().optional(),
-    addressId: Joi.number().integer().optional()
-});
-
-// Asynchronous validation middleware
-const validateClient = asyncHandler(async (req, res, next) => {
-    try {
-        await clientSchema.validateAsync(req.body);
-        next();
-    } catch (error) {
-        error.status = 400;  // Optional: Add a status code for the error
-        throw error;  // This will be caught by Express and forwarded to the error handler
-    }
-});
-
 // Asynchronous controller
-const clientController = asyncHandler(async (req, res, next) => {
-    try {
-        // Process the request, e.g., database operations
-        const result = { message: "Client successfully processed" };
-        res.result = result;  // Store result for the response sender
-        next();
-    } catch (error) {
-        error.status = 500;  // Set error status
-        throw error;  // Forward error to the error handler
-    }
-});
+const clientController = async (req, res) => {
+    if(req.body['lol'])
+        throw new APIError(ErrorReason.NOT_FOUND, 'upsis, just testing', req.baseUrl, "lol");
 
-// Response sender middleware
-const responseSender = (req, res) => {
-    res.json({
-        errors: [],
-        result: res.result || {}
-    });
-};
-
-// Central error handling middleware
-export const errorHandler = (err, req, res, next) => {
-    const status = err.status || 500;
-    res.status(status).json({
-        errors: [err.message || 'An unknown error occurred'],
-        result: {}
-    });
+    return { message: "Client successfully processed" };
 };
 
 const router = express.Router();
-router.post('/', clientController, validateClient, responseSender);
+router.post('/', serializeReq(ClientReq), validate(client), addController(clientController), serializeRes(ClientRes));
 export default router;
