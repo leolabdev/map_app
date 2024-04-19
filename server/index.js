@@ -27,7 +27,9 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
 import {mapEndpoints} from "./util/settings/mapEndpoints.js";
-import {errorHandler} from "./router/api/v2/test/test.js";
+import {formatResponse} from "./router/api/v2/test/middleware/formatResponse.js";
+import {catchErrors} from "./router/api/v2/test/middleware/catchErrors.js";
+import {addMetaData} from "./router/api/v2/test/middleware/addMetaData.js";
 
 const app = express();
 //for ip access through proxy
@@ -56,11 +58,19 @@ const routesToRegister = {
     '/data/order': order,
     '/data/data': data,
     '/data/area': area,
+    '/test': test
 }
+
+//Add meta data
+app.use(addMetaData({respFieldName: 'data'}));
 mapEndpoints(app, '/api/v2', routesToRegister);
-app.use('/api/v2/test', test.default);
 //Error catching
-app.use(errorHandler);
+app.use(catchErrors);
+//Uniform the response shape
+app.use(formatResponse);
+
+
+
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
 const host = process.env.API_HOST || "localhost";
