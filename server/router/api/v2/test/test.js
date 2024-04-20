@@ -1,15 +1,11 @@
 import express from "express";
-import validate from "./validation/validate.js";
-import {ClientReq, ClientRes} from "./serialization/dto/client.js";
-import {client} from "./validation/schema/client.js";
-import {serializeReq} from "./serialization/serializeReq.js";
-import {serializeRes} from "./serialization/serializeRes.js";
-import {addController} from "./util/addController.js";
+import {ClientReq, ClientRes} from "./serialization/client.js";
+import {clientCreate} from "./validation/client.js";
 import {APIError} from "../../../../util/error/APIError.js";
 import {ErrorReason} from "../../../../util/error/ErrorReason.js";
+import {RouteBuilder} from "./util/pipeline/RouteBuilder.js";
 
-const asyncHandler = fn => (req, res, next) =>
-    Promise.resolve(fn(req, res, next)).catch(next);
+const router = express.Router();
 
 // Asynchronous controller
 const clientController = async (req, res) => {
@@ -18,7 +14,12 @@ const clientController = async (req, res) => {
 
     return { message: "Client successfully processed" };
 };
+new RouteBuilder('/', 'post')
+    .serializeReq(ClientReq).serializeRes(ClientRes)
+    .validate(clientCreate)
+    .addController(clientController).attachToRouter(router);
 
-const router = express.Router();
-router.post('/', serializeReq(ClientReq), validate(client), addController(clientController), serializeRes(ClientRes));
+
+//router.post('/', serializeReq(ClientReq), validate(client), addController(clientController), serializeRes(ClientRes));
+
 export default router;
