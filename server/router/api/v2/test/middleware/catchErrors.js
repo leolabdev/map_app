@@ -17,5 +17,5 @@ export const catchErrors = (err, req, res, next) => {
     else
         res[respErrorFieldName] = [...previousErrors, err];
 
-    next();
+    return next();
 };

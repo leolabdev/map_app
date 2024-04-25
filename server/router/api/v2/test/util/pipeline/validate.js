@@ -14,11 +14,12 @@ const validate = (validation) => {
             if(Array.isArray(validation)) {
                 for(let i = 0, len=validation.length; i < len; i++)
                     await validateData(req, validation[i]);
-                next();
+
+                return next();
             }
 
             await validateData(req, validation);
-            next();
+            return next();
         } catch (error) {
             error.status = 400;
             throw error;

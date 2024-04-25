@@ -10,6 +10,6 @@ export function addController(controllerFn) {
     return createAsyncHandler(async function(req, res, next) {
         const {respFieldName} = res;
         res[respFieldName] = await controllerFn(req, res);
-        next();
+        return next();
     })
 }

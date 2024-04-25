@@ -7,6 +7,7 @@
 export function serialize(dtoShape, location, dtoField) {
     return function (req, res, next) {
         const loc = location === 'req' ? req : res;
+
         if(location === 'res' && !dtoField){
             const {respFieldName} = res;
             if(!respFieldName){
@@ -17,15 +18,7 @@ export function serialize(dtoShape, location, dtoField) {
         }
 
         let data = loc[dtoField];
-
-        if(!data) {
-            const errorText = 'Failed to serialize. Could not find data object. ' +
-                'Please check that the location is set to ever "req" or "res" and dtoField name with object to be correct';
-            console.error(errorText);
-            throw new Error(errorText);
-        }
-
-        loc[dtoField] = serializeData(data, dtoShape);
+        loc[dtoField] = data ? serializeData(data, dtoShape) : null;
 
         return next();
     }
