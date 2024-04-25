@@ -9,12 +9,12 @@ import Joi from "joi";
  */
 export const clientCreate = [
     {
-    schema: {
-        clientUsername: Joi.string().required(),
-        name: Joi.string().optional(),
-        addressId: Joi.number().integer().optional()
-    }
-},
+        schema: {
+            clientUsername: Joi.string().required(),
+            name: Joi.string().optional(),
+            addressId: Joi.number().integer().optional()
+        }
+    },
     {
         schema: {
             search: Joi.string().required()
