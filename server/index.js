@@ -22,6 +22,7 @@ import * as order from "./router/api/v2/data/order.js";
 import * as data from "./router/api/v2/data/data.js";
 import * as area from "./router/api/v2/data/area.js";
 import * as test from "./router/api/v2/test/test.js";
+import * as profile from "./router/api/v2/test/profile.js";
 
 import cors from "cors";
 import path from "path";
@@ -58,7 +59,8 @@ const routesToRegister = {
     '/data/order': order,
     '/data/data': data,
     '/data/area': area,
-    '/test': test
+    '/test': test,
+    '/profile': profile
 }
 
 //Add meta data
@@ -68,8 +70,6 @@ mapEndpoints(app, '/api/v2', routesToRegister);
 app.use(catchErrors);
 //Uniform the response shape
 app.use(formatResponse);
-
-
 
 
 //port for heroku/any server which uses environmental variable PORT or 8081 (a port for our localhost)
