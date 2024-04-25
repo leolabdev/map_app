@@ -5,14 +5,15 @@ import {serializeRes} from "./serializeRes.js";
 import {Router} from "express";
 import {APIError} from "../../../../../../util/error/APIError.js";
 import {ErrorReason} from "../../../../../../util/error/ErrorReason.js";
+import {Method} from "./Method.js";
 
 export class RouteBuilder {
     /**
      *
      * @param {string} endpoint endpoint of the route
-     * @param {'post' | 'get' | 'put' | 'delete'} method one of 4 http method to use in router
+     * @param {Method} method one of 4 http method to use in router
      */
-    constructor(endpoint='/', method='get') {
+    constructor(endpoint='/', method= Method.GET) {
         this.endpoint = endpoint;
         this.method = method;
 
