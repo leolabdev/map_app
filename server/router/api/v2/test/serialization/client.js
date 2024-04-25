@@ -3,7 +3,7 @@ export const ClientReq = {
     name: true
 }
 
-
 export const ClientRes = {
-    message: true
+    message: true,
+    loggedUser: true
 }
