@@ -6,6 +6,7 @@ import {Router} from "express";
 import {APIError} from "../../../../../../util/error/APIError.js";
 import {ErrorReason} from "../../../../../../util/error/ErrorReason.js";
 import {Method} from "./Method.js";
+import {authenticate} from "./authenticate.js";
 
 export class RouteBuilder {
     /**
@@ -17,10 +18,18 @@ export class RouteBuilder {
         this.endpoint = endpoint;
         this.method = method;
 
+        this.authenticator = null;
+
         this.reqSerializer = null;
         this.reqValidator = null;
         this.controller = null;
         this.resSerializer = null;
+    }
+
+
+    authenticate = function (){
+        this.authenticator = authenticate;
+        return this;
     }
 
     /**
@@ -76,7 +85,7 @@ export class RouteBuilder {
     }
 
     #addPipeConfigToRouter = function (router){
-        let pipeHandlersToApply = [this.reqSerializer, this.reqValidator, this.controller, this.resSerializer];
+        let pipeHandlersToApply = [this.authenticator, this.reqSerializer, this.reqValidator, this.controller, this.resSerializer];
         for(let i=0, len=pipeHandlersToApply.length; i<len; i++)
             pipeHandlersToApply[i] = pipeHandlersToApply[i] ?? this.#pipeHandlerMocker;
 
