@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import {User} from "../../authentication/User.js";
-import {APIError} from "../../../../../../util/error/APIError.js";
-import {ErrorReason} from "../../../../../../util/error/ErrorReason.js";
+import {APIError} from "../../error/APIError.js";
+import {ErrorReason} from "../../error/ErrorReason.js";
 
 const secret = 'your_secret_key';
 

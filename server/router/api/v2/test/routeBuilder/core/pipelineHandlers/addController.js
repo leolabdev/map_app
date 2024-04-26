@@ -1,4 +1,4 @@
-import {createAsyncHandler} from "./createAsyncHandler.js";
+import {createAsyncHandler} from "../util/createAsyncHandler.js";
 
 /**
  *
@@ -11,5 +11,5 @@ export function addController(controllerFn) {
         const {respFieldName} = res;
         res[respFieldName] = await controllerFn(req, res);
         return next();
-    })
+    });
 }

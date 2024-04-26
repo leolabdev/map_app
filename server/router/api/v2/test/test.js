@@ -1,15 +1,16 @@
 import express from "express";
-import {ClientReq, ClientRes} from "./serialization/client.js";
-import {clientCreate} from "./validation/client.js";
-import {APIError} from "../../../../util/error/APIError.js";
-import {ErrorReason} from "../../../../util/error/ErrorReason.js";
-import {RouteBuilder} from "./util/pipeline/RouteBuilder.js";
-import {Method} from "./util/pipeline/Method.js";
+import {ClientReq, ClientRes} from "./routeBuilder/rules/serialization/client.js";
+import {clientCreate} from "./routeBuilder/rules/validation/client.js";
+import {APIError} from "./routeBuilder/error/APIError.js";
+import {ErrorReason} from "./routeBuilder/error/ErrorReason.js";
+import {RouteBuilder} from "./routeBuilder/RouteBuilder.js";
+import {Method} from "./routeBuilder/core/enums/Method.js";
+import {Resource} from "./routeBuilder/rules/authorization/Resource.js";
 
 const router = express.Router();
 
 new RouteBuilder('/', Method.POST)
-    .authenticate()
+    .authorize(Resource.TEST)
     .serializeReq(ClientReq).serializeRes(ClientRes)
     .validate(clientCreate)
     .addController(clientController).attachToRouter(router);

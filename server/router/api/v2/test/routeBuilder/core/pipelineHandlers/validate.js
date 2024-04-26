@@ -1,4 +1,4 @@
-import {createAsyncHandler} from "./createAsyncHandler.js";
+import {createAsyncHandler} from "../util/createAsyncHandler.js";
 import Joi from "joi";
 
 /**

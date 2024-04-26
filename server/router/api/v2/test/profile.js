@@ -1,11 +1,11 @@
 import express from "express";
-import {APIError} from "../../../../util/error/APIError.js";
-import {ErrorReason} from "../../../../util/error/ErrorReason.js";
-import {RouteBuilder} from "./util/pipeline/RouteBuilder.js";
-import {Method} from "./util/pipeline/Method.js";
+import {APIError} from "./routeBuilder/error/APIError.js";
+import {ErrorReason} from "./routeBuilder/error/ErrorReason.js";
+import {RouteBuilder} from "./routeBuilder/RouteBuilder.js";
+import {Method} from "./routeBuilder/core/enums/Method.js";
 import ProfileService from "../../../../service/Profile.js";
-import {profileCreate, profileSignIn} from "./validation/profile.js";
-import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes} from "./serialization/profile.js";
+import {profileCreate, profileSignIn} from "./routeBuilder/rules/validation/profile.js";
+import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes} from "./routeBuilder/rules/serialization/profile.js";
 
 const router = express.Router();
 const profileService = new ProfileService();
