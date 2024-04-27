@@ -42,7 +42,7 @@ export default class ProfileService {
 
     async authenticate(credentials) {
         const secret = 'your_secret_key';
-        const jwt_expires = '1h';
+        const jwt_expires = '12h';
         const {username, password} = credentials;
 
         const profile = await this.searchByUserName(username);
