@@ -1,6 +1,6 @@
-import AbilityRegister from "./AbilityRegister.js";
+import AbilityFactory from "../../rules/authorization/AbilityFactory.js";
 
-export default function isAllowed(user, action, resource) {
-    const ability = AbilityRegister.getAbility(user, resource);
+export default async function isAllowed(user, action, resource) {
+    const ability = await AbilityFactory.getAbility(user, resource);
     return ability.can(action, resource);
 }
