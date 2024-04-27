@@ -1,10 +1,9 @@
-import {APIError} from "../../error/APIError.js";
-import {ErrorReason} from "../../error/ErrorReason.js";
+import {APIError} from "../error/APIError.js";
+import {ErrorReason} from "../error/ErrorReason.js";
 import {createAsyncHandler} from "../util/createAsyncHandler.js";
 
-export function authorize(action, resource, isAllowedFn) {
+export function authorize(authFieldName, action, resource, isAllowedFn) {
     return createAsyncHandler(async (req, res, next) => {
-        const {authFieldName} = req;
         const user = req[authFieldName];
         if(!user)
             throw new APIError(ErrorReason.NOT_AUTHENTICATED, 'Authentication for the endpoint is required', req.baseUrl);

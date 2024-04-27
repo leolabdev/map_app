@@ -3,21 +3,30 @@ import validate from "./core/pipelineHandlers/validate.js";
 import {addController} from "./core/pipelineHandlers/addController.js";
 import {serializeRes} from "./core/pipelineHandlers/serializeRes.js";
 import {Router} from "express";
-import {APIError} from "./error/APIError.js";
-import {ErrorReason} from "./error/ErrorReason.js";
+import {APIError} from "./core/error/APIError.js";
+import {ErrorReason} from "./core/error/ErrorReason.js";
 import {Method} from "./core/enums/Method.js";
 import {authenticate} from "./core/pipelineHandlers/authenticate.js";
 import {authorize} from "./core/pipelineHandlers/authorize.js";
 import isAllowed from "./core/authorization/isAllowed.js";
 import {Action} from "./core/enums/Action.js";
+import {catchErrors} from "./core/pipelineHandlers/catchErrors.js";
+import {formatResponse} from "./core/pipelineHandlers/formatResponse.js";
+
+const defaultOptions = {
+    respFieldName: 'data',
+    respErrorFieldName: 'errors',
+    authFieldName: 'user'
+}
 
 export class RouteBuilder {
     /**
      *
      * @param {string} endpoint endpoint of the route
      * @param {Method} method one of 4 http method to use in router
+     * @param {{respFieldName: string, respErrorFieldName: string, authFieldName: string}} options
      */
-    constructor(endpoint='/', method= Method.GET) {
+    constructor(endpoint='/', method= Method.GET, options= defaultOptions) {
         this.endpoint = endpoint;
         this.method = method;
 
@@ -28,18 +37,19 @@ export class RouteBuilder {
         this.reqValidator = null;
         this.controller = null;
         this.resSerializer = null;
+
+        this.options = {...defaultOptions, ...options};
     }
 
-
     authenticate = function (){
-        this.authenticator = authenticate;
+        this.authenticator = authenticate(this.options.authFieldName);
         return this;
     }
 
     authorize = function (resource, action=null){
-        this.authenticator = authenticate;
+        this.authenticator = authenticate(this.options.authFieldName);
         const actionToAuthorize = action ?? determineAction(this.method);
-        this.authorizer = authorize(actionToAuthorize, resource, isAllowed);
+        this.authorizer = authorize(this.options.authFieldName, actionToAuthorize, resource, isAllowed);
         return this;
     }
 
@@ -48,7 +58,7 @@ export class RouteBuilder {
      * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be sanitized against
      */
     serializeReq = function (shapeObject){
-        this.reqSerializer = serializeReq(shapeObject);
+        this.reqSerializer = serializeReq(this.options.respFieldName, shapeObject);
         return this;
     }
 
@@ -67,7 +77,7 @@ export class RouteBuilder {
      * and returns the result of the request. If there is an error, it throws it
      */
     addController = function (controllerFn){
-        this.controller = addController(controllerFn);
+        this.controller = addController(this.options.respFieldName, controllerFn);
         return this;
     }
 
@@ -76,7 +86,7 @@ export class RouteBuilder {
      * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be exposed
      */
     serializeRes = function (shapeObject){
-        this.resSerializer = serializeRes(shapeObject);
+        this.resSerializer = serializeRes(this.options.respFieldName, shapeObject);
         return this;
     }
 
@@ -96,7 +106,15 @@ export class RouteBuilder {
     }
 
     #addPipeConfigToRouter = function (router){
-        let pipeHandlersToApply = [this.authenticator, this.authorizer, this.reqSerializer, this.reqValidator, this.controller, this.resSerializer];
+        const pipeHandlersToApply = [
+            this.authenticator, this.authorizer,
+            this.reqSerializer, this.reqValidator,
+            this.controller,
+            this.resSerializer,
+            catchErrors(this.options.respErrorFieldName),
+            formatResponse(this.options.respFieldName, this.options.respErrorFieldName)
+        ];
+
         for(let i=0, len=pipeHandlersToApply.length; i<len; i++)
             pipeHandlersToApply[i] = pipeHandlersToApply[i] ?? this.#pipeHandlerMocker;
 
