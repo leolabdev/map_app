@@ -4,8 +4,8 @@ import Joi from "joi";
 /**
  *
  * @param {
- * [{schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param'}] |
- * {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param'}
+ * [{schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined}] |
+ * {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined}
  * } validation array or object for validation, which should contain Joi validation schema and the req obj field to validate
  */
 const validate = (validation) => {
@@ -29,7 +29,7 @@ const validate = (validation) => {
 
 /**
  * @param {{}} req
- * @param {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param'} validationObj
+ * @param {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined} validationObj
  */
 async function validateData(req, validationObj) {
     const {schema, location='body'} = validationObj;
