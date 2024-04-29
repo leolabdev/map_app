@@ -12,12 +12,9 @@ import isAllowed from "./core/authorization/isAllowed.js";
 import {Action} from "./core/enums/Action.js";
 import {catchErrors} from "./core/pipelineHandlers/catchErrors.js";
 import {formatResponse} from "./core/pipelineHandlers/formatResponse.js";
+import {config} from "./core/config.js";
+import {ErrorName} from "./core/error/ErrorName.js";
 
-const defaultOptions = {
-    respFieldName: 'data',
-    respErrorFieldName: 'errors',
-    authFieldName: 'user'
-}
 
 export class RouteBuilder {
     /**
@@ -26,7 +23,7 @@ export class RouteBuilder {
      * @param {Method} method one of 4 http method to use in router
      * @param {{respFieldName: string, respErrorFieldName: string, authFieldName: string}} options
      */
-    constructor(endpoint='/', method= Method.GET, options= defaultOptions) {
+    constructor(endpoint='/', method= Method.GET, options= config) {
         this.endpoint = endpoint;
         this.method = method;
 
@@ -38,8 +35,9 @@ export class RouteBuilder {
         this.controller = null;
         this.resSerializer = null;
 
-        this.options = {...defaultOptions, ...options};
+        this.options = {...config, ...options};
     }
+    #successStatusCode = null;
 
     authenticate = function (){
         this.authenticator = authenticate(this.options.authFieldName);
@@ -83,6 +81,16 @@ export class RouteBuilder {
 
     /**
      *
+     * @param {200 | 201 | 204} status
+     * @returns {RouteBuilder}
+     */
+    successStatus = function (status){
+        this.#successStatusCode = status;
+        return this;
+    }
+
+    /**
+     *
      * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be exposed
      */
     serializeRes = function (shapeObject){
@@ -99,7 +107,11 @@ export class RouteBuilder {
         if(!['post', 'get', 'put', 'delete'].includes(this.method) || !this.controller){
             console.error(`The route can not be created, because the method or controller function are not defined or have wrong types. ` +
              `Endpoint ${this.endpoint}, method: ${this.method}`);
-            throw new APIError(ErrorReason.UNEXPEXTED, `problems with creating a route for ${this.endpoint} endpoint`);
+            throw new APIError({
+                name: ErrorName.SERVER_ERROR,
+                reason: ErrorReason.SERVER_MISCONFIGURED,
+                message: `problems with creating a route for ${this.endpoint} endpoint`
+            });
         }
 
         return this.#addPipeConfigToRouter(router);
@@ -112,7 +124,7 @@ export class RouteBuilder {
             this.controller,
             this.resSerializer,
             catchErrors(this.options.respErrorFieldName),
-            formatResponse(this.options.respFieldName, this.options.respErrorFieldName)
+            formatResponse(this.options.respFieldName, this.options.respErrorFieldName, this.#successStatusCode)
         ];
 
         for(let i=0, len=pipeHandlersToApply.length; i<len; i++)
@@ -123,6 +135,11 @@ export class RouteBuilder {
     #pipeHandlerMocker = function (req, res, next) { return next(); }
 }
 
+/**
+ *
+ * @param {Method} httpMethod
+ * @returns {Action}
+ */
 function determineAction(httpMethod) {
     switch(httpMethod){
         case Method.POST:

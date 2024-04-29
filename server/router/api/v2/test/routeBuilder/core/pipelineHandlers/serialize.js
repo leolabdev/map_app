@@ -1,5 +1,3 @@
-import {APIError} from "../error/APIError.js";
-import {ErrorReason} from "../error/ErrorReason.js";
 
 /**
  *
@@ -12,13 +10,9 @@ export function serialize(respFieldName, dtoShape, location, dtoField) {
     return function (req, res, next) {
         const loc = location === 'req' ? req : res;
 
-        if(location === 'res' && !dtoField){
-            if(!respFieldName){
-                throw new APIError(ErrorReason.UNEXPEXTED, 'Please check that the addMetaData middleware is applied to the pipe. ' +
-                    'The middleware provides meta information required by serialize middleware', req.baseUrl);
-            }
+        if(location === 'res' && !dtoField)
             dtoField = respFieldName;
-        }
+
 
         let data = loc[dtoField];
         loc[dtoField] = data ? serializeData(data, dtoShape) : null;
