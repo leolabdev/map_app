@@ -5,7 +5,7 @@ export const formatResponse = (respFieldName, respErrorFieldName, successStatus)
         if(res[respErrorFieldName] && !Array.isArray(res[respErrorFieldName]))
             res[respErrorFieldName] = [res[respErrorFieldName]];
 
-        const data = {...res[respFieldName]} || null;
+        const data = Array.isArray(res[respFieldName]) ? [...res[respFieldName]] : ({...res[respFieldName]} || null);
         const errors = res[respErrorFieldName] ? [...res[respErrorFieldName]] : null;
 
         const {respStatusFieldName} = config;
