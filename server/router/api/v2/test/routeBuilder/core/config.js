@@ -1,3 +1,5 @@
+import {DataExtractorType} from "./service/dataExtractors/DataExtractorType.js";
+
 export const config = Object.freeze(
     {
         respFieldName: 'data',
@@ -8,3 +10,6 @@ export const config = Object.freeze(
 );
 
 export const API_ERROR_TYPE_NAME = Symbol('APIError');
+
+export const DATA_EXTRACTOR_TYPE = Symbol(DataExtractorType.SEQUELIZE);
+export const SERVICE_ERROR_TYPE_NAME = Symbol('ServiceError');
