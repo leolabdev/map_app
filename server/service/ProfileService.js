@@ -3,6 +3,11 @@ import Address from "../model/Address.js";
 import Profile from "../model/Profile.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import {DEFactory} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import {ServiceError} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import {SEReason} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import {validateInput} from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
+import {profileCreate, profileId} from "./validation/profile.js";
 
 const daoUtil = new DaoUtil();
 
@@ -11,17 +16,21 @@ const daoUtil = new DaoUtil();
  * This table contains clients data such as client username and name
  */
 export default class ProfileService {
+    constructor() {
+        this.extractor = DEFactory.create();
+    }
+
     /**
      * The method creates new client in the Client SQL table
      * @param {Client} data object with the client data, where clientUsername field is manditory
      * @returns created Client object, if operation was sucessful or null if not
      */
-    async create(data) {
+    create = validateInput(async (data) => {
         const { username, password } = data;
 
         if(!username || !password){
             console.error("ProfileService: Wrong parameter provided");
-            return null;
+            return new ServiceError({reason: SEReason.NOT_VALID});
         }
 
         try {
@@ -38,7 +47,7 @@ export default class ProfileService {
             console.error("ProfileService create: Could not execute the query");
             return null;
         }
-    }
+    }, null);
 
     async authenticate(credentials) {
         const secret = 'your_secret_key';
@@ -58,20 +67,15 @@ export default class ProfileService {
      * @param {string} primaryKey primary key of the client
      * @returns founded Client object, if operation was sucessful or null if not
      */
-    async read(primaryKey) {
-        if(!primaryKey){
-            console.error("ProfileService read: Wrong parameter provided");
-            return null;
-        }
-
+    read = validateInput(async (primaryKey) => {
         try {
             const resp = await Profile.findByPk(primaryKey);
-            return resp != null ? resp.dataValues : null;
+            return this.extractor.extract(resp);
         } catch (e) {
-            console.error("ProfileService: Could not execute the query");
+            console.error("ProfileService: Could not execute the query", e);
             return null;
         }
-    }
+    }, profileId);
 
     /**
      * The method reads Client with provided primary key(clientUsername)
