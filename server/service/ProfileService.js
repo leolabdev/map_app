@@ -71,7 +71,7 @@ export default class ProfileService {
         try {
             const resp = await Profile.findByPk(primaryKey);
             return this.extractor.extract(resp);
-        } catch (e) {
+        } catch(e) {
             console.error("ProfileService: Could not execute the query", e);
             return null;
         }

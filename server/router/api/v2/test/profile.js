@@ -16,7 +16,9 @@ new RouteBuilder('/', Method.POST)
     .validate(profileCreate)
     .addController(createProfile).attachToRouter(router);
 async function createProfile(req, res) {
-    return await profileService.read(1);
+    const resp =  await profileService.read(1);
+    console.log(resp);
+    return null;
 
     const profile = await profileService.create(req.body);
     if(!profile)
