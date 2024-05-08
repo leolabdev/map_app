@@ -18,14 +18,33 @@ export function validateInput(fn, validationSchema) {
 
             return fn(request, options);
         } catch (e) {
-            console.log(e);
+            //console.log(e);
+            //console.log(e.details[0].context);
             if(e.typeSymbol === SERVICE_ERROR_TYPE_NAME)
                 return e;
 
+            //Joi error
+            if(e.details && e.details[0]){
+                const reason = determineErrorReason(e.details[0]);
+                return new ServiceError({
+                    reason,
+                    field: e.details[0].label
+                });
+            }
+
             return new ServiceError({
-                reason: SEReason.NOT_VALID,
+                reason: SEReason.UNEXPECTED,
                 additional: e
             });
         }
+    }
+}
+
+function determineErrorReason(joiErrorDetails) {
+    switch (joiErrorDetails.type) {
+        case 'string.base':
+            return SEReason.NOT_STRING;
+        default:
+            return null;
     }
 }
