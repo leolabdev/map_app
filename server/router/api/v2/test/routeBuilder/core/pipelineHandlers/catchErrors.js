@@ -7,9 +7,11 @@ export const catchErrors = (respErrorFieldName) => {
         if(Array.isArray(res[respErrorFieldName]))
             previousErrors = res[respErrorFieldName];
 
-        const error = err.typeSymbol === API_ERROR_TYPE_NAME ?
+        const error = err.type === API_ERROR_TYPE_NAME.description ?
             err :
             new APIError({additional: err});
+
+        error.endpoint = req.originalUrl;
 
         res[respErrorFieldName] = [...previousErrors, error];
         const {respStatusFieldName} = config;

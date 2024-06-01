@@ -6,7 +6,7 @@ export const formatResponse = (respFieldName, respErrorFieldName, successStatus)
             res[respErrorFieldName] = [res[respErrorFieldName]];
 
         const data = Array.isArray(res[respFieldName]) ? [...res[respFieldName]] : ({...res[respFieldName]} || null);
-        const errors = res[respErrorFieldName] ? [...res[respErrorFieldName]] : null;
+        const errors = res[respErrorFieldName] ? [...res[respErrorFieldName]].map(serializeError) : null;
 
         const {respStatusFieldName} = config;
         let status = 200;
@@ -36,4 +36,29 @@ function cleanResObject(res, respFieldName, respErrorFieldName, respStatusFieldN
     res[respFieldName] = undefined;
     res[respErrorFieldName] = undefined;
     res[respStatusFieldName] = undefined;
+}
+
+function serializeError(error) {
+    if (error.additional instanceof Error) {
+        return {
+            ...error,
+            additional: extractJSError(error.additional)
+        };
+    }
+
+    if (error instanceof Error) {
+        return {
+            ...extractJSError(error)
+        };
+    }
+
+    return error;
+}
+
+function extractJSError(e){
+    return {
+        message: e.message,
+        stack: e.stack,
+        name: e.name
+    }
 }

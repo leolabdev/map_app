@@ -8,28 +8,31 @@ export function validateInput(fn, validationSchema) {
         if(!validationSchema)
             return fn(request);
 
+        const {schema, field} = validationSchema;
         try {
-            if(Joi.isSchema(validationSchema))
-                await validationSchema.validateAsync(request);
+            if(Joi.isSchema(schema)) 
+                await schema.validateAsync(request, {abortEarly: false});
             else
                 throw new ServiceError({
                     reason: SEReason.MISCONFIGURED
                 });
-
             return fn(request, options);
         } catch (e) {
-            //console.log(e);
-            //console.log(e.details[0].context);
-            if(e.typeSymbol === SERVICE_ERROR_TYPE_NAME)
+            if(e.type === SERVICE_ERROR_TYPE_NAME.description)
                 return e;
-
             //Joi error
-            if(e.details && e.details[0]){
-                const reason = determineErrorReason(e.details[0]);
-                return new ServiceError({
-                    reason,
-                    field: e.details[0].label
-                });
+            if(e.isJoi){
+                const errors = [];
+                for(let i=0, l=e.details.length; i<l; i++){
+                    const reason = determineErrorReason(e.details[i]);
+                    errors.push(
+                        new ServiceError({
+                            reason,
+                            field: e.details[i]?.context?.key ?? field
+                        })
+                    );
+                }
+                return errors;
             }
 
             return new ServiceError({
@@ -44,6 +47,8 @@ function determineErrorReason(joiErrorDetails) {
     switch (joiErrorDetails.type) {
         case 'string.base':
             return SEReason.NOT_STRING;
+        case 'any.required':
+            return SEReason.REQUIRED;
         default:
             return null;
     }

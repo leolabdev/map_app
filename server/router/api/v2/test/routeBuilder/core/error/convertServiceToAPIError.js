@@ -11,17 +11,36 @@ export function convertServiceToAPIError(err) {
             additional: err
         });
 
-    if(err.reason === SEReason.NOT_STRING)
-    return new APIError({
-        reason: ErrorReason.VALIDATION,
+    const errorName = determineName(err.reason);
 
-    });
+    if(errorName === ErrorName.VALIDATION){
+        const {reason, field, additional} = err;
+        return new APIError({
+            name: errorName,
+            reason, 
+            field, 
+            additional,
+            status: 400
+        });
+    } 
+
+    if(errorName === ErrorName.UNEXPECTED){
+        const {reason, field, additional} = err;
+        return new APIError({
+            name: errorName,
+            reason, 
+            field, 
+            additional,
+            status: 500
+        });
+    } 
 }
 
-function determineReason(serviceReason) {
-    const service = [SEReason.UNEXPECTED];
-    const validation = [SEReason.NOT_VALID, SEReason.NOT_STRING, SEReason.NOT_NUMBER, SEReason.NOT_BOOLEAN];
+function determineName(serviceReason) {
+    const validation = [SEReason.REQUIRED, SEReason.NOT_VALID, SEReason.NOT_STRING, SEReason.NOT_NUMBER, SEReason.NOT_BOOLEAN];
 
-    if(service.includes(serviceReason))
-        return ErrorName.NOT_FOUND;
+    if(validation.includes(serviceReason))
+        return ErrorName.VALIDATION;
+
+    return ErrorName.UNEXPECTED;
 }

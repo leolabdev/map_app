@@ -7,6 +7,8 @@ import ProfileService from "../../../../service/ProfileService.js";
 import {profileCreate, profileSignIn} from "./routeBuilder/rules/validation/profile.js";
 import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes} from "./routeBuilder/rules/serialization/profile.js";
 import {ErrorLocation} from "./routeBuilder/core/error/ErrorLocation.js";
+import { convertServiceToAPIError } from "./routeBuilder/core/error/convertServiceToAPIError.js";
+import { SERVICE_ERROR_TYPE_NAME } from "./routeBuilder/core/config.js";
 
 const router = express.Router();
 const profileService = new ProfileService();
@@ -16,8 +18,15 @@ new RouteBuilder('/', Method.POST)
     .validate(profileCreate)
     .addController(createProfile).attachToRouter(router);
 async function createProfile(req, res) {
-    const resp =  await profileService.read(1);
-    console.log(resp);
+    const resp = await profileService.read({});
+
+    if(resp.type === SERVICE_ERROR_TYPE_NAME.description){
+        const error = convertServiceToAPIError(resp);
+        error.location = ErrorLocation.PARAM;
+        error.message = 'The id field is not valid';
+        throw error;
+    }
+
     return null;
 
     const profile = await profileService.create(req.body);

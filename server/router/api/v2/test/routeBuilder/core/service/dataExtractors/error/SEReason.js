@@ -1,4 +1,5 @@
 export const SEReason = Object.freeze({
+   REQUIRED: 'REQUIRED',
    NOT_UNIQUE: 'NOT_UNIQUE',
 
    NOT_VALID: 'NOT_VALID',
@@ -6,5 +7,6 @@ export const SEReason = Object.freeze({
    NOT_NUMBER: 'NOT_NUMBER',
    NOT_BOOLEAN: 'NOT_BOOLEAN',
 
-   UNEXPECTED: 'UNEXPECTED'
+   UNEXPECTED: 'UNEXPECTED',
+   MISCONFIGURED: 'MISCONFIGURED'
 });

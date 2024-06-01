@@ -1,12 +1,25 @@
 import Joi from "joi";
 
 
-export const profileCreate = {
-    username: Joi.string().required(),
-    password: Joi.string().required()
-}
+const schema = Joi.object().pattern(
+    Joi.string(), // Key pattern (optional if keys are unknown)
+    Joi.number().integer().required() // Value pattern: all values must be integers
+  );
+// export const profileCreate = {
+//     schema: schema
+// };
 
-export const profileId = Joi.string().required();
+export const profileCreate = {
+    schema: Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required()
+    })
+};
+
+export const profileId = {
+    schema: Joi.string().required(),
+    field: 'id'
+} 
 
 /**
  *
@@ -15,7 +28,9 @@ export const profileId = Joi.string().required();
  * }
  */
 export const profileSignIn = {
-    username: Joi.string().required(),
-    password: Joi.string().required()
+    schema: Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required()
+    })
 }
 

@@ -22,8 +22,8 @@ export default class ProfileService {
 
     /**
      * The method creates new client in the Client SQL table
-     * @param {Client} data object with the client data, where clientUsername field is manditory
-     * @returns created Client object, if operation was sucessful or null if not
+     * @param {Client} data object with the client data, where clientUsername field is mandatory
+     * @returns created Client object, if operation was successful or null if not
      */
     create = validateInput(async (data) => {
         const { username, password } = data;
@@ -47,7 +47,7 @@ export default class ProfileService {
             console.error("ProfileService create: Could not execute the query");
             return null;
         }
-    }, null);
+    }, profileCreate);
 
     async authenticate(credentials) {
         const secret = 'your_secret_key';
@@ -65,7 +65,7 @@ export default class ProfileService {
     /**
      * The method reads Client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
-     * @returns founded Client object, if operation was sucessful or null if not
+     * @returns founded Client object, if operation was successful or null if not
      */
     read = validateInput(async (primaryKey) => {
         try {
@@ -75,12 +75,12 @@ export default class ProfileService {
             console.error("ProfileService: Could not execute the query", e);
             return null;
         }
-    }, profileId);
+    }, profileCreate);
 
     /**
      * The method reads Client with provided primary key(clientUsername)
      * @param {string} username primary key of the client
-     * @returns founded Client object, if operation was sucessful or null if not
+     * @returns founded Client object, if operation was successful or null if not
      */
     async searchByUserName(username) {
         if(!username){
@@ -100,7 +100,7 @@ export default class ProfileService {
 
     /**
      * The method reads all Clients of the Client SQL table
-     * @returns array of the founded Client objects, if operation was sucessful or null if not
+     * @returns array of the founded Client objects, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -115,7 +115,7 @@ export default class ProfileService {
     /**
      * The method updates existing client data in the Client SQL table
      * @param {Client} data object with the client data, such as clientUsername or name
-     * @returns true, if the operation was sucessful or false if not
+     * @returns true, if the operation was successful or false if not
      */
     async update(data) {
         const { id, username, password } = data;
@@ -141,7 +141,7 @@ export default class ProfileService {
     /**
      * The method deletes client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
         if(!primaryKey){
