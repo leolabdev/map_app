@@ -10,6 +10,7 @@ export const config = Object.freeze(
 );
 
 export const API_ERROR_TYPE_NAME = Symbol('APIError');
+export const API_MULTIPLE_ERROR = 'APIMultipleError';
 
 export const DATA_EXTRACTOR_TYPE = Symbol(DataExtractorType.SEQUELIZE);
 export const SERVICE_ERROR_TYPE_NAME = Symbol('ServiceError');
