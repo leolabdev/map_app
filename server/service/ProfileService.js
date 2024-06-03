@@ -28,24 +28,23 @@ export default class ProfileService {
     create = validateInput(async (data) => {
         const { username, password } = data;
 
-        if(!username || !password){
-            console.error("ProfileService: Wrong parameter provided");
-            return new ServiceError({reason: SEReason.NOT_VALID});
-        }
-
         try {
             const salt = await bcrypt.genSalt(10); // Generate salt
             const hashedPassword = await bcrypt.hash(password, salt);
 
             const isProfile = await this.searchByUserName(username);
             if(isProfile)
-                return null;
+                return new ServiceError({
+                    reason: SEReason.NOT_UNIQUE,
+                    message: 'User with that username already exists',
+                    field: 'username'
+                });
 
             const resp = await Profile.create({username, password: hashedPassword});
             return resp.dataValues != null ? resp.dataValues : null;
         } catch (e) {
             console.error("ProfileService create: Could not execute the query");
-            return null;
+            return new ServiceError({ reason: SEReason.UNEXPECTED, additional: e });
         }
     }, profileCreate);
 
