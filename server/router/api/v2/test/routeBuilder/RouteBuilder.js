@@ -23,7 +23,7 @@ export class RouteBuilder {
      * @param {Method} method one of 4 http method to use in router
      * @param {{respFieldName: string, respErrorFieldName: string, authFieldName: string}} options
      */
-    constructor(endpoint='/', method= Method.GET, options= config) {
+    constructor(endpoint='/', method=Method.GET, options=config) {
         this.endpoint = endpoint;
         this.method = method;
 
@@ -61,11 +61,14 @@ export class RouteBuilder {
     }
 
     /**
-     *
-     * @param {ObjectSchema<any>} schema to be validated against
-     */
-    validate = function (schema){
-        this.reqValidator = validate(schema);
+    * 
+    * @param {SchemaMap<any, false>} schema 
+    * @param {'body' | 'query' | 'param'=} location 
+    * @param {string=} field 
+    * @returns 
+    */
+    validate = function (schema, location='body', field=null){
+        this.reqValidator = validate(schema, location, field);
         return this;
     }
 

@@ -1,13 +1,72 @@
+import { API_ERROR_TYPE_NAME } from "../config.js";
+import { APIError } from "../error/APIError.js";
+import { ErrorReason } from "../error/ErrorReason.js";
+import MultipleError from "../error/MultipleError.js";
 import {createAsyncHandler} from "../util/createAsyncHandler.js";
 import Joi from "joi";
 
 /**
- *
- * @param {
- * [{schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined}] |
- * {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined}
- * } validation array or object for validation, which should contain Joi validation schema and the req obj field to validate
+ * 
+ * @param {SchemaMap<any, false>} schema 
+ * @param {'body' | 'query' | 'param'=} location 
+ * @param {string=} field 
+ * @returns 
  */
+const validate = (schema, location='body', field=null) => {
+    return createAsyncHandler(async function (req, res, next) {
+        try {
+            if(Joi.isSchema(schema)) 
+               await schema.validateAsync(req[location], {abortEarly: false});
+            else
+                throw new APIError({
+                    message: 'Error on validation. Provided param is not a schema',
+                    reason: ErrorReason.SERVER_MISCONFIGURED
+                })
+
+            return next();
+        } catch (e) {
+            if(e.type === API_ERROR_TYPE_NAME.description)
+                throw e;
+            //Joi error
+            if(e.isJoi){
+                const errors = [];
+                for(let i=0, l=e.details.length; i<l; i++){
+                    const reason = determineErrorReason(e.details[i]);
+                    errors.push(
+                        new APIError({
+                            reason,
+                            location,
+                            field: field ?? e.details[i]?.context?.key,
+                            message: e.details[i].message
+                        })
+                    );
+                }
+                throw new MultipleError(errors);
+            }
+
+            throw new APIError({
+                reason: ErrorReason.UNEXPECTED,
+                message: 'Unexpected error happened on validation',
+                additional: e
+            });
+        }
+    })
+}
+
+function determineErrorReason(joiErrorDetails) {
+    switch (joiErrorDetails.type) {
+        case 'string.base':
+            return ErrorReason.NOT_STRING;
+        case 'any.required':
+            return ErrorReason.REQUIRED;
+        default:
+            return null;
+    }
+}
+
+export default validate;
+
+/*
 const validate = (validation) => {
     return createAsyncHandler(async function (req, res, next) {
         try {
@@ -26,14 +85,4 @@ const validate = (validation) => {
         }
     })
 }
-
-/**
- * @param {{}} req
- * @param {schema: SchemaMap<any, false>, location: 'body' | 'query' | 'param' | undefined} validationObj
- */
-async function validateData(req, validationObj) {
-    const {schema, location='body'} = validationObj;
-    await Joi.object(schema).validateAsync(req[location]);
-}
-
-export default validate;
+*/

@@ -72,6 +72,7 @@ function determineStatus(name){
     }
 }
 
+
 /**
  *
  * @param {ErrorReason} reason
@@ -80,7 +81,11 @@ function determineStatus(name){
 function determineName(reason){
     const notFound = [ErrorReason.NOT_FOUND];
     const badRequest = [ErrorReason.BAD_REQUEST];
-    const validation = [ErrorReason.VALIDATION];
+    const validation = [
+        ErrorReason.REQUIRED, ErrorReason.VALIDATION, 
+        ErrorReason.NOT_STRING, ErrorReason.NOT_NUMBER, 
+        ErrorReason.NOT_BOOLEAN
+    ];
     const notAuthenticated = [
         ErrorReason.NOT_AUTHENTICATED, ErrorReason.AUTH_TOKEN_NOT_PROVIDED,
         ErrorReason.INVALID_AUTH_TOKEN_FORMAT, ErrorReason.INVALID_AUTH_TOKEN,

@@ -5,10 +5,12 @@ export class ServiceError{
     constructor({
         reason = SEReason.UNEXPECTED,
         field=null,
+        message=null,
         additional=null
     }){
         this.reason = reason;
         this.field = field;
+        this.message = message;
         this.additional = additional;
 
         this.typeSymbol = SERVICE_ERROR_TYPE_NAME;
