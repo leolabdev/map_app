@@ -3,6 +3,7 @@ export const ErrorReason = Object.freeze({
 
     BAD_REQUEST: 'BAD_REQUEST',
 
+    REQUIRED: 'REQUIRED',
     VALIDATION: 'VALIDATION',
     NOT_STRING: 'NOT_STRING',
     NOT_NUMBER: 'NOT_NUMBER',
