@@ -28,7 +28,8 @@ export function validateInput(fn, validationSchema) {
                     errors.push(
                         new ServiceError({
                             reason,
-                            field: e.details[i]?.context?.key ?? field
+                            field: field ?? e.details[i]?.context?.key,
+                            message: e.details[i].message
                         })
                     );
                 }
@@ -52,4 +53,9 @@ function determineErrorReason(joiErrorDetails) {
         default:
             return null;
     }
+}
+
+export default function isRespServiceError(e){
+    return (e && (e.type === SERVICE_ERROR_TYPE_NAME.description) ||
+    (Array.isArray(e) && e[0].type === SERVICE_ERROR_TYPE_NAME.description));
 }
