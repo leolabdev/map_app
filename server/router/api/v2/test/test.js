@@ -16,7 +16,6 @@ new RouteBuilder('/', Method.POST, {respFieldName: 'tiedot', respErrorFieldName:
     .serializeReq(ClientReq).serializeRes(ClientRes)
     .validate(clientCreate)
     .addController(clientController).attachToRouter(router);
-
 async function clientController(req, res) {
     if(req.body['lol'])
         throw new APIError({
@@ -30,7 +29,11 @@ async function clientController(req, res) {
     return { message: 'Client successfully processed' };
 }
 
-
+new RouteBuilder('/', Method.GET)
+    .authorize(Resource.TEST).addController(testRead).successStatus(201).attachToRouter(router);
+async function testRead(req, res) {
+    return true;
+}
 
 //router.post('/', serializeReq(ClientReq), validate(client), addController(clientController), serializeRes(ClientRes));
 
