@@ -12,12 +12,11 @@ export const profileId = {
     field: 'id'
 } 
 
-/**
- *
- * @type {
- * { schema: SchemaMap<any, false> }
- * }
- */
+export const profileUsername = {
+    schema: Joi.string().required(),
+    field: 'username'
+}
+
 export const profileSignIn = {
     schema: Joi.object({
         username: Joi.string().required(),
@@ -25,3 +24,10 @@ export const profileSignIn = {
     })
 }
 
+export const profileUpdate = {
+    schema: Joi.object({
+        id: Joi.number().required(),
+        username: Joi.string(),
+        password: Joi.string()
+    })
+};

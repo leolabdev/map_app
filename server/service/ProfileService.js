@@ -7,7 +7,8 @@ import {DEFactory} from "../router/api/v2/test/routeBuilder/core/service/dataExt
 import {ServiceError} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import {SEReason} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import {validateInput} from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
-import {profileCreate, profileId} from "./validation/profile.js";
+import {profileCreate, profileId, profileSignIn, profileUpdate, profileUsername} from "./validation/profile.js";
+import BasicService from "./BasicService.js";
 
 const daoUtil = new DaoUtil();
 
@@ -18,6 +19,7 @@ const daoUtil = new DaoUtil();
 export default class ProfileService {
     constructor() {
         this.extractor = DEFactory.create();
+        this.service = new BasicService(Profile, 'ProfileService');
     }
 
     /**
@@ -29,10 +31,8 @@ export default class ProfileService {
         const { username, password } = data;
 
         try {
-            const salt = await bcrypt.genSalt(10); // Generate salt
-            const hashedPassword = await bcrypt.hash(password, salt);
-
             const isProfile = await this.searchByUserName(username);
+
             if(isProfile)
                 return new ServiceError({
                     reason: SEReason.NOT_UNIQUE,
@@ -40,15 +40,17 @@ export default class ProfileService {
                     field: 'username'
                 });
 
-            const resp = await Profile.create({username, password: hashedPassword});
-            return resp.dataValues != null ? resp.dataValues : null;
+            const salt = await bcrypt.genSalt(10); // Generate salt
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            return this.service.create({username, password: hashedPassword});
         } catch (e) {
             console.error("ProfileService create: Could not execute the query");
             return new ServiceError({ reason: SEReason.UNEXPECTED, additional: e });
         }
     }, profileCreate);
 
-    async authenticate(credentials) {
+    authenticate = validateInput(async (credentials) =>{
         const secret = 'your_secret_key';
         const jwt_expires = '12h';
         const {username, password} = credentials;
@@ -59,56 +61,32 @@ export default class ProfileService {
 
         const token = jwt.sign({ id: profile.id }, secret, { expiresIn: jwt_expires });
         return { token, username, password };
-    }
+    }, profileSignIn);
 
     /**
      * The method reads Client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
      * @returns founded Client object, if operation was successful or null if not
      */
-    read = validateInput(async (primaryKey) => {
-        try {
-            const resp = await Profile.findByPk(primaryKey);
-            return this.extractor.extract(resp);
-        } catch(e) {
-            console.error("ProfileService: Could not execute the query", e);
-            return null;
-        }
-    }, profileCreate);
+    read = async (primaryKey) => {
+        return this.service.readOneById(primaryKey, profileId);
+    }
 
     /**
      * The method reads Client with provided primary key(clientUsername)
      * @param {string} username primary key of the client
      * @returns founded Client object, if operation was successful or null if not
      */
-    async searchByUserName(username) {
-        if(!username){
-            console.error("ProfileService read: Wrong parameter provided");
-            return null;
-        }
-
-        try {
-            const resp = await Profile.findOne({where: {username}});
-
-            return resp != null ? resp.dataValues : null;
-        } catch (e) {
-            console.error("ProfileService: Could not execute the query");
-            return null;
-        }
-    }
+    searchByUserName = validateInput(async (username) => {
+        return this.service.searchOne({where: {username}});
+    }, profileUsername);
 
     /**
      * The method reads all Clients of the Client SQL table
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
     async readAll() {
-        try {
-            const resp = await Profile.findAll({ include: Address });
-            return daoUtil.getDataValues(resp);
-        } catch (e) {
-            console.error("ProfileService readAll: Could not execute the query");
-            return null;
-        }
+        return this.service.readAll({ include: Address });
     }
 
     /**
@@ -116,45 +94,33 @@ export default class ProfileService {
      * @param {Client} data object with the client data, such as clientUsername or name
      * @returns true, if the operation was successful or false if not
      */
-    async update(data) {
+    update = validateInput(async (data) => {
         const { id, username, password } = data;
 
-        if(!id || !username || !password){
-            console.error("ProfileService: Wrong parameter provided");
-            return null;
-        }
+        if(username){
+            try{
+                const profile = await this.searchByUserName(username);
+                if(profile.id && profile.id !== id)
+                    return new ServiceError({
+                        reason: SEReason.NOT_UNIQUE,
+                        message: 'User with that username already exists',
+                        field: 'username'
+                    });
+            } catch (e){
+                console.error("ProfileService update: Could not execute the query", e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }   
 
-        try {
-            const resp = await Profile.update(
-                {username, password}, { where: { id } }
-            );
-
-            return resp[0] > 0;
-        } catch (e) {
-            console.error("ProfileService update: Could not execute the query");
-            console.error(e);
-            return false;
-        }
-    }
+        return this.service.update({username, password}, { where: { id } });
+    }, profileUpdate);
 
     /**
      * The method deletes client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
      * @returns true if operation was successful or false if not
      */
-    async delete(primaryKey) {
-        if(!primaryKey){
-            console.error("ProfileService delete: Wrong parameter provided");
-            return false;
-        }
-
-        try {
-            const resp = await Profile.destroy({ where: { id: primaryKey } });
-            return resp > 0;
-        } catch (e) {
-            console.error("ProfileService delete: Could not execute the query");
-            console.error(e);
-            return false;
-        }
+    delete = (primaryKey) => {
+        return this.service.deleteById(primaryKey, profileId);
     }
 }
