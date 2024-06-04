@@ -54,6 +54,7 @@ export class RouteBuilder {
     /**
      *
      * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be sanitized against
+     * @returns {RouteBuilder}
      */
     serializeReq = function (shapeObject){
         this.reqSerializer = serializeReq(this.options.respFieldName, shapeObject);
@@ -65,7 +66,7 @@ export class RouteBuilder {
     * @param {SchemaMap<any, false>} schema 
     * @param {'body' | 'query' | 'param'=} location 
     * @param {string=} field 
-    * @returns 
+    * @returns {RouteBuilder}
     */
     validate = function (schema, location='body', field=null){
         this.reqValidator = validate(schema, location, field);
@@ -76,6 +77,7 @@ export class RouteBuilder {
      *
      * @param {(req: Request, res: Response) => Promise<any>} controllerFn function, which gets req and res objects
      * and returns the result of the request. If there is an error, it throws it
+     * @returns {RouteBuilder}
      */
     addController = function (controllerFn){
         this.controller = addController(this.options.respFieldName, controllerFn);
@@ -95,6 +97,7 @@ export class RouteBuilder {
     /**
      *
      * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be exposed
+     * @returns {RouteBuilder}
      */
     serializeRes = function (shapeObject){
         this.resSerializer = serializeRes(this.options.respFieldName, shapeObject);
