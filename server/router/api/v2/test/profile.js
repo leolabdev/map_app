@@ -4,13 +4,9 @@ import {ErrorReason} from "./routeBuilder/core/error/ErrorReason.js";
 import {RouteBuilder} from "./routeBuilder/RouteBuilder.js";
 import {Method} from "./routeBuilder/core/enums/Method.js";
 import ProfileService from "../../../../service/ProfileService.js";
-import {profileCreate, profileSignIn} from "./routeBuilder/rules/validation/profile.js";
-import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes} from "./routeBuilder/rules/serialization/profile.js";
+import {profileCreate, profileSignIn, profileUpdate} from "./routeBuilder/rules/validation/profile.js";
+import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes, ProfileUpdateReq} from "./routeBuilder/rules/serialization/profile.js";
 import {ErrorLocation} from "./routeBuilder/core/error/ErrorLocation.js";
-import { convertServiceToAPIError } from "./routeBuilder/core/error/convertServiceToAPIError.js";
-import { SERVICE_ERROR_TYPE_NAME } from "./routeBuilder/core/config.js";
-import MultipleError from "./routeBuilder/core/error/MultipleError.js";
-import { clientSearch } from "./routeBuilder/rules/validation/client.js";
 import isRespServiceError from "./routeBuilder/core/service/validateInput.js";
 import throwAPIError from "./routeBuilder/core/error/throwAPIError.js";
 
@@ -24,16 +20,34 @@ new RouteBuilder('/', Method.POST)
 async function createProfile(req, res) {
     const profile = await profileService.create(req.body);
     if(isRespServiceError(profile))
-        return throwAPIError(profile);
+        return throwAPIError(profile, null, ErrorLocation.BODY);
 
     if(!profile)
         throw new APIError({
             reason: ErrorReason.UNEXPECTED, message: 'Could not create a profile',
-            endpoint: req.baseUrl,
             location: ErrorLocation.BODY
         });
 
     return profile;
+}
+
+new RouteBuilder('/', Method.PUT)
+    .serializeReq(ProfileUpdateReq)
+    .validate(profileUpdate)
+    .successStatus(204)
+    .addController(updateProfile).attachToRouter(router);
+async function updateProfile(req, res) {
+    const isSuccess = await profileService.update(req.body);
+    if(isRespServiceError(isSuccess))
+        return throwAPIError(isSuccess, null, ErrorLocation.BODY);
+
+    if(!isSuccess)
+        throw new APIError({
+            reason: ErrorReason.UNEXPECTED, message: 'Could not update a profile',
+            location: ErrorLocation.BODY
+        });
+
+    return isSuccess;
 }
 
 new RouteBuilder('/signIn', Method.POST)
@@ -45,7 +59,7 @@ async function signIn(req, res) {
 
     if(!profile)
         throw new APIError({
-            reason: ErrorReason.WRONG_CREDENTIALS, message: 'Could not sign in', endpoint: req.baseUrl,
+            reason: ErrorReason.WRONG_CREDENTIALS, message: 'Could not sign in',
             location: ErrorLocation.BODY
         });
 

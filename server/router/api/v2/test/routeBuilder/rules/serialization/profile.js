@@ -7,6 +7,12 @@ export const ProfileCreateRes = {
     id: true
 }
 
+export const ProfileUpdateReq = {
+    id: true,
+    username: true,
+    password: true
+}
+
 export const ProfileSignInReq = {
     username: true,
     password: true
