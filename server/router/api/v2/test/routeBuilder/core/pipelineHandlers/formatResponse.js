@@ -6,9 +6,9 @@ export const formatResponse = (respFieldName, respErrorFieldName, successStatus)
             res[respErrorFieldName] = [res[respErrorFieldName]];
 
         const data = Array.isArray(res[respFieldName]) ? [...res[respFieldName]] : ({...res[respFieldName]} || null);
-        const errors = res[respErrorFieldName] ? [...res[respErrorFieldName]].map(serializeError) : null;
+        const errors = res[respErrorFieldName] ? [...res[respErrorFieldName]].map(serializeError) : undefined;
+        const {respStatusFieldName, metadataFieldName} = config;
 
-        const {respStatusFieldName} = config;
         let status = 200;
         if(res[respStatusFieldName])
             status = res[respStatusFieldName];
@@ -23,11 +23,14 @@ export const formatResponse = (respFieldName, respErrorFieldName, successStatus)
 
         res.statusCode = status;
 
-        cleanResObject(res, respFieldName, respErrorFieldName, respStatusFieldName);
+        const metadata = res[metadataFieldName] ?? undefined;
+
+        cleanResObject(res, respFieldName, respErrorFieldName, respStatusFieldName, metadataFieldName);
 
         return res.json({
             [respFieldName]: data,
-            [respErrorFieldName]: errors
+            [respErrorFieldName]: errors,
+            [metadataFieldName]: metadata
         });
     };
 }

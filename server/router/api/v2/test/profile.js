@@ -66,4 +66,22 @@ async function signIn(req, res) {
     return profile;
 }
 
+new RouteBuilder('/', Method.GET)
+    .serializeRes(ProfileCreateRes)
+    .paginate()
+    .addController(getAll).attachToRouter(router);
+async function getAll(req, res) {
+    const { pagination } = req;
+    const { limit, offset } = pagination;
+
+    const profiles = await profileService.readAll({limit, offset});
+
+    if(!profiles)
+        throw new APIError({
+            reason: ErrorReason.WRONG_CREDENTIALS, message: 'Could not read all profiles'
+        });
+
+    return profiles;
+}
+
 export default router;

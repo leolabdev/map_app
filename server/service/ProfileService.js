@@ -83,10 +83,11 @@ export default class ProfileService {
 
     /**
      * The method reads all Clients of the Client SQL table
+     * @param {{}=} pagination settings
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
-    async readAll() {
-        return this.service.readAll({ include: Address });
+    async readAll(options) {
+        return this.service.readAll(options);
     }
 
     /**

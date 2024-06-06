@@ -14,6 +14,7 @@ import {catchErrors} from "./core/pipelineHandlers/catchErrors.js";
 import {formatResponse} from "./core/pipelineHandlers/formatResponse.js";
 import {config} from "./core/config.js";
 import {ErrorName} from "./core/error/ErrorName.js";
+import { paginate } from "./core/pipelineHandlers/paginate.js";
 
 
 export class RouteBuilder {
@@ -34,6 +35,8 @@ export class RouteBuilder {
         this.reqValidator = null;
         this.controller = null;
         this.resSerializer = null;
+
+        this.paginator = null;
 
         this.options = {...config, ...options};
     }
@@ -105,6 +108,16 @@ export class RouteBuilder {
     }
 
     /**
+     *
+     * @param{{defaultPage=1, defaultLimit=PAGINATION_MAX, max=PAGINATION_MAX}=} pagination
+     * @returns {RouteBuilder}
+     */
+    paginate = function (pagination){
+        this.paginator = paginate(pagination);
+        return this;
+    }
+
+    /**
      * Get the configured router object
      * @param{Router} router attach the specified route to Express router
      * @returns {Router} modified Express router with the specified route params
@@ -127,6 +140,7 @@ export class RouteBuilder {
         const pipeHandlersToApply = [
             this.authenticator, this.authorizer,
             this.reqSerializer, this.reqValidator,
+            this.paginator,
             this.controller,
             this.resSerializer,
             catchErrors(this.options.respErrorFieldName),
