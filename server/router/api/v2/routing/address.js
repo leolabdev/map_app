@@ -1,7 +1,11 @@
 import express from "express";
 import ThrottlingQueue from "../../../../util/throttlingQueue.js";
-import rateLimit from "express-rate-limit";
 import APILimitTracker from "../../../../util/APILimitTracker.js";
+import validate from "../test/routeBuilder/core/pipelineHandlers/validate.js";
+import { addressReverse } from "../test/routeBuilder/rules/validation/address.js";
+import { catchErrors } from "../test/routeBuilder/core/pipelineHandlers/catchErrors.js";
+import { formatResponse } from "../test/routeBuilder/core/pipelineHandlers/formatResponse.js";
+import { addReqLimit } from "../test/routeBuilder/core/pipelineHandlers/addReqLimit..js";
 
 
 const router = express.Router();
@@ -19,11 +23,11 @@ router.get('/validate', async (req, res, next) => {
     const url = `https://geocode.maps.co/search?q=${searchText}&api_key=${key}`;
 
     const requestFunction = apiRequestFunction(url, res);
-    validateQueue.addRequest(requestFunction);
+    validateQueue.addRequest(requestFunction)
 });
 
 const reverseQueue = new ThrottlingQueue(1500);
-router.get('/reverse', async (req, res, next) => {
+router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next) => {
     const areRequests = APILimitTracker.areRequestsLeft('maps', 'reverse');
     if(!areRequests)
         return sendDailyLimitExceeded(res);
@@ -36,19 +40,11 @@ router.get('/reverse', async (req, res, next) => {
 
     const requestFunction = apiRequestFunction(url, res);
     reverseQueue.addRequest(requestFunction);
-});
+}, catchErrors(), formatResponse());
 
-const limiter = rateLimit({
-    windowMs: 3000,
-    max: 1, // Limit each IP to 1 requests per `window`
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    handler: function (req, res) {
-        res.status(429).json({error: "Too many requests, please try again later."});
-    }
-});
+
 const autocompleteQueue = new ThrottlingQueue(1500);
-router.get('/autocomplete', limiter, async (req, res, next) => {
+router.get('/autocomplete', addReqLimit(3000), async (req, res, next) => {
     const areRequests = APILimitTracker.areRequestsLeft('geoapify', 'autocomplete');
     if(!areRequests)
         return sendDailyLimitExceeded(res);
