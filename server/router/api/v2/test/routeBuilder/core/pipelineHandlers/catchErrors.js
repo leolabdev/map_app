@@ -3,6 +3,7 @@ import {APIError} from "../error/APIError.js";
 
 export const catchErrors = (respErrorFieldName) => {
     return (err, req, res, next) => {
+        respErrorFieldName = respErrorFieldName ?? config.respErrorFieldName;
         let previousErrors = [];
         if(Array.isArray(res[respErrorFieldName]))
             previousErrors = res[respErrorFieldName];

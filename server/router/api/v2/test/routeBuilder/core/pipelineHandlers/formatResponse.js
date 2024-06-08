@@ -2,6 +2,9 @@ import {config} from "../config.js";
 
 export const formatResponse = (respFieldName, respErrorFieldName, successStatus) => {
     return (req, res) => {
+        respFieldName = respFieldName ?? config.respFieldName;
+        respErrorFieldName = respErrorFieldName ?? config.respErrorFieldName;
+
         if(res[respErrorFieldName] && !Array.isArray(res[respErrorFieldName]))
             res[respErrorFieldName] = [res[respErrorFieldName]];
 
