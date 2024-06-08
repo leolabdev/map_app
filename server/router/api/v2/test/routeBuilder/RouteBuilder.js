@@ -15,6 +15,7 @@ import {formatResponse} from "./core/pipelineHandlers/formatResponse.js";
 import {config} from "./core/config.js";
 import {ErrorName} from "./core/error/ErrorName.js";
 import { paginate } from "./core/pipelineHandlers/paginate.js";
+import { addReqLimit } from "./core/pipelineHandlers/addReqLimit..js";
 
 
 export class RouteBuilder {
@@ -37,6 +38,7 @@ export class RouteBuilder {
         this.resSerializer = null;
 
         this.paginator = null;
+        this.reqLimiter = null;
 
         this.options = {...config, ...options};
     }
@@ -118,6 +120,16 @@ export class RouteBuilder {
     }
 
     /**
+     *
+     * @param{number} reqIntervalMs
+     * @returns {RouteBuilder}
+     */
+    addReqLimit = function (reqIntervalMs){
+        this.reqLimiter = addReqLimit(reqIntervalMs);
+        return this;
+    }
+
+    /**
      * Get the configured router object
      * @param{Router} router attach the specified route to Express router
      * @returns {Router} modified Express router with the specified route params
@@ -138,6 +150,7 @@ export class RouteBuilder {
 
     #addPipeConfigToRouter = function (router){
         const pipeHandlersToApply = [
+            this.reqLimiter,
             this.authenticator, this.authorizer,
             this.reqSerializer, this.reqValidator,
             this.paginator,
