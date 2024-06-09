@@ -6,9 +6,8 @@ import MyButton from "../UI/button/MyButton";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import ShowRouteForm from "../ShowRouteForm/ShowRouteForm";
-import secToHours from "../../functions/secToHours";
-import getMarkerIcon from "../../functions/getMarkerIcon";
-
+import getMarkerIcon from "../../shared/helpers/getMarkerIcon";
+import secToHours from "../../shared/helpers/secToHours";
 
 function Map({
     setAllowPositionMarker,
