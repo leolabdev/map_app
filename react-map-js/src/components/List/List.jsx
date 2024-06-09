@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-// CircularProgress is loading icon 
 import { CircularProgress, Typography, FormControl } from '@material-ui/core';
 import Stack from "@mui/material/Stack";
 import TextField from '@mui/material/TextField';
@@ -7,9 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import OrdersDataTable from '../DataTables/OrdersDataTable';
 import useStyles from './styles.js';
 import MyButton from '../UI/button/MyButton';
-import { getHumansDataByType } from '../../shared/api/humans/GetHumansDataByType'
-import { getOrdersData } from '../../shared/api/orders/GetOrdersData';
-import { postNewOrder } from '../../shared/api/orders/PostNewOrder';
+import {Api} from "../../shared/api";
 
 
 const List = ({
@@ -79,11 +76,11 @@ const List = ({
     useEffect(() => {
         setIsLoading(true)
 
-        getHumansDataByType("client").then((data) => {
+        Api.humans.getDataByType("client").then((data) => {
             setClients(data)
         })
 
-        getHumansDataByType("manufacturer").then((data) => {
+        Api.humans.getDataByType("manufacturer").then((data) => {
             setManufacturers(data)
         })
         setIsLoading(false)
@@ -116,8 +113,8 @@ const List = ({
 
     // here we get orders data 
     useEffect(() => {
-        setIsLoadingOrders(true)
-        getOrdersData().then((data) => {
+        setIsLoadingOrders(true);
+        Api.orders.getData().then((data) => {
             if (data != null) {
                 setOrders(data)
                 setIsLoadingOrders(false)
@@ -132,7 +129,8 @@ const List = ({
         const newOrderPost = {
             ...orderPost
         }
-        postNewOrder(newOrderPost)
+
+        Api.orders.postNew(newOrderPost)
         setOrderPost({
             manufacturerUsername: '', clientUsername: '', shipmentAddressId: '', deliveryAddressId: ''
         })

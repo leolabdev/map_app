@@ -1,8 +1,6 @@
-// library witch helps us with calls
 import axios from 'axios';
 import {envHelper} from "../../helpers/envHelper";
 
-// async function for getting the Clients/Manufacturers' data .
 /**
  * Retrieves data from a specified endpoint based on the humansType.
  * @async

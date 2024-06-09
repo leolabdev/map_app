@@ -3,8 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
-import { deleteOrderByOrderId } from '../../shared/api/orders/DeleteOrderByOrderId';
-import { getOrderByOrderId } from '../../shared/api/orders/GetOrderByOrderId';
+import {Api} from "../../shared/api";
 
 //in order data table can be found the information about orders, also it is used for making the request to the server for getting the routing
 const OrdersDataTable = ({
@@ -40,9 +39,8 @@ const OrdersDataTable = ({
                             // you can call an API to delete the selected IDs
                             // and get the latest results after the deletion
                             // then call setRows() to update the data locally here
-                            selectedIDs.forEach(s => deleteOrderByOrderId(s));
+                            selectedIDs.forEach(s => Api.orders.deleteById(s));
                             setOrders((r) => r.filter((x) => !selectedIDs.has(x.orderId)));
-
                         }}
                     >
                         <DeleteIcon />
@@ -77,9 +75,7 @@ const OrdersDataTable = ({
 
                                 // here by order ids we get orders' shipmentAddresses and deliveryAddress
                                 selectedIDs[0].forEach(idx => {
-
-                                    getOrderByOrderId(idx).then((data) => {
-
+                                    Api.orders.getById(idx).then((data) => {
                                         newOrdersAddresses.push(data)
                                         // here we add ordersid keys 
                                         newOrdersAddresses.forEach((order, index) => {
