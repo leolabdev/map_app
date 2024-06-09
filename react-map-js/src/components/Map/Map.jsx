@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import useStyles from './styles';
 import MyModal from "../UI/Modal/MyModal"

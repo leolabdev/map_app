@@ -1,4 +1,3 @@
-import React from 'react';
 import classes from './MyModal.module.css';
 
 const MyModal = ({ children, visible, setVisible }) => {

@@ -1,4 +1,3 @@
-import React from "react";
 import classes from './MyButton.module.css';
 
 {/* we take value(Create post) by using children from <MyButton>Create post</MyButton> */ }
