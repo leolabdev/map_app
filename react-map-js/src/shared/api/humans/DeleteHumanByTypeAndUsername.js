@@ -1,4 +1,5 @@
 import axios from "axios";
+import {envHelper} from "../../helpers/envHelper";
 
 /**
  * Deletes a human by the given humansType and username.
@@ -10,10 +11,10 @@ import axios from "axios";
  */
 export const deleteHumanByTypeAndUsername = async (humansType, username) => {
     try {
-        const data = await axios.delete(`http://localhost:8081/dao/${humansType}/${username}`, {});
+        const data = await axios.delete(`${envHelper.apiLink}/dao/${humansType}/${username}`);
         return data.data.result;
     }
     catch (error) {
-        console.log(error)
+        console.error(error);
     }
-}
+};

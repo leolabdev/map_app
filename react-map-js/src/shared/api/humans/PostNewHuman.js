@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {envHelper} from "../../helpers/envHelper";
 
 /**
  * Sends a POST request to create a new human of the given type.
@@ -25,26 +26,26 @@ export const postNewHuman = async (humansType, post) => {
                 building: post.addressAdd.building,
             }
         };
+
         if (humansType === "client") {
             if (request.username) {
                 request.clientUsername = request.username;
-                delete request.username
+                delete request.username;
             } else if (request.manufacturerUsername) {
                 request.clientUsername = request.manufacturerUsername;
-                delete request.manufacturerUsername
+                delete request.manufacturerUsername;
             }
         } else if (humansType === "manufacturer") {
             if (request.username) {
                 request.manufacturerUsername = request.username;
-                delete request.username
+                delete request.username;
             } else if (request.clientUsername) {
                 request.manufacturerUsername = request.clientUsername;
-                delete request.clientUsername
+                delete request.clientUsername;
             }
         }
-        await axios.post(`http://localhost:8081/dao/${humansType}`, {...request});
-
+        await axios.post(`${envHelper.apiLink}/dao/${humansType}`, {...request});
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
-}
+};
