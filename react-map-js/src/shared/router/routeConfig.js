@@ -2,26 +2,26 @@ import About from '../../pages/About';
 import Error from '../../pages/Error';
 import MapPage from '../../pages/MapPage';
 import RegistrationPage from '../../pages/RegistrationPage';
+import {AppRoutesLinks} from "./AppRoutesLinks";
+import {RoutePaths} from "./RoutePaths";
 
-export const routeConfig = [
-    {
-        name: 'home',
-        path: '/',
+
+export const routeConfig = Object.values({
+    [AppRoutesLinks.HOME]: {
+        path: RoutePaths.home,
         element: <MapPage />,
     },
-    {
-        name: 'about',
-        path: '/about',
+    [AppRoutesLinks.ABOUT]: {
+        path: RoutePaths.about,
         element: <About />,
     },
-    {
-        name: 'registration',
-        path: '/registration',
+    [AppRoutesLinks.REGISTRATION]: {
+        path: RoutePaths.registration,
         element: <RegistrationPage />,
     },
-    {
-        name: 'error',
-        path: '*',
+    [AppRoutesLinks.ERROR]: {
+        path: "*",
         element: <Error />,
+    },
     }
-];
+)
