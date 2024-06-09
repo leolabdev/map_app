@@ -1,16 +1,16 @@
-const express = require('express');
-const https = require('https');
-const axios = require("axios");
+import APIRequestUtil from "../../../util/APIRequestUtil.js";
+import ValuesDateChecker from "../../../util/ValuesDateChecker.js";
+import DataDAO from "../../../DAO/DataDAO.js";
+import OrderDataDAO from "../../../DAO/OrderDataDAO.js";
+import OptimizationUtil from "../../../util/OptimizationUtil.js";
+import AddressUtil from "../../../util/AddressUtil.js";
+import DaoUtil from "../../../util/DaoUtil.js";
+import Util from "../../../util/Util.js";
+import PolygonUtil from "../../../util/PolygonUtil.js";
+import express from "express";
+import * as https from "https";
+import axios from "axios";
 
-const {ValuesDateChecker} = require("../../../util/ValuesDateChecker");
-const {DataDAO} = require("../../../DAO/Data");
-const {OrderDataDAO} = require("../../../DAO/OrderDataDAO");
-const {OptimizationUtil} = require("../../../util/OptimizationUtil");
-const {AddressUtil} = require("../../../util/AddressUtil");
-const {DaoUtil} = require("../../../util/DaoUtil");
-const APIRequestUtil = require("../../../util/APIRequestUtil");
-const Util = require("../../../util/Util");
-const PolygonUtil = require("../../../util/PolygonUtil");
 
 const router = express.Router();
 
@@ -23,8 +23,8 @@ const addressUtil = new AddressUtil();
 const daoUtil = new DaoUtil();
 const util = new Util();
 const polygonUtil = new PolygonUtil();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * Calculates fuel consumption in route based on route length.
@@ -312,7 +312,11 @@ async function makeRoutingRequest(coordinates, options, req, res, additionalData
         });
         const apiOptions = apiRequestUtil.getORSSettings('/v2/directions/driving-car/geojson');
         apiOptions.headers["Content-Length"] = data.length;
-        const price = await fuelPriceJSON("finland");
+        //const price = await fuelPriceJSON("finland");
+        const price = {
+            diesel: "1.9",
+            gasoline: "1.83"
+        };
 
         const request = await https.request(apiOptions, (response) => {
             let data = '';
@@ -457,4 +461,4 @@ router.post('/routing/orders', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

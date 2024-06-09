@@ -1,6 +1,7 @@
 {
   "name": "map_app",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "server/index.js",
   "dependencies": {
@@ -14,7 +15,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node server/index.js"
+    "dev": "nodemon --legacy-watch ./server"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/leolab1337/map_app#readme",
   "devDependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "nodemon": "^3.1.0"
   }
 }

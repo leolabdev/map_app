@@ -1,9 +1,9 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'Address',
@@ -15,7 +15,7 @@ const options = {
  * This class represents row of the Address SQL table.
  * Used by the Sequalize ORM for communicating between Address SQL table and this software.
  */
-class Address extends Model {}
+export default class Address extends Model {}
 
 Address.init({
     addressId: {
@@ -55,5 +55,3 @@ Address.init({
         allowNull: false
     }
 }, options);
-
-module.exports.Address = Address;

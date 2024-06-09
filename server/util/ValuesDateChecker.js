@@ -1,7 +1,7 @@
 /**
  * The class provides functionality for checking dates of the Data SQL table rows
  */
-class ValuesDateChecker{
+export default class ValuesDateChecker{
     /**
      * The method checks are the given Data SQL table rows old (older than 1 day)
      * @param {Array.<string>} valuesToCheck names of the values to check
@@ -26,5 +26,3 @@ class ValuesDateChecker{
         return false;
     }
 }
-
-module.exports.ValuesDateChecker = ValuesDateChecker;

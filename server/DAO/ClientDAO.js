@@ -1,10 +1,10 @@
-const { Address } = require("../model/Address");
-const { AsDeliveryAddress } = require("../model/AsDeliveryAddress");
-const { OrderData } = require("../model/OrderData");
+import StringValidator from "../util/StringValidator.js";
+import DaoUtil from "../util/DaoUtil.js";
+import Address from "../model/Address.js";
+import Client from "../model/Client.js";
+import AsDeliveryAddress from "../model/AsDeliveryAddress.js";
+import OrderData from "../model/OrderData.js";
 
-const StringValidator = require("../util/StringValidator").StringValidator;
-const Client = require("../model/Client").Client;
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
@@ -13,7 +13,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
  * This table contains clients data such as client username and name
  */
-class ClientDAO {
+export default class ClientDAO {
     /**
      * The method creates new client in the Client SQL table
      * @param {Object} data object with the client data, where clientUsername field is manditory
@@ -163,5 +163,3 @@ class ClientDAO {
         }
     }
 }
-
-module.exports.ClientDAO = ClientDAO;

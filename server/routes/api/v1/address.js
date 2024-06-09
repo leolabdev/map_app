@@ -1,5 +1,6 @@
-const express = require('express');
-const https = require('https');
+import express from "express";
+import * as https from "https";
+
 
 const router = express.Router();
 
@@ -283,4 +284,4 @@ router.get('/address/geocode', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

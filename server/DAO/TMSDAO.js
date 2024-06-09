@@ -1,5 +1,6 @@
-const TMS = require("../model/TMS");
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
+import DaoUtil from "../util/DaoUtil.js";
+import TMS from "../model/TMS.js";
+
 
 const daoUtil = new DaoUtil();
 
@@ -7,7 +8,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with TMS SQL table.
  * This table contains TMS(=traffic measurement station) data such as station id, sensor1(average speed, pointed to direction 1) id , sensor2(average speed, pointed to direction 2) id, lon, lat
  */
-class TMSDAO {
+export default class TMSDAO {
     /**
      * The method creates new TMS(traffic measurement station) in the TMS SQL table
      * @param {Object} data object with the order data, where stationId, sensor1Id, sensor2Id, lon, lat fields are manditory
@@ -102,5 +103,3 @@ class TMSDAO {
         }
     }
 }
-
-module.exports = TMSDAO;

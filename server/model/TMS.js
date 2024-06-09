@@ -1,9 +1,8 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'TMS',
@@ -15,7 +14,7 @@ const options = {
  * This class represents row of the TMS(=traffic measurement station) SQL table.
  * Used by the Sequalize ORM for communicating between TMS SQL table and this software.
  */
-class TMS extends Model {}
+export default class TMS extends Model {}
 
 TMS.init({
     stationId: {
@@ -45,5 +44,3 @@ TMS.init({
         allowNull: false
     }
 }, options);
-
-module.exports = TMS;

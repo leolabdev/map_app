@@ -1,16 +1,18 @@
-const express = require('express');
-const router = express.Router();
-const axios = require("axios");
+import express from "express";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import DaoUtil from "../../util/DaoUtil.js";
+import ManufacturerDAO from "../../DAO/ManufacturerDAO.js";
+import axios from "axios";
 
-const { DaoUtil } = require("../../util/DaoUtil");
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const ManufacturerDAO = require("../../DAO/ManufacturerDAO").ManufacturerDAO;
+const router = express.Router();
+
+
 
 const responseUtil = new ResponseUtil();
 const daoUtil = new DaoUtil();
 const manufacturerDAO = new ManufacturerDAO();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * Create new manufacturer in the database
@@ -167,4 +169,4 @@ router.delete("/:manufacturerUsername", async(req, res) => {
     responseUtil.sendStatusOfOperation(res, status);
 });
 
-module.exports = router;
+export default router;

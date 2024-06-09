@@ -1,8 +1,8 @@
-const AreaCoordinates = require("../model/AreaCoordinates");
-const Area = require("../model/Area");
+import StringValidator from "../util/StringValidator.js";
+import DaoUtil from "../util/DaoUtil.js";
+import AreaCoordinates from "../model/AreaCoordinates.js";
+import Area from "../model/Area.js";
 
-const StringValidator = require("../util/StringValidator").StringValidator;
-const DaoUtil = require("../util/DaoUtil").DaoUtil;
 
 const stringValidator = new StringValidator();
 const daoUtil = new DaoUtil();
@@ -11,7 +11,7 @@ const daoUtil = new DaoUtil();
  * The class provides functionality for manipulating(CRUD operations) with Area SQL table.
  * This table contains area objects and used for saving type(polygon or multipolygon) of the GeoJSON objects and name of the area
  */
-class AreaDAO {
+export default class AreaDAO {
     /**
      * The method creates new area in the Area SQL table
      * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are manditory
@@ -70,7 +70,7 @@ class AreaDAO {
 
     /**
      * The method reads all the areas from the Area SQL table
-     * @returns array with all founded Area objects, if operation was sucessful or null if not
+     * @returns array with all founded Area objects, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -85,7 +85,7 @@ class AreaDAO {
     /**
      * The method updates existing area data in the Area SQL table
      * @param {Object} data object with the area data, such as areaName or type
-     * @returns true, if the operation was sucessful or false if not
+     * @returns true, if the operation was successful or false if not
      */
     async update(data) {
         const { areaName } = data;
@@ -111,7 +111,7 @@ class AreaDAO {
     /**
      * The method deletes area with provided primary key(areaName)
      * @param {String} primaryKey primary key of the area
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
@@ -131,5 +131,3 @@ class AreaDAO {
         }
     }
 }
-
-module.exports = AreaDAO;

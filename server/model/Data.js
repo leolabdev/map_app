@@ -1,9 +1,8 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'Data',
@@ -15,7 +14,7 @@ const options = {
  * This class represents row of the Data SQL table.
  * Used by the Sequalize ORM for communicating between Data SQL table and this software.
  */
-class Data extends Model {}
+export default class Data extends Model {}
 
 Data.init({
     name: {
@@ -34,5 +33,3 @@ Data.init({
         allowNull: true
     }
 }, options);
-
-module.exports.Data = Data;

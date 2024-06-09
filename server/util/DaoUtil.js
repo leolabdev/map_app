@@ -1,14 +1,15 @@
-const axios = require("axios");
-const StringValidator = require('./StringValidator').StringValidator;
+import StringValidator from "./StringValidator.js";
+import axios from "axios";
+
 
 const stringValidator = new StringValidator();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * The class has functionality for helping communicate with DAO package classes
  */
-class DaoUtil{
+export default class DaoUtil{
     /**
      * The method gets all the data values from Sequelize ORM response, i.e. get all data related only to the object(address, client etc.) without extra data
      * @param {Array} respArr response array from Sequelize ORM
@@ -242,5 +243,3 @@ function convertPolygonToArea(polygon, areaName, polygonNumber) {
 
         return result;
 }
-
-module.exports.DaoUtil = DaoUtil;

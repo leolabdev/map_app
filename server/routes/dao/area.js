@@ -1,19 +1,20 @@
-const express = require('express');
+import express from "express";
+import DaoUtil from "../../util/DaoUtil.js";
+import ResponseUtil from "../../util/ResponseUtil.js";
+import AreaDAO from "../../DAO/AreaDAO.js";
+import AreaCoordinatesDAO from "../../DAO/AreaCoordinatesDAO.js";
+import axios from "axios";
+
 const router = express.Router();
 
-const {DaoUtil} = require('../../util/DaoUtil');
-const ResponseUtil = require('../../util/ResponseUtil').ResponseUtil;
-const AreaDAO = require('../../DAO/AreaDAO');
-const AreaCoordinatesDAO = require('../../DAO/AreaCoordinatesDAO');
-const axios = require("axios");
 
 const daoUtil = new DaoUtil();
 const responseUtil = new ResponseUtil();
 
 const areaDAO = new AreaDAO();
 const areaCoordinatesDAO = new AreaCoordinatesDAO();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 /**
  * Create new area in the Area SQL table
  * The request body must contain areaName and type(Polygon or MultiPolygon, read more from GeoJSON docs) fields
@@ -34,18 +35,30 @@ const port = process.env.DATABASE_PORT || 8081;
  *     ]
  * }
  */
-router.post("/", async(req, res) => {
+router.post("/", async (req, res) => {
     try{
         const reqBody = req.body;
         const coordinates = daoUtil.parsePolygonToAreaCoordinates(reqBody);
         delete reqBody.coordinates;
 
-        const result = await areaDAO.create(reqBody).then(async (area) => {
-            return {
-                ...area.dataValues,
-                coordinates: await areaCoordinatesDAO.createMultiple(coordinates)
-            };
-        });
+        const areaResp = await areaDAO.create(reqBody);
+
+        if(areaResp == null){
+            responseUtil.sendResultOfQuery(res, null);
+            return;
+        }
+
+        const coordsResp = await areaCoordinatesDAO.createMultiple(coordinates);
+        if(coordsResp == null){
+            responseUtil.sendResultOfQuery(res, null);
+            return;
+        }
+
+        const result = {
+            ...areaResp.dataValues,
+            coordinates: coordsResp
+        }
+
         responseUtil.sendResultOfQuery(res, result);
     }catch (e) {
         console.log(e);
@@ -171,4 +184,4 @@ router.delete("/:areaName", async(req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

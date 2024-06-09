@@ -1,9 +1,8 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'Area',
@@ -15,7 +14,7 @@ const options = {
  * This class represents row of the Area SQL table.
  * Used by the Sequalize ORM for communicating between Area SQL table and this software.
  */
-class Area extends Model {}
+export default class Area extends Model {}
 
 Area.init({
     areaName: {
@@ -29,5 +28,3 @@ Area.init({
         allowNull: false
     }
 }, options);
-
-module.exports = Area;

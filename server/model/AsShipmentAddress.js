@@ -1,11 +1,10 @@
-const { DataTypes, Model } = require('sequelize');
-const { Address } = require("./Address");
-const { Manufacturer } = require("./Manufacturer");
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
+import Manufacturer from "./Manufacturer.js";
+import Address from "./Address.js";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'AsShipmentAddress',
@@ -17,7 +16,7 @@ const options = {
  * This class represents row of the As shipment address SQL table (intermediate table between address and manufacturer tables).
  * Used by the Sequalize ORM for communicating between As shipment address SQL table and this software.
  */
-class AsShipmentAddress extends Model {}
+export default class AsShipmentAddress extends Model {}
 
 AsShipmentAddress.init({
     manufacturerUsername: {
@@ -39,5 +38,3 @@ AsShipmentAddress.init({
 
 Manufacturer.belongsToMany(Address, { through: 'AsShipmentAddress', foreignKey: 'manufacturerUsername', otherKey: 'addressId' });
 Address.belongsToMany(Manufacturer, { through: 'AsShipmentAddress', foreignKey: 'addressId', otherKey: 'manufacturerUsername' });
-
-module.exports.AsShipmentAddress = AsShipmentAddress;

@@ -1,9 +1,8 @@
-const { DataTypes, Model } = require('sequelize');
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'Manufacturer',
@@ -15,7 +14,7 @@ const options = {
  * This class represents row of the Manufacturer SQL table.
  * Used by the Sequalize ORM for communicating between Manufacturer SQL table and this software.
  */
-class Manufacturer extends Model {}
+export default class Manufacturer extends Model {}
 
 Manufacturer.init({
     manufacturerUsername: {
@@ -29,5 +28,3 @@ Manufacturer.init({
         allowNull: true
     }
 }, options);
-
-module.exports.Manufacturer = Manufacturer;

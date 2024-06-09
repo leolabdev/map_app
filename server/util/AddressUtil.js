@@ -1,12 +1,13 @@
-const axios = require("axios");
+import axios from "axios";
 
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * This class has functionality for helping work with addresses
  */
-class AddressUtil{
+export default class AddressUtil{
     /**
      * The method converts point coordinates (lon, lat) to the street address.
      * @param {Array.<number>} coords array with the coordinates in form [lon, lat]
@@ -22,5 +23,3 @@ class AddressUtil{
         }
     }
 }
-
-module.exports.AddressUtil = AddressUtil;

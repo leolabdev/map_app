@@ -1,10 +1,5 @@
-//Sequelize dependencies:
-//npm install --save sequelize
-//npm install --save mariadb
+import {Sequelize} from "sequelize";
 
-const { Sequelize } = require('sequelize');
-
-'use strict';
 
 let instance = undefined;
 
@@ -27,27 +22,27 @@ const createInstance = () => {
  * This class is a lazy singleton for the Sequalize ORM instanse.
  * For making queries to the DB, Sequalize instance must be created, for example at the beginning of the program
  */
-class SequelizeUtil {
-    getSequelizeInstance = () => {
-        if (!instance)
+export default class SequelizeUtil {
+    static getSequelizeInstance = () => {
+        if (!instance){
             instance = createInstance();
+            //Add auto sync
+            instance.sync({alter: true});
+        }
 
         return instance;
     }
 
-    isSequelizeConnected = () => {
+    static isSequelizeConnected = () => {
         try {
-            const sequelize = this.getSequelizeInstance();
-            const resp = sequelize.authenticate().then(() => {
+            const sequelize = SequelizeUtil.getSequelizeInstance();
+            return sequelize.authenticate().then(() => {
                 console.log('Connection has been established successfully.');
                 return true;
             });
-            return resp;
         } catch (error) {
-            console.error('Unable to connect to the database:', error);
+            console.error('Unable to connect to the database: \n', error);
             return false;
         }
     }
 }
-
-module.exports.SequelizeUtil = SequelizeUtil;

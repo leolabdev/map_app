@@ -1,0 +1,55 @@
+#docker compose -f prod-docker-compose.yml up
+
+services:
+  api:
+    build:
+      dockerfile: prod-api.Dockerfile
+    container_name: map-app-api
+    depends_on:
+      - db
+    networks:
+      - backend
+      - db
+    ports:
+      - 8081:8081
+    environment:
+      - API_HOST=map-app-api
+      - API_PORT=8081
+      - DATABASE=mapApp
+      - DATABASE_DIALECT=mariadb
+      - DATABASE_HOST=map-app-db
+      - DATABASE_USER=mapapp
+      - DATABASE_PASSWORD=password
+      - ORS_API_KEY=your_Open_Route_Service_key
+      - FUEL_API_KEY=your_Gas_Prices_API_key
+
+  db:
+    container_name: map-app-db
+    image: mariadb:11.3.2
+    networks:
+      - db
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=mapApp
+      - MYSQL_USER=mapapp
+      - MYSQL_PASSWORD=password
+    volumes:
+      - map-app-db:/var/lib/mysql
+
+#  adminer:
+#    image: adminer
+#    networks:
+#      - db
+#    ports:
+#      - 8080:8080
+
+networks:
+  backend:
+    name: map-app-backend
+  db:
+    name: map-app-db
+
+volumes:
+  map-app-db:

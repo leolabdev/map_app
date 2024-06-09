@@ -1,10 +1,9 @@
-const { DataTypes, Model } = require('sequelize');
-const Area = require("./Area");
-const SequelizeUtil = require("../modules/SequelizeUtil").SequelizeUtil;
+import SequelizeUtil from "../modules/SequelizeUtil.js";
+import {DataTypes, Model} from "sequelize";
+import Area from "./Area.js";
 
-const sequelizeUtil = new SequelizeUtil();
 
-const sequelize = sequelizeUtil.getSequelizeInstance();
+const sequelize = SequelizeUtil.getSequelizeInstance();
 const options = {
     sequelize,
     modelName: 'AreaCoordinates',
@@ -16,7 +15,7 @@ const options = {
  * This class represents row of the Area coordinates SQL table.
  * Used by the Sequalize ORM for communicating between Area coordinates SQL table and this software.
  */
-class AreaCoordinates extends Model {}
+export default class AreaCoordinates extends Model {}
 
 AreaCoordinates.init({
     coordinateId: {
@@ -55,5 +54,3 @@ AreaCoordinates.init({
 //create one-to-many relationship with Area table
 Area.hasMany(AreaCoordinates, { foreignKey: 'areaName' });
 AreaCoordinates.belongsTo(Area, { foreignKey: 'areaName' });
-
-module.exports = AreaCoordinates;

@@ -1,16 +1,17 @@
-const axios = require("axios");
-const TMSDAO = require("../DAO/TMSDAO");
-const {DataDAO} = require("../DAO/Data");
+import TMSDAO from "../DAO/TMSDAO.js";
+import axios from "axios";
+import DataDAO from "../DAO/DataDAO.js";
+
 
 const tmsDAO = new TMSDAO();
 const dataDAO = new DataDAO();
-const host = process.env.DATABASE_HOST || "localhost";
-const port = process.env.DATABASE_PORT || 8081;
+const host = process.env.API_HOST || "localhost";
+const port = process.env.API_PORT || 8081;
 
 /**
  * The class provides different methods, which can not be separated to the own class
  */
-class Util {
+export default class Util {
     /**
      * The method generates Set with city names, which can be found from the given order ORM objects array
      * @param {Array.<Object>} orders array with order ORM objects
@@ -112,5 +113,3 @@ async function getSlowTrafficStationIds(minSpeed) {
 
     return slowTrafficStationIds;
 }
-
-module.exports = Util;
