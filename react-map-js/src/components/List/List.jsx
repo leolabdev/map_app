@@ -7,9 +7,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import OrdersDataTable from '../DataTables/OrdersDataTable';
 import useStyles from './styles.js';
 import MyButton from '../UI/button/MyButton';
-import { getHumansDataByType } from '../../api/humans/GetHumansDataByType'
-import { getOrdersData } from '../../api/orders/GetOrdersData';
-import { postNewOrder } from '../../api/orders/PostNewOrder';
+import { getHumansDataByType } from '../../shared/api/humans/GetHumansDataByType'
+import { getOrdersData } from '../../shared/api/orders/GetOrdersData';
+import { postNewOrder } from '../../shared/api/orders/PostNewOrder';
 
 
 const List = ({

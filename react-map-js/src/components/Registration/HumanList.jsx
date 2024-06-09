@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ListItem from "./ListItem";
-import {getHumansDataByType} from "../../api/humans/GetHumansDataByType";
-import {deleteHumanByTypeAndUsername} from "../../api/humans/DeleteHumanByTypeAndUsername";
+import {getHumansDataByType} from "../../shared/api/humans/GetHumansDataByType";
+import {deleteHumanByTypeAndUsername} from "../../shared/api/humans/DeleteHumanByTypeAndUsername";
 
 /**
  * HumanList list ListItems and provides private remove function to ListItem for

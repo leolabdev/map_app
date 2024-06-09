@@ -1,6 +1,6 @@
 import React, { useState ,useEffect} from 'react'
-import { getHumansDataByType } from '../../api/humans/GetHumansDataByType'
-import { postNewHuman } from '../../api/humans/PostNewHuman';
+import { getHumansDataByType } from '../../shared/api/humans/GetHumansDataByType'
+import { postNewHuman } from '../../shared/api/humans/PostNewHuman';
 import {
     CircularProgress,
     InputLabel,

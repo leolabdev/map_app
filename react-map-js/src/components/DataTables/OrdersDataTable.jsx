@@ -3,8 +3,8 @@ import IconButton from "@mui/material/IconButton";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AltRouteIcon from '@mui/icons-material/AltRoute';
-import { deleteOrderByOrderId } from '../../api/orders/DeleteOrderByOrderId';
-import { getOrderByOrderId } from '../../api/orders/GetOrderByOrderId';
+import { deleteOrderByOrderId } from '../../shared/api/orders/DeleteOrderByOrderId';
+import { getOrderByOrderId } from '../../shared/api/orders/GetOrderByOrderId';
 
 //in order data table can be found the information about orders, also it is used for making the request to the server for getting the routing
 const OrdersDataTable = ({
