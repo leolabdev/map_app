@@ -7,7 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import OrdersDataTable from '../DataTables/OrdersDataTable';
 import useStyles from './styles.js';
 import MyButton from '../UI/button/MyButton';
-import { getHumansData } from '../../api/humans/GetHumansData'
+import { getHumansDataByType } from '../../api/humans/GetHumansDataByType'
 import { getOrdersData } from '../../api/orders/GetOrdersData';
 import { postNewOrder } from '../../api/orders/PostNewOrder';
 
@@ -79,11 +79,11 @@ const List = ({
     useEffect(() => {
         setIsLoading(true)
 
-        getHumansData("client").then((data) => {
+        getHumansDataByType("client").then((data) => {
             setClients(data)
         })
 
-        getHumansData("manufacturer").then((data) => {
+        getHumansDataByType("manufacturer").then((data) => {
             setManufacturers(data)
         })
         setIsLoading(false)

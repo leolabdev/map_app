@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from 'react'
-import { getHumansData } from '../../api/humans/GetHumansData'
+import { getHumansDataByType } from '../../api/humans/GetHumansDataByType'
 import { postNewHuman } from '../../api/humans/PostNewHuman';
 import {
     CircularProgress,
@@ -40,7 +40,7 @@ const Registration = () => {
      */
     useEffect(() => {
         setIsLoading(true)
-        getHumansData(userType)
+        getHumansDataByType(userType)
             .then((data) => {
                 setHumans(data)
                 setIsLoading(false)
