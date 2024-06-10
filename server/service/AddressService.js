@@ -4,6 +4,7 @@ import Address from "../model/Address.js";
 import BasicService from "./BasicService.js";
 import { addressCreate, addressSearch, addressUpdate } from "./validation/address.js";
 import { idField } from "./validation/idField.js";
+import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 
 
 const stringValidator = new StringValidator();

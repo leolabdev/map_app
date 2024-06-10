@@ -2,6 +2,8 @@ import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Area from "../model/Area.js";
 import {Op} from "sequelize";
+import BasicService from "./BasicService.js";
+import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 
 
 const stringValidator = new StringValidator();
@@ -14,7 +16,7 @@ const daoUtil = new DaoUtil();
 export default class AreaService {
     constructor() {
         this.extractor = DEFactory.create();
-        this.service = new BasicService(Address, 'AddressService');
+        this.service = new BasicService(Area, 'AreaService');
     }
     
     /**

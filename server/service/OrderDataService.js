@@ -1,6 +1,8 @@
 import DaoUtil from "../util/DaoUtil.js";
 import OrderData from "../model/OrderData.js";
 import {Op} from "sequelize";
+import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import BasicService from "./BasicService.js";
 
 const daoUtil = new DaoUtil();
 
@@ -11,7 +13,7 @@ const daoUtil = new DaoUtil();
 export default class OrderDataService {
     constructor() {
         this.extractor = DEFactory.create();
-        this.service = new BasicService(Address, 'AddressService');
+        this.service = new BasicService(OrderData, 'OrderDataService');
     }
     
     /**

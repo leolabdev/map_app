@@ -1,6 +1,8 @@
 import DaoUtil from "../util/DaoUtil.js";
 import TMS from "../model/TMS.js";
 import { Op } from "sequelize";
+import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import BasicService from "./BasicService.js";
 
 
 const daoUtil = new DaoUtil();
@@ -12,7 +14,7 @@ const daoUtil = new DaoUtil();
 export default class TMSService {
     constructor() {
         this.extractor = DEFactory.create();
-        this.service = new BasicService(Address, 'AddressService');
+        this.service = new BasicService(TMS, 'TMSService');
     }
     
     /**

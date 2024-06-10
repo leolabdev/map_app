@@ -3,6 +3,8 @@ import DaoUtil from "../util/DaoUtil.js";
 import Manufacturer from "../model/Manufacturer.js";
 import OrderData from "../model/OrderData.js";
 import Address from "../model/Address.js";
+import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import BasicService from "./BasicService.js";
 
 
 const stringValidator = new StringValidator();
@@ -15,7 +17,7 @@ const daoUtil = new DaoUtil();
 export default class ManufacturerService {
     constructor() {
         this.extractor = DEFactory.create();
-        this.service = new BasicService(Address, 'AddressService');
+        this.service = new BasicService(Manufacturer, 'ManufacturerService');
     }
 
     /**
