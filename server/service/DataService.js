@@ -10,6 +10,11 @@ const daoUtil = new DaoUtil();
  * This table contains different data in key-value form and last updated date
  */
 export default class DataService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+    
     /**
      * The method creates new data pair in the Data SQL table
      * @param {Data} data object, where the name and value fields are mandatory

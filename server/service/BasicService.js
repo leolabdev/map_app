@@ -25,7 +25,7 @@ export default class BasicService{
         return validateInput(async () => {
             try {    
                 const resp = await this.model.create(newObject);
-                return this.extractor.extract(resp)
+                return this.extractor.extract(resp);
             } catch (e) {
                 console.error(`${this.serviceName} create(): Could not execute the query`, e);
                 return new ServiceError({ reason: SEReason.UNEXPECTED, additional: e });

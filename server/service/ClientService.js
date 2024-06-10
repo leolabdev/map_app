@@ -13,6 +13,11 @@ const daoUtil = new DaoUtil();
  * This table contains clients data such as client username and name
  */
 export default class ClientService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+    
     /**
      * The method creates new client in the Client SQL table
      * @param {Client} data object with the client data, where clientUsername field is mandatory

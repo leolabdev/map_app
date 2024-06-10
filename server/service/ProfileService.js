@@ -83,7 +83,7 @@ export default class ProfileService {
 
     /**
      * The method reads all Clients of the Client SQL table
-     * @param {{}=} pagination settings
+     * @param {{}=} options settings
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
     async readAll(options) {

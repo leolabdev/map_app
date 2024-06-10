@@ -1,6 +1,9 @@
 import StringValidator from "../util/StringValidator.js";
 import DaoUtil from "../util/DaoUtil.js";
 import Address from "../model/Address.js";
+import BasicService from "./BasicService.js";
+import { addressCreate, addressSearch, addressUpdate } from "./validation/address.js";
+import { idField } from "./validation/idField.js";
 
 
 const stringValidator = new StringValidator();
@@ -22,19 +25,7 @@ export default class AddressService {
      * @returns created Address object, if operation was successful or null if not
      */
     async create(data) {
-        const { city, street, building, lon, lat } = data;
-
-        if (daoUtil.containNoNullArr([city, street, building, lon, lat]) && daoUtil.containNoBlankArr([city, street, building])) {
-            try {
-                return await Address.create(data);
-            } catch (e) {
-                console.error("AddressDAO create: Could not execute the query");
-                return null;
-            }
-        } else {
-            console.error("AddressDAO create: Wrong parameter provided");
-            return null;
-        }
+        return this.service.create(data, addressCreate);
     }
 
     /**
@@ -43,19 +34,7 @@ export default class AddressService {
      * @returns founded Address object, if operation was successful or null if not
      */
     async read(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const resp = await Address.findByPk(primaryKey);
-                return resp != null ? resp.dataValues : null;
-            } catch (e) {
-                console.error("AddressDAO: Could not execute the query");
-                console.log(e);
-                return null;
-            }
-        } else {
-            console.error("AddressDAO: Wrong parameter provided");
-            return null;
-        }
+        return this.service.readOneById(primaryKey, idField);
     }
 
     /**
@@ -63,14 +42,7 @@ export default class AddressService {
      * @returns founded Addresses objects array, if operation was successful or null if not
      */
     async readAll() {
-        try {
-            const resp = await Address.findAll();
-            return daoUtil.getDataValues(resp);
-        } catch (e) {
-            console.error("AddressDAO: Could not execute the query");
-            console.log(e);
-            return null;
-        }
+        return this.service.readAll();
     }
 
     /**
@@ -79,23 +51,7 @@ export default class AddressService {
      * @returns updated Address object, if operation was successful or null if not
      */
     async update(data) {
-        const { addressId, city, street, building } = data;
-        if (addressId != null && daoUtil.containNoBlankArr([city, street, building])) {
-            try {
-                delete data.addressId;
-                const resp = await Address.update(
-                    data, { where: { addressId: addressId } }
-                );
-                return resp[0];
-            } catch (e) {
-                console.error("AddressDAO: Could not execute the query");
-                console.log(e);
-                return null;
-            }
-        } else {
-            console.error("AddressDAO: Wrong parameter provided");
-            return null;
-        }
+        return this.service.update(data, { where: { addressId: addressId } }, addressUpdate);
     }
 
     /**
@@ -104,19 +60,7 @@ export default class AddressService {
      * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const resp = await Address.destroy({ where: { addressId: primaryKey } });
-                return resp > 0;
-            } catch (e) {
-                console.error("AddressDAO: Could not execute the query");
-                console.log(e);
-                return false;
-            }
-        } else {
-            console.error("AddressDAO: Wrong parameter provided");
-            return false;
-        }
+        return this.service.deleteById(primaryKey, idField);
     }
 
     /**
@@ -125,18 +69,6 @@ export default class AddressService {
      * @returns founded Address objects array, if operation was successful or null if not
      */
     async search(options) {
-        if (options != null) {
-            try {
-                const resp = await Address.findAll({ where: options });
-                return daoUtil.getDataValues(resp);
-            } catch (e) {
-                console.error("AddressDAO: Could not execute the query");
-                console.log(e);
-                return null;
-            }
-        } else {
-            console.error("AddressDAO: Wrong parameter provided");
-            return null;
-        }
+        return this.service.searchOne({where: options}, addressSearch);
     }
 }

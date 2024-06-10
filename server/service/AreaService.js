@@ -12,6 +12,11 @@ const daoUtil = new DaoUtil();
  * This table contains area objects and used for saving type(polygon or multipolygon) of the GeoJSON objects and name of the area
  */
 export default class AreaService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+    
     /**
      * The method creates new area in the Area SQL table
      * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are mandatory
@@ -20,10 +25,10 @@ export default class AreaService {
     async create(data) {
         const { areaName, polygon } = data;
 
-        if(!areaName || !polygon){
-            console.error('AreaDAO create: Wrong parameter provided');
-            return null;
-        }
+        if(typeof polygon === 'object')
+            return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
+        if(typeof polygon === 'string')
+            return await Area.create({ areaName, polygon });
 
         try {
             if(typeof polygon === 'object')

@@ -10,6 +10,11 @@ const daoUtil = new DaoUtil();
  * This table contains TMS(=traffic measurement station) data such as station id, sensor1(average speed, pointed to direction 1) id , sensor2(average speed, pointed to direction 2) id, lon, lat
  */
 export default class TMSService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+    
     /**
      * The method creates new TMS(traffic measurement station) in the TMS SQL table
      * @param {TMS} data object with the order data, where stationId, sensor1Id, sensor2Id, lon, lat fields are mandatory

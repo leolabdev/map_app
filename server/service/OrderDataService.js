@@ -9,6 +9,11 @@ const daoUtil = new DaoUtil();
  * This table contains orders data such as manufacturer username, client username, shipment address id and delivery address id
  */
 export default class OrderDataService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+    
     /**
      * The method creates new Order in the OrderData SQL table
      * @param {OrderData} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are mandatory

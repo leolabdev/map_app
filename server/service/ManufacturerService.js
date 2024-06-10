@@ -13,6 +13,11 @@ const daoUtil = new DaoUtil();
  * This table contains manufacturers data such as manufacturer username and name
  */
 export default class ManufacturerService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+
     /**
      * The method creates new Manufacturer in the Manufacturer SQL table
      * @param {Manufacturer} data object with the manufacturer data, where manufacturerUsername field is mandatory
