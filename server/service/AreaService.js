@@ -4,6 +4,8 @@ import Area from "../model/Area.js";
 import {Op} from "sequelize";
 import BasicService from "./BasicService.js";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
+import { areaCreate, areaName, areaUpdate } from "./validation/area.js";
 
 
 const stringValidator = new StringValidator();
@@ -24,24 +26,14 @@ export default class AreaService {
      * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are mandatory
      * @returns created Area object, if operation was successful or null if not
      */
-    async create(data) {
-        const { areaName, polygon } = data;
+    create = validateInput(async (data) => {
+        let { areaName, polygon } = data;
 
         if(typeof polygon === 'object')
-            return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
-        if(typeof polygon === 'string')
-            return await Area.create({ areaName, polygon });
-
-        try {
-            if(typeof polygon === 'object')
-                return await Area.create({ areaName, polygon: JSON.stringify(polygon) });
-            if(typeof polygon === 'string')
-                return await Area.create({ areaName, polygon });
-        } catch (e) {
-            console.error('AreaDAO: Could not execute the query');
-            return null;
-        }
-    }
+            polygon = JSON.stringify(polygon);
+        
+        return this.service.create({ areaName, polygon });
+    }, areaCreate);
 
     /**
      * The method reads area with provided primary key(areaName)
@@ -49,18 +41,7 @@ export default class AreaService {
      * @returns founded Area object, if operation was successful or null if not
      */
     async read(primaryKey) {
-        if(primaryKey == null){
-            console.error('ClientDAO read: Wrong parameter provided');
-            return null;
-        }
-
-        try {
-            const resp = await Area.findByPk(primaryKey);
-            return resp != null ? resp.dataValues : null;
-        } catch (e) {
-            console.error('AreaDAO: Could not execute the query');
-            return null;
-        }
+        return this.service.readOneById(primaryKey, areaName);
     }
 
     /**
@@ -68,13 +49,7 @@ export default class AreaService {
      * @returns array with all founded Area objects, if operation was successful or null if not
      */
     async readAll() {
-        try {
-            const resp = await Area.findAll();
-            return daoUtil.getDataValues(resp);
-        } catch (e) {
-            console.error('AreaDAO: Could not execute the query');
-            return false;
-        }
+        return this.service.readAll();
     }
 
     /**
@@ -82,27 +57,14 @@ export default class AreaService {
      * @param {Object} data object with the area data, such as areaName or type
      * @returns true, if the operation was successful or false if not
      */
-    async update(data) {
+     update = validateInput(async (data) => {
         const { areaName, polygon } = data;
 
-        if(!areaName || !polygon || typeof polygon !== 'object'){
-            console.error('AreaDAO: Wrong parameter provided');
-            return false;
-        }
-
-        try {
-            const resp = await Area.update(
-                { areaName, polygon: JSON.stringify(polygon) },
-                { where: { areaName } }
-            );
-
-            return resp[0] > 0;
-        } catch (e) {
-            console.error('AreaDAO: Could not execute the query');
-            console.log(e);
-            return false;
-        }
-    }
+        return this.service.update(
+            { polygon: JSON.stringify(polygon) }, 
+            { where: { areaName } }
+        );
+    }, areaUpdate);
 
     /**
      * The method deletes area with provided primary key(areaName)
@@ -110,19 +72,7 @@ export default class AreaService {
      * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
-        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
-            console.error('ClientDAO delete: Wrong parameter provided');
-            return false;
-        }
-
-        try {
-            const resp = await Area.destroy({ where: { areaName: primaryKey } });
-            return resp > 0;
-        } catch (e) {
-            console.error('AreaDAO: Could not execute the query');
-            console.log(e);
-            return false;
-        }
+        return this.service.deleteById(primaryKey, areaName);
     }
 
     async deleteAllCityCenters() {
