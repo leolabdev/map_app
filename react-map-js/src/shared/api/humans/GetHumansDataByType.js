@@ -1,7 +1,6 @@
-// library witch helps us with calls
 import axios from 'axios';
+import {envHelper} from "../../helpers/envHelper";
 
-// async function for getting the Clients/Manufacturers' data .
 /**
  * Retrieves data from a specified endpoint based on the humansType.
  * @async
@@ -9,15 +8,11 @@ import axios from 'axios';
  * @returns {Promise<Array>} - A promise that resolves to an array of human data.
  */
 export const getHumansDataByType = async (humansType) => {
-
     try {
-        const data = await axios.get(`http://localhost:8081/dao/${humansType}`, {});
+        const data = await axios.get(`${envHelper.apiLink}/dao/${humansType}`);
         return data.data.result;
-
     }
     catch (error) {
-        console.log(error)
-
+        console.error(error);
     }
-
-}
+};

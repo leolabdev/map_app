@@ -2,6 +2,7 @@ import { AppBar, Toolbar, Typography} from '@material-ui/core';
 import { Link } from 'react-router-dom'
 
 import useStyles from './styles'
+import {RoutePaths} from "../../../shared/router/RoutePaths";
 
 
 const Navbar = () => {
@@ -17,9 +18,9 @@ const Navbar = () => {
                 </Typography>
 
                 <Typography variant="h5" className={classes.navMenu}>
-                    <span> <Link className={classes.navItem} to="/registration">Registration</Link></span>
-                    <span> <Link className={classes.navItem} to="/">Map</Link></span>
-                    <span><Link className={classes.navItem} to="/about">About</Link></span>
+                    <span> <Link className={classes.navItem} to={RoutePaths.registration}>Registration</Link></span>
+                    <span> <Link className={classes.navItem} to={RoutePaths.home}>Map</Link></span>
+                    <span><Link className={classes.navItem} to={RoutePaths.about}>About</Link></span>
                 </Typography>
             </Toolbar>
         </AppBar>
