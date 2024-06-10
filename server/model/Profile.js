@@ -11,7 +11,7 @@ const options = {
 };
 
 /**
- * This class represents row of the Client SQL table.
+ * This class represents row of the Profile SQL table.
  * Used by the Sequalize ORM for communicating between Client SQL table and this software.
  */
 export default class Profile extends Model {}
