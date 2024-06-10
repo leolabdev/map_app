@@ -13,7 +13,7 @@ export const addressCreate = {
 
 export const addressUpdate = {
     schema: Joi.object({
-        id: Joi.number().required(),
+        addressId: Joi.number().required(),
         city: Joi.string(),
         street: Joi.string(),
         building: Joi.string(),    

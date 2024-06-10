@@ -8,7 +8,7 @@ export const profileCreate = {
 };
 
 export const profileId = {
-    schema: Joi.string().required(),
+    schema: Joi.number().required(),
     field: 'id'
 } 
 
