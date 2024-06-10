@@ -43,7 +43,7 @@ export default class TMSService {
     /**
      * The method reads TMS(traffic measurement station) with provided primary key(stationId)
      * @param {int} primaryKey primary key of the TMS
-     * @returns founded Order object, if operation was sucessful or null if not
+     * @returns founded Order object, if operation was successful or null if not
      */
     async read(primaryKey) {
         if(primaryKey == null){
@@ -87,7 +87,7 @@ export default class TMSService {
 
     /**
      * The method reads all TMSs(traffic measurement stations) of the TMS SQL table
-     * @returns array of the founded TMS objects, if operation was sucessful or null if not
+     * @returns array of the founded TMS objects, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -103,7 +103,7 @@ export default class TMSService {
     /**
      * The method deletes TMS(traffic measurement station) with provided primary key(stationId)
      * @param {int} primaryKey primary key of the order
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
         if(primaryKey == null){

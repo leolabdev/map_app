@@ -15,7 +15,7 @@ const daoUtil = new DaoUtil();
 export default class ManufacturerService {
     /**
      * The method creates new Manufacturer in the Manufacturer SQL table
-     * @param {Manufacturer} data object with the manufacturer data, where manufacturerUsername field is manditory
+     * @param {Manufacturer} data object with the manufacturer data, where manufacturerUsername field is mandatory
      * @returns created Manufacturer object, if operation was successful or null if not
      */
     async create(data) {

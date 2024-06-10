@@ -11,10 +11,15 @@ const daoUtil = new DaoUtil();
  * This table contains addresses data such as city, street, building number, flat and coordinates(lon, lat)
  */
 export default class AddressService {
+    constructor() {
+        this.extractor = DEFactory.create();
+        this.service = new BasicService(Address, 'AddressService');
+    }
+
     /**
      * The method creates new address in the Address SQL table
-     * @param {Object} data object with the address data, where city, street, building, lon, lat fields are manditory
-     * @returns created Address object, if operation was sucessful or null if not
+     * @param {Object} data object with the address data, where city, street, building, lon, lat fields are mandatory
+     * @returns created Address object, if operation was successful or null if not
      */
     async create(data) {
         const { city, street, building, lon, lat } = data;
@@ -35,7 +40,7 @@ export default class AddressService {
     /**
      * The method reads Address with provided primary key(addressId)
      * @param {int} primaryKey primary key of the address
-     * @returns founded Address object, if operation was sucessful or null if not
+     * @returns founded Address object, if operation was successful or null if not
      */
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
@@ -55,7 +60,7 @@ export default class AddressService {
 
     /**
      * The method reads all Address of the Address SQL table
-     * @returns founded Addresses objects array, if operation was sucessful or null if not
+     * @returns founded Addresses objects array, if operation was successful or null if not
      */
     async readAll() {
         try {
@@ -71,7 +76,7 @@ export default class AddressService {
     /**
      * The method updates existing address data in the Address SQL table
      * @param {Object} data object with the address data, such as city, street, building, flat, lon, lat
-     * @returns updated Address object, if operation was sucessful or null if not
+     * @returns updated Address object, if operation was successful or null if not
      */
     async update(data) {
         const { addressId, city, street, building } = data;
@@ -96,7 +101,7 @@ export default class AddressService {
     /**
      * The method deletes Address with provided primary key(addressId)
      * @param {int} primaryKey primary key of the address
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
@@ -117,7 +122,7 @@ export default class AddressService {
     /**
      * The method searches for all Address with provided fields
      * @param {Object} options object, which contains searching parameters, such as city, street, building, flat, lon, lat
-     * @returns founded Address objects array, if operation was sucessful or null if not
+     * @returns founded Address objects array, if operation was successful or null if not
      */
     async search(options) {
         if (options != null) {

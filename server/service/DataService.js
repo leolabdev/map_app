@@ -23,9 +23,6 @@ export default class DataService {
             return null;
         }
         try {
-            if(name == null)
-                return null;
-
             return await Data.create(data);
         } catch (e) {
             console.error("DataDAO create: Could not execute the query");

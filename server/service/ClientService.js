@@ -15,8 +15,8 @@ const daoUtil = new DaoUtil();
 export default class ClientService {
     /**
      * The method creates new client in the Client SQL table
-     * @param {Client} data object with the client data, where clientUsername field is manditory
-     * @returns created Client object, if operation was sucessful or null if not
+     * @param {Client} data object with the client data, where clientUsername field is mandatory
+     * @returns created Client object, if operation was successful or null if not
      */
     async create(data) {
         const { clientUsername, name } = data;
@@ -36,7 +36,7 @@ export default class ClientService {
     /**
      * The method reads Client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
-     * @returns founded Client object, if operation was sucessful or null if not
+     * @returns founded Client object, if operation was successful or null if not
      */
     async read(primaryKey) {
         if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
@@ -91,7 +91,7 @@ export default class ClientService {
             return resp[0] > 0;
         } catch (e) {
             console.error("ClientDAO update: Could not execute the query");
-            console.log(e);
+            console.error(e);
             return false;
         }
     }

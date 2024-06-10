@@ -11,7 +11,7 @@ const daoUtil = new DaoUtil();
 export default class OrderDataService {
     /**
      * The method creates new Order in the OrderData SQL table
-     * @param {OrderData} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are manditory
+     * @param {OrderData} data object with the order data, where manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId fields are mandatory
      * @returns created Order object, if operation was successful or null if not
      */
     async create(data) {
@@ -56,7 +56,7 @@ export default class OrderDataService {
     /**
      * The method reads Order with provided primary keys(orderId)
      * @param {int[]} primaryKeys array with primary keys of the orders
-     * @returns array with founded Order objects, if operation was sucessful or null if not
+     * @returns array with founded Order objects, if operation was successful or null if not
      */
     async readByIds(primaryKeys) {
         if(!primaryKeys || primaryKeys.length === 0){

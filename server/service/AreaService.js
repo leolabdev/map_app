@@ -14,8 +14,8 @@ const daoUtil = new DaoUtil();
 export default class AreaService {
     /**
      * The method creates new area in the Area SQL table
-     * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are manditory
-     * @returns created Area object, if operation was sucessful or null if not
+     * @param {Object} data object with the area data, where areaName and type(polygon or multipolygon) fields are mandatory
+     * @returns created Area object, if operation was successful or null if not
      */
     async create(data) {
         const { areaName, polygon } = data;
@@ -39,7 +39,7 @@ export default class AreaService {
     /**
      * The method reads area with provided primary key(areaName)
      * @param {String} primaryKey primary key of the area
-     * @returns founded Area object, if operation was sucessful or null if not
+     * @returns founded Area object, if operation was successful or null if not
      */
     async read(primaryKey) {
         if(primaryKey == null){
