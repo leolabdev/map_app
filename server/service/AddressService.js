@@ -1,14 +1,8 @@
-import StringValidator from "../util/StringValidator.js";
-import DaoUtil from "../util/DaoUtil.js";
 import Address from "../model/Address.js";
 import BasicService from "./BasicService.js";
 import { addressCreate, addressSearch, addressUpdate } from "./validation/address.js";
 import { idField } from "./validation/idField.js";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
-
-
-const stringValidator = new StringValidator();
-const daoUtil = new DaoUtil();
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Address SQL table.
@@ -22,7 +16,7 @@ export default class AddressService {
 
     /**
      * The method creates new address in the Address SQL table
-     * @param {Object} data object with the address data, where city, street, building, lon, lat fields are mandatory
+     * @param {{}} data object with the address data, where city, street, building, lon, lat fields are mandatory
      * @returns created Address object, if operation was successful or null if not
      */
     async create(data) {
@@ -48,16 +42,16 @@ export default class AddressService {
 
     /**
      * The method updates existing address data in the Address SQL table
-     * @param {Object} data object with the address data, such as city, street, building, flat, lon, lat
+     * @param {{}} data object with the address data, such as city, street, building, flat, lon, lat
      * @returns updated Address object, if operation was successful or null if not
      */
     async update(data) {
-        return this.service.update(data, { where: { addressId: addressId } }, addressUpdate);
+        return this.service.update(data, addressUpdate, { where: { addressId: data.addressId } });
     }
 
     /**
      * The method deletes Address with provided primary key(addressId)
-     * @param {int} primaryKey primary key of the address
+     * @param {number} primaryKey primary key of the address
      * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
@@ -66,7 +60,14 @@ export default class AddressService {
 
     /**
      * The method searches for all Address with provided fields
-     * @param {Object} options object, which contains searching parameters, such as city, street, building, flat, lon, lat
+     * @param {{
+        city: string | undefined,
+        street: string | undefined,
+        building: string | undefined,
+        flat: number | undefined,
+        lon: number | undefined,
+        lat: number | undefined
+     }} options object, which contains searching parameters
      * @returns founded Address objects array, if operation was successful or null if not
      */
     async search(options) {

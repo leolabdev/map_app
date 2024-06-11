@@ -4,6 +4,22 @@ import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/da
 import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
 import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
+
+
+/**
+ * @template T
+ * @typedef {Object} ServiceMethod
+ * @property {function(any, ServiceValidation=, T=): Promise<any> | Promise<ServiceError>} method - The service method.
+ */
+
+/**
+     * Create new object
+     * @param {any} newObject 
+     * @param {ServiceValidation=} validation 
+     * @param {CreateOptions=} options
+     *
+     * @returns {Promise<any> | Promise<ServiceError>}
+     */
 export default class BasicService{
     /**
      * 
@@ -16,13 +32,10 @@ export default class BasicService{
         this.serviceName = serviceName ?? 'BasicService';
     }
 
+    
     /**
      * Create new object
-     * @param {any} newObject 
-     * @param {{schema: any, field: string | undefined}=} validation 
-     * @param {CreateOptions=} options
-     *
-     * @returns {Promise<any> | Promise<ServiceError>}
+     * @type {ServiceMethod<CreateOptions>}
      */
     create = async (newObject, validation, options={}) => {
         return validateInput(async () => {
@@ -58,7 +71,7 @@ export default class BasicService{
 
     /**
      * Read object by id
-     * @param {FindOptions<any>=} search query
+     * @param {FindOptions<any>} search query
      * @param {{schema: any, field: string | undefined}=} validation 
      *
      * @returns {Promise<any> | Promise<ServiceError>}

@@ -50,6 +50,13 @@ export default class ProfileService {
         }
     }, profileCreate);
 
+    /**
+    * Authenticates a user with the provided credentials.
+    * @type {
+      (credentials: {username: string, password: string}) => 
+      Promise<{token: string, username: string, password: string} | null>
+    }
+    */
     authenticate = validateInput(async (credentials) =>{
         const secret = 'your_secret_key';
         const jwt_expires = '12h';

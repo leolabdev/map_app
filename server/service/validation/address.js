@@ -25,11 +25,13 @@ export const addressUpdate = {
 
 export const addressSearch = {
     schema: Joi.object({
-        city: Joi.string(),
-        street: Joi.string(),
-        building: Joi.string(),    
-        flat: Joi.number(),
-        lon: Joi.number(),
-        lat: Joi.number()
+        where: Joi.object({
+            city: Joi.string(),
+            street: Joi.string(),
+            building: Joi.string(),    
+            flat: Joi.number(),
+            lon: Joi.number(),
+            lat: Joi.number()
+        })       
     })
 };

@@ -3,10 +3,19 @@ import {ServiceError} from "./dataExtractors/error/ServiceError.js";
 import {SEReason} from "./dataExtractors/error/SEReason.js";
 import Joi from "joi";
 
+/**
+ * A higher-order function that validates the first parameter of the wrapped function
+ * using the provided Joi schema.
+ *
+ * @param {Function} fn The function to wrap and validate.
+ * @param {{schema: Joi.Schema, field: string | undefined}} validationSchema An object containing the Joi schema and field name.
+ *
+ * @returns {Function} A new function that performs validation before executing the original function.
+ */
 export function validateInput(fn, validationSchema) {
-    return async function (request, options){
+    return async function (request, ...params){
         if(!validationSchema)
-            return fn(request);
+            return fn(request, ...params);
 
         const {schema, field} = validationSchema;
         try {
@@ -16,7 +25,7 @@ export function validateInput(fn, validationSchema) {
                 throw new ServiceError({
                     reason: SEReason.MISCONFIGURED
                 });
-            return fn(request, options);
+            return fn(request, ...params);
         } catch (e) {
             if(e.type === SERVICE_ERROR_TYPE_NAME.description)
                 return e;

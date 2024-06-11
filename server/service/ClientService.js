@@ -5,6 +5,7 @@ import Client from "../model/Client.js";
 import OrderData from "../model/OrderData.js";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
+import { clientCreate } from "./validation/client.js";
 
 
 const stringValidator = new StringValidator();
@@ -26,18 +27,7 @@ export default class ClientService {
      * @returns created Client object, if operation was successful or null if not
      */
     async create(data) {
-        const { clientUsername, name } = data;
-
-        if(!daoUtil.containNoNullArr([clientUsername]) || !daoUtil.containNoBlankArr([clientUsername])){
-            console.error("ClientDAO: Wrong parameter provided");
-            return null;
-        }
-        try {
-            return await Client.create({clientUsername, name});
-        } catch (e) {
-            console.error("ClientDAO create: Could not execute the query");
-            return null;
-        }
+        return this.service.create(data, clientCreate);
     }
 
     /**
