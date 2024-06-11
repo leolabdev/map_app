@@ -1,4 +1,4 @@
-import {Model} from "sequelize";
+import {Model, CreateOptions, FindOptions, UpdateOptions, DestroyOptions} from "sequelize";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
@@ -19,12 +19,15 @@ export default class BasicService{
     /**
      * Create new object
      * @param {any} newObject 
-     * @param {{schema: any, field: string | undefined}} validation 
+     * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {CreateOptions=} options
+     *
+     * @returns {Promise<any> | Promise<ServiceError>}
      */
-    create = async (newObject, validation) => {
+    create = async (newObject, validation, options={}) => {
         return validateInput(async () => {
             try {    
-                const resp = await this.model.create(newObject);
+                const resp = await this.model.create(newObject, options);
                 return this.extractor.extract(resp);
             } catch (e) {
                 console.error(`${this.serviceName} create(): Could not execute the query`, e);
@@ -36,15 +39,18 @@ export default class BasicService{
     /**
      * Read object by id
      * @param {number | string} primaryKey 
-     * @param {{schema: any, field: string | undefined}} validation 
+     * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {Omit<FindOptions<any>, "where">=} options 
+     *
+     * @returns {Promise<any> | Promise<ServiceError>}
      */
-    readOneById = async (primaryKey, validation) => {
+    readOneById = async (primaryKey, validation, options={}) => {
         return validateInput(async () => {
             try {
-                const resp = await this.model.findByPk(primaryKey);
+                const resp = await this.model.findByPk(primaryKey, options);
                 return this.extractor.extract(resp);
             } catch(e) {
-                console.error(`${this.serviceName} read(): Could not execute the query`, e);
+                console.error(`${this.serviceName} readOneById(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
         }, validation)();
@@ -52,8 +58,10 @@ export default class BasicService{
 
     /**
      * Read object by id
-     * @param {{where: any}} search query
-     * @param {{schema: any, field: string | undefined}} validation 
+     * @param {FindOptions<any>=} search query
+     * @param {{schema: any, field: string | undefined}=} validation 
+     *
+     * @returns {Promise<any> | Promise<ServiceError>}
      */
     searchOne = async (search, validation) => {
         return validateInput(async () => {
@@ -61,7 +69,7 @@ export default class BasicService{
                 const resp = await this.model.findOne(search);
                 return this.extractor.extract(resp);
             } catch(e) {
-                console.error(`${this.serviceName} read(): Could not execute the query`, e);
+                console.error(`${this.serviceName} searchOne(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
         }, validation)();
@@ -70,7 +78,9 @@ export default class BasicService{
 
     /**
      * Read all objects
-     * @param {{}=} options
+     * @param {FindOptions<any>=} options
+     *
+     * @returns {Promise<any[]> | Promise<ServiceError>} 
      */
     async readAll(options={}) {
         try {
@@ -85,13 +95,15 @@ export default class BasicService{
     /**
      * Update existing object
      * @param {any} objectToUpdate 
-     * @param {{}} search 
      * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {UpdateOptions=} options 
+     *
+     * @returns {Promise<boolean> | Promise<ServiceError>}
      */
-    update = async (objectToUpdate, search, validation) => {
+    async update (objectToUpdate, validation, options={}) {
         return validateInput(async () => {
             try{
-                const resp = await this.model.update(objectToUpdate, search);
+                const resp = await this.model.update(objectToUpdate, options);
                 return resp[0] > 0;
             } catch (e){
                 console.error(`${this.serviceName} update(): Could not execute the query`, e);
@@ -103,15 +115,18 @@ export default class BasicService{
     /**
      * Delete object by id
      * @param {number | string} primaryKey 
-     * @param {{schema: any, field: string | undefined}} validation 
+     * @param {{schema: any, field: string | undefined}=} validation
+     * @param {DestroyOptions=} options
+     *
+     * @returns {Promise<boolean> | Promise<ServiceError>}
      */
-    deleteById = async (primaryKey, validation) => {
+    async deleteById(primaryKey, validation, options={}) {
         return validateInput(async () => {
             try {
-                const resp = await this.model.destroy({ where: { id: primaryKey } });
+                const resp = await this.model.destroy({ ...options, where: { id: primaryKey } });
                 return resp > 0;
             } catch (e) {
-                console.error(`${this.serviceName} delete(): Could not execute the query`, e);
+                console.error(`${this.serviceName} deleteById(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
         }, validation)();
