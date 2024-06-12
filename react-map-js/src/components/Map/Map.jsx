@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, useMap } from 'react-leaflet'
 import useStyles from './styles';
 import MyModal from "../UI/Modal/MyModal"
@@ -6,8 +6,8 @@ import MyButton from "../UI/button/MyButton";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import ShowRouteForm from "../ShowRouteForm/ShowRouteForm";
-import secToHours from "../../functions/secToHours";
-import getMarkerIcon from "../../functions/getMarkerIcon";
+import getMarkerIcon from "../../shared/lib/getMarkerIcon";
+import secToHours from "../../shared/lib/secToHours";
 
 
 function Map({

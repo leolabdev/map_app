@@ -1,6 +1,4 @@
-import React, { useState ,useEffect} from 'react'
-import { getHumansData } from '../../api/humans/GetHumansData'
-import { postNewHuman } from '../../api/humans/PostNewHuman';
+import { useState ,useEffect} from 'react'
 import {
     CircularProgress,
     InputLabel,
@@ -16,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import MyButton from '../UI/button/MyButton';
 import HumanList from "./HumanList";
 import classes from './Registration.module.css';
+import {Api} from "../../shared/api";
 
 /**
  * Registration element for Registration page shows form and list of humans
@@ -40,7 +39,7 @@ const Registration = () => {
      */
     useEffect(() => {
         setIsLoading(true)
-        getHumansData(userType)
+        Api.humans.getDataByType(userType)
             .then((data) => {
                 setHumans(data)
                 setIsLoading(false)
@@ -57,7 +56,8 @@ const Registration = () => {
         const newPost = {
             ...humanPost
         }
-        postNewHuman(humansType, newPost)
+
+        Api.humans.postNew(humansType, newPost)
 
         // console.log("humans:", humans)
         // console.log("post:", newPost)

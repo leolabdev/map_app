@@ -1,18 +1,14 @@
-import React from 'react'
-import { BrowserRouter, Outlet } from 'react-router-dom';
-import AppRouter from './components/AppRouter/AppRouter';
+import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/UI/Navbar/Navbar';
 import './App.css'
 import { CssBaseline } from '@material-ui/core';
+import AppRouter from "./shared/router/AppRouter";
 
 const App = () => {
-
     return (
-
         <BrowserRouter>
             <CssBaseline />
             <Navbar />
-            <Outlet />
             <AppRouter />
         </BrowserRouter>
     )

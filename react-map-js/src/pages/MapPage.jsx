@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Marker, Popup, useMapEvents } from 'react-leaflet'
 import Map from "../components/Map/Map";
 import List from "../components/List/List";

@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import ListItem from "./ListItem";
-import {getHumansData} from "../../api/humans/GetHumansData";
-import {deleteHumanByUserName} from "../../api/humans/DeleteHumanByUserName";
+import {Api} from "../../shared/api";
 
 /**
  * HumanList list ListItems and provides private remove function to ListItem for
@@ -18,7 +17,7 @@ function HumanList(props) {
      * Updates when update switches state and gets humans from database
      */
     useEffect(() => {
-        getHumansData(props.type)
+        Api.humans.getDataByType(props.type)
             .then((data) => {
                 setHumans(data);
             })
@@ -30,7 +29,7 @@ function HumanList(props) {
      * @param username which human to be deleted
      */
     function removeHuman(username){
-        deleteHumanByUserName(props.type, username).then(()=> {
+        Api.humans.deleteByTypeAndUsername(props.type, username).then(()=> {
             setUpdate(true);
         });
     }

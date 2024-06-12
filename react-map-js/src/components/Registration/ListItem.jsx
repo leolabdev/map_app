@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useState} from "react";
 import classes from "./ListItem.module.css";
 import MyModal from "../UI/Modal/MyModal";
 

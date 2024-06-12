@@ -1,8 +1,14 @@
 import axios from 'axios';
+import {envHelper} from "../../helpers/envHelper";
 
-// async function for posting a new Order.
+/**
+ * Async function to post a new order.
+ *
+ * @param {Object} post - The data of new order to be posted.
+ * @returns {Promise} - A promise that resolves to the result of the post operation.
+ * @throws {Error} - if the post operation fails.
+ */
 export const postNewOrder = async (post) => {
-
     try {
         const request = {
             manufacturerUsername: post.manufacturerUsername,
@@ -11,14 +17,14 @@ export const postNewOrder = async (post) => {
             deliveryAddressId: post.deliveryAddressId
         };
 
-        const resp = await axios.post(`http://localhost:8081/dao/order`, {
+        const resp = await axios.post(`${envHelper.apiLink}/dao/order`, {
             ...request
         });
         return resp.data;
 
     } catch (error) {
-        console.log(error)
+        console.error(error);
     }
-}
+};
 
 
