@@ -8,7 +8,7 @@ import Joi from "joi";
  * using the provided Joi schema.
  *
  * @param {Function} fn The function to wrap and validate.
- * @param {{schema: Joi.Schema, field: string | undefined}} validationSchema An object containing the Joi schema and field name.
+ * @param {ServiceValidation=} validationSchema for the first function parameter
  *
  * @returns {Function} A new function that performs validation before executing the original function.
  */

@@ -5,21 +5,6 @@ import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/v
 import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 
-
-/**
- * @template T
- * @typedef {Object} ServiceMethod
- * @property {function(any, ServiceValidation=, T=): Promise<any> | Promise<ServiceError>} method - The service method.
- */
-
-/**
-     * Create new object
-     * @param {any} newObject 
-     * @param {ServiceValidation=} validation 
-     * @param {CreateOptions=} options
-     *
-     * @returns {Promise<any> | Promise<ServiceError>}
-     */
 export default class BasicService{
     /**
      * 
@@ -32,10 +17,13 @@ export default class BasicService{
         this.serviceName = serviceName ?? 'BasicService';
     }
 
-    
     /**
      * Create new object
-     * @type {ServiceMethod<CreateOptions>}
+     * @param {any} newObject 
+     * @param {ServiceValidation=} validation 
+     * @param {CreateOptions=} options
+     *
+     * @returns {Promise<any> | Promise<ServiceError>}
      */
     create = async (newObject, validation, options={}) => {
         return validateInput(async () => {
@@ -52,7 +40,7 @@ export default class BasicService{
     /**
      * Read object by id
      * @param {number | string} primaryKey 
-     * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {ServiceValidation=} validation 
      * @param {Omit<FindOptions<any>, "where">=} options 
      *
      * @returns {Promise<any> | Promise<ServiceError>}
@@ -72,7 +60,7 @@ export default class BasicService{
     /**
      * Read object by id
      * @param {FindOptions<any>} search query
-     * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {ServiceValidation=} validation  
      *
      * @returns {Promise<any> | Promise<ServiceError>}
      */
@@ -108,7 +96,7 @@ export default class BasicService{
     /**
      * Update existing object
      * @param {any} objectToUpdate 
-     * @param {{schema: any, field: string | undefined}=} validation 
+     * @param {ServiceValidation=} validation  
      * @param {UpdateOptions=} options 
      *
      * @returns {Promise<boolean> | Promise<ServiceError>}
@@ -128,7 +116,7 @@ export default class BasicService{
     /**
      * Delete object by id
      * @param {number | string} primaryKey 
-     * @param {{schema: any, field: string | undefined}=} validation
+     * @param {ServiceValidation=} validation 
      * @param {DestroyOptions=} options
      *
      * @returns {Promise<boolean> | Promise<ServiceError>}
