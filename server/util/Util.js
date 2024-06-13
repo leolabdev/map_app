@@ -1,10 +1,10 @@
-import TMSDAO from "../DAO/TMSDAO.js";
+import TMSService from "../service/TMSService.js";
 import axios from "axios";
-import DataDAO from "../DAO/DataDAO.js";
+import DataService from "../service/DataService.js";
 
 
-const tmsDAO = new TMSDAO();
-const dataDAO = new DataDAO();
+const tmsDAO = new TMSService();
+const dataDAO = new DataService();
 const host = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 8081;
 

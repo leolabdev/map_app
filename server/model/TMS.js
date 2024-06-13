@@ -24,16 +24,6 @@ TMS.init({
         primaryKey: true
     },
 
-    sensor1Id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-
-    sensor2Id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-
     lon: {
         type: DataTypes.DOUBLE,
         allowNull: false
@@ -41,6 +31,11 @@ TMS.init({
 
     lat: {
         type: DataTypes.DOUBLE,
+        allowNull: false
+    },
+
+    polygonCoordinates: {
+        type: DataTypes.TEXT,
         allowNull: false
     }
 }, options);
