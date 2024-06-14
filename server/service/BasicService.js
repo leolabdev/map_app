@@ -1,4 +1,4 @@
-import {Model, CreateOptions, FindOptions, UpdateOptions, DestroyOptions} from "sequelize";
+import {Model} from "sequelize";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
@@ -21,27 +21,27 @@ export default class BasicService{
      * Create new object
      * @param {any} newObject 
      * @param {ServiceValidation=} validation 
-     * @param {CreateOptions=} options
+     * @param {sequelize.CreateOptions=} options
      *
      * @returns {Promise<any> | Promise<ServiceError>}
      */
     create = async (newObject, validation, options={}) => {
         return validateInput(async () => {
-            try {    
+            try {
                 const resp = await this.model.create(newObject, options);
                 return this.extractor.extract(resp);
             } catch (e) {
                 console.error(`${this.serviceName} create(): Could not execute the query`, e);
                 return new ServiceError({ reason: SEReason.UNEXPECTED, additional: e });
             }
-        }, validation)();
+        }, validation)(newObject, options);
     }
 
     /**
      * Read object by id
      * @param {number | string} primaryKey 
      * @param {ServiceValidation=} validation 
-     * @param {Omit<FindOptions<any>, "where">=} options 
+     * @param {Omit<sequelize.FindOptions<any>, "where">=} options 
      *
      * @returns {Promise<any> | Promise<ServiceError>}
      */
@@ -54,12 +54,12 @@ export default class BasicService{
                 console.error(`${this.serviceName} readOneById(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
-        }, validation)();
+        }, validation)(primaryKey, options);
     }
 
     /**
      * Read object by id
-     * @param {FindOptions<any>} search query
+     * @param {sequelize.FindOptions<any>} search query
      * @param {ServiceValidation=} validation  
      *
      * @returns {Promise<any> | Promise<ServiceError>}
@@ -73,13 +73,13 @@ export default class BasicService{
                 console.error(`${this.serviceName} searchOne(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
-        }, validation)();
+        }, validation)(search);
     }
 
 
     /**
      * Read all objects
-     * @param {FindOptions<any>=} options
+     * @param {sequelize.FindOptions<any>=} options
      *
      * @returns {Promise<any[]> | Promise<ServiceError>} 
      */
@@ -97,7 +97,7 @@ export default class BasicService{
      * Update existing object
      * @param {any} objectToUpdate 
      * @param {ServiceValidation=} validation  
-     * @param {UpdateOptions=} options 
+     * @param {sequelize.UpdateOptions=} options 
      *
      * @returns {Promise<boolean> | Promise<ServiceError>}
      */
@@ -110,14 +110,14 @@ export default class BasicService{
                 console.error(`${this.serviceName} update(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
-        }, validation)();
+        }, validation)(objectToUpdate, options);
     }
 
     /**
      * Delete object by id
      * @param {number | string} primaryKey 
      * @param {ServiceValidation=} validation 
-     * @param {DestroyOptions=} options
+     * @param {sequelize.DestroyOptions=} options
      *
      * @returns {Promise<boolean> | Promise<ServiceError>}
      */
@@ -130,6 +130,6 @@ export default class BasicService{
                 console.error(`${this.serviceName} deleteById(): Could not execute the query`, e);
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
-        }, validation)();
+        }, validation)(primaryKey, options);
     } 
 }

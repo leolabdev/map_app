@@ -19,12 +19,19 @@ export function validateInput(fn, validationSchema) {
 
         const {schema, field} = validationSchema;
         try {
+            if(!request)
+                throw new ServiceError({
+                    reason: SEReason.REQUIRED,
+                    message: 'validateInput(): request object is not defined'
+                });
+
             if(Joi.isSchema(schema)) 
                 await schema.validateAsync(request, {abortEarly: false});
             else
                 throw new ServiceError({
                     reason: SEReason.MISCONFIGURED
                 });
+                
             return fn(request, ...params);
         } catch (e) {
             if(e.type === SERVICE_ERROR_TYPE_NAME.description)
@@ -57,7 +64,13 @@ function determineErrorReason(joiErrorDetails) {
     switch (joiErrorDetails.type) {
         case 'string.base':
             return SEReason.NOT_STRING;
+        case 'number.base':
+            return SEReason.NOT_NUMBER;
+        case 'boolean.base':
+            return SEReason.NOT_BOOLEAN;
         case 'any.required':
+            return SEReason.REQUIRED;
+        case 'notNull Violation':
             return SEReason.REQUIRED;
         default:
             return null;
