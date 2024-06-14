@@ -77,8 +77,11 @@ const settingsUtil = new SettingsUtil(
 app.listen(port, async() => {
     if (SequelizeUtil.isSequelizeConnected()) {
         console.log(`Server started on port ${port} // http://${host}:${port}/`);
-        //TODO: Bug on the first start. This line need to be executed after DB was initialized
-       await settingsUtil.setUp();
+        
+        setTimeout(() => {
+            //TODO: Bug on the first start. This line need to be executed after DB was initialized
+            settingsUtil.setUp();
+        }, 5000);
 
         //TODO: fix later
         setInterval(async () => {
