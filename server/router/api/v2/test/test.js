@@ -7,6 +7,10 @@ import {RouteBuilder} from "./routeBuilder/RouteBuilder.js";
 import {Method} from "./routeBuilder/core/enums/Method.js";
 import {Resource} from "./routeBuilder/rules/authorization/Resource.js";
 import {ErrorLocation} from "./routeBuilder/core/error/ErrorLocation.js";
+import AddressService from "../../../../service/AddressService.js";
+import isRespServiceError from "./routeBuilder/core/service/validateInput.js";
+import throwAPIError from "./routeBuilder/core/error/throwAPIError.js";
+import ClientService from "../../../../service/ClientService.js";
 
 const router = express.Router();
 
@@ -35,6 +39,16 @@ async function testRead(req, res) {
     return true;
 }
 
-//router.post('/', serializeReq(ClientReq), validate(client), addController(clientController), serializeRes(ClientRes));
+const service = new AddressService();
+
+new RouteBuilder('/test/:id', Method.POST).addController(t).attachToRouter(router);
+
+async function t(req, res) {
+    const resp = await service.delete(req.params.id);
+    if(isRespServiceError(resp))
+        return throwAPIError(resp, null, ErrorLocation.PARAM);
+
+    return resp;
+}
 
 export default router;
