@@ -46,7 +46,7 @@ export default class AddressService {
      * @returns updated Address object, if operation was successful or null if not
      */
     async update(data) {
-        return this.service.update(data, addressUpdate, { where: { addressId: data.addressId } });
+        return this.service.update(data, addressUpdate, { where: { id: data.id } });
     }
 
     /**

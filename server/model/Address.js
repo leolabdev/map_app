@@ -20,7 +20,7 @@ const options = {
 export default class Address extends Model {}
 
 Address.init({
-    addressId: {
+    id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
@@ -62,4 +62,4 @@ Address.hasOne(Client, { foreignKey: 'addressId' });
 Address.hasOne(Manufacturer, { foreignKey: 'addressId' });
 
 Client.belongsTo(Address, { foreignKey: 'addressId' });
-Manufacturer.belongsTo(Address, { foreignKey: 'addressId' });
+Manufacturer.belongsTo(Address, { foreignKey: 'addressId' })

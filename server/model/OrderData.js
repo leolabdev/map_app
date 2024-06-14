@@ -20,7 +20,7 @@ const options = {
 export default class OrderData extends Model {}
 
 OrderData.init({
-    orderId: {
+    id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,

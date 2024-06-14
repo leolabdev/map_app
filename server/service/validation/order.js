@@ -16,7 +16,7 @@ export const orderIds = {
 
 export const orderUpdate = {
     schema: Joi.object({
-        orderId: Joi.number().required(),
+        id: Joi.number().required(),
         manufacturerUsername: Joi.string(),
         clientUsername: Joi.string(),
         shipmentAddressId: Joi.number(),
