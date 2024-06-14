@@ -40,7 +40,7 @@ export function convertServiceToAPIError(err) {
 
 function determineName(serviceReason) {
     const bad_req = [SEReason.NOT_UNIQUE];
-    const validation = [SEReason.REQUIRED, SEReason.NOT_VALID, SEReason.NOT_STRING, SEReason.NOT_NUMBER, SEReason.NOT_BOOLEAN];
+    const validation = [SEReason.REQUIRED, SEReason.NOT_ALLOWED, SEReason.NOT_VALID, SEReason.NOT_STRING, SEReason.NOT_NUMBER, SEReason.NOT_BOOLEAN];
 
     if(validation.includes(serviceReason))
         return ErrorName.VALIDATION;

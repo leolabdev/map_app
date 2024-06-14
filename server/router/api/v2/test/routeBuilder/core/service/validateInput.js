@@ -70,8 +70,8 @@ function determineErrorReason(joiErrorDetails) {
             return SEReason.NOT_BOOLEAN;
         case 'any.required':
             return SEReason.REQUIRED;
-        case 'notNull Violation':
-            return SEReason.REQUIRED;
+        case 'object.unknown':
+            return SEReason.NOT_ALLOWED;
         default:
             return null;
     }
