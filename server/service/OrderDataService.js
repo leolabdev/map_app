@@ -110,16 +110,16 @@ export default class OrderDataService {
      * @returns true, if the operation was successful or false if not
      */
     async update(data) {
-        const { orderId } = data;
+        const { id } = data;
 
-        if(orderId == null){
+        if(id == null){
             console.log("OrderDataDAO update: Wrong parameter provided");
             return false;
         }
 
         try {
             const resp = await OrderData.update(
-                data, { where: { orderId: orderId } }
+                data, { where: { id: id } }
             );
 
             return resp[0] > 0;
@@ -142,7 +142,7 @@ export default class OrderDataService {
         }
 
         try {
-            const resp = await OrderData.destroy({ where: { orderId: primaryKey } });
+            const resp = await OrderData.destroy({ where: { id: primaryKey } });
             return resp > 0;
         } catch (e) {
             console.log("OrderDataDAO delete: Could not execute the query");
