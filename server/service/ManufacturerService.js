@@ -8,6 +8,7 @@ import { SERVICE_ERROR_TYPE_NAME } from "../router/api/v2/test/routeBuilder/core
 import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import { idField } from "./validation/idField.js";
+import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Manufacturer SQL table.
