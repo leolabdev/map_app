@@ -1,4 +1,4 @@
-import {Model} from "sequelize";
+import sequelize, {Model} from "sequelize";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
@@ -19,11 +19,8 @@ export default class BasicService{
 
     /**
      * Create new object
-     * @param {any} newObject 
-     * @param {ServiceValidation=} validation 
-     * @param {sequelize.CreateOptions=} options
      *
-     * @returns {Promise<any> | Promise<ServiceError>}
+     * @type { (newObject: any, validation: ServiceValidation | undefined, options: sequelize.CreateOptions | undefined) => Promise<any> | Promise<ServiceError>}
      */
     create = async (newObject, validation, options={}) => {
         return validateInput(async () => {
@@ -37,13 +34,11 @@ export default class BasicService{
         }, validation)(newObject, options);
     }
 
+    
     /**
      * Read object by id
-     * @param {number | string} primaryKey 
-     * @param {ServiceValidation=} validation 
-     * @param {Omit<sequelize.FindOptions<any>, "where">=} options 
      *
-     * @returns {Promise<any> | Promise<ServiceError>}
+     * @type { (primaryKey: number | string, validation: ServiceValidation | undefined, options: Omit<sequelize.FindOptions<any>, "where"> | undefined) => Promise<any> | Promise<ServiceError>}
      */
     readOneById = async (primaryKey, validation, options={}) => {
         return validateInput(async () => {
@@ -57,12 +52,11 @@ export default class BasicService{
         }, validation)(primaryKey, options);
     }
 
+
     /**
-     * Read object by id
-     * @param {sequelize.FindOptions<any>} search query
-     * @param {ServiceValidation=} validation  
+     * Search for an object
      *
-     * @returns {Promise<any> | Promise<ServiceError>}
+     * @type { (search: sequelize.FindOptions<any>, validation: ServiceValidation | undefined) => Promise<any> | Promise<ServiceError>}
      */
     searchOne = async (search, validation) => {
         return validateInput(async () => {
@@ -79,27 +73,26 @@ export default class BasicService{
 
     /**
      * Read all objects
-     * @param {sequelize.FindOptions<any>=} options
      *
-     * @returns {Promise<any[]> | Promise<ServiceError>} 
+     * @type { (options: sequelize.FindOptions<any>, validation: ServiceValidation | undefined) => Promise<any> | Promise<ServiceError>}
      */
-    async readAll(options={}) {
-        try {
-            const resp = await this.model.findAll(options);
-            return this.extractor.extract(resp);
-        } catch (e) {
-            console.error(`${this.serviceName} readAll(): Could not execute the query`, e);
-            return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
-        }
+    async readAll(options={}, validation) {    
+        return validateInput(async () => {
+            try {
+                const resp = await this.model.findAll(options);
+                return this.extractor.extract(resp);
+            } catch (e) {
+                console.error(`${this.serviceName} readAll(): Could not execute the query`, e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }, validation)(options);
     }
 
+    
     /**
-     * Update existing object
-     * @param {any} objectToUpdate 
-     * @param {ServiceValidation=} validation  
-     * @param {sequelize.UpdateOptions=} options 
+     * Update an object
      *
-     * @returns {Promise<boolean> | Promise<ServiceError>}
+     * @type { (objectToUpdate: any, validation: ServiceValidation | undefined, options: sequelize.UpdateOptions | undefined) => Promise<any> | Promise<ServiceError>}
      */
     async update (objectToUpdate, validation, options={}) {
         return validateInput(async () => {
@@ -114,12 +107,30 @@ export default class BasicService{
     }
 
     /**
-     * Delete object by id
-     * @param {number | string} primaryKey 
-     * @param {ServiceValidation=} validation 
-     * @param {sequelize.DestroyOptions=} options
+     * Update an object
      *
-     * @returns {Promise<boolean> | Promise<ServiceError>}
+     * @type { (objectToUpdate: Object, validation: ServiceValidation | undefined, options: sequelize.UpdateOptions | undefined) => Promise<any> | Promise<ServiceError>}
+     */
+    async updateById (objectToUpdate, validation, options={}) {
+        return validateInput(async () => {
+            try{
+                const resp = await this.model.update(
+                    objectToUpdate, 
+                    {...options, where: {id: objectToUpdate.id}
+                });
+                return resp[0] > 0;
+            } catch (e){
+                console.error(`${this.serviceName} update(): Could not execute the query`, e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }, validation)(objectToUpdate, options);
+    }
+
+
+    /**
+     * Delete object by id
+     *
+     * @type { (primaryKey: number | string, validation: ServiceValidation | undefined, options: sequelize.DestroyOptions | undefined) => Promise<any> | Promise<ServiceError>}
      */
     async deleteById(primaryKey, validation, options={}) {
         return validateInput(async () => {
@@ -132,4 +143,21 @@ export default class BasicService{
             }
         }, validation)(primaryKey, options);
     } 
+
+    /**
+     * Delete objects by condition
+     *
+     * @type { (condition: sequelize.DestroyOptions | undefined, validation: ServiceValidation | undefined) => Promise<any> | Promise<ServiceError>}
+     */
+    async deleteByCondition(condition, validation) {
+        return validateInput(async () => {
+            try {
+                const resp = await this.model.destroy(condition);
+                return resp > 0;
+            } catch (e) {
+                console.error(`${this.serviceName} deleteByCondition(): Could not execute the query`, e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }, validation)(condition, validation);
+    }
 }

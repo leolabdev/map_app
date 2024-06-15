@@ -1,4 +1,6 @@
 export const SEReason = Object.freeze({
+   NOT_FOUND: 'NOT_FOUND',
+
    REQUIRED: 'REQUIRED',
    NOT_ALLOWED: 'NOT_ALLOWED',
    NOT_UNIQUE: 'NOT_UNIQUE',

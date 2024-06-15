@@ -1,15 +1,14 @@
-import StringValidator from "../util/StringValidator.js";
-import DaoUtil from "../util/DaoUtil.js";
 import Address from "../model/Address.js";
 import Client from "../model/Client.js";
-import OrderData from "../model/OrderData.js";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
-import { clientCreate } from "./validation/client.js";
-
-
-const stringValidator = new StringValidator();
-const daoUtil = new DaoUtil();
+import { clientCreate, clientUpdate } from "./validation/client.js";
+import { idField } from "./validation/idField.js";
+import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SERVICE_ERROR_TYPE_NAME } from "../router/api/v2/test/routeBuilder/core/config.js";
+import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import OrderDataService from "./OrderDataService.js";
+import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
@@ -19,6 +18,7 @@ export default class ClientService {
     constructor() {
         this.extractor = DEFactory.create();
         this.service = new BasicService(Client, 'ClientService');
+        this.orderService = new OrderDataService();
     }
     
     /**
@@ -36,82 +36,60 @@ export default class ClientService {
      * @returns founded Client object, if operation was successful or null if not
      */
     async read(primaryKey) {
-        if (primaryKey != null && !stringValidator.isBlank(primaryKey)) {
-            try {
-                const resp = await Client.findByPk(primaryKey, { include: Address });
-                return resp != null ? resp.dataValues : null;
-            } catch (e) {
-                console.error("ClientDAO: Could not execute the query");
-                return null;
-            }
-        } else {
-            console.error("ClientDAO read: Wrong parameter provided");
-            return null;
-        }
+        return this.service.readOneById(primaryKey, idField, { include: Address });
     }
 
     /**
      * The method reads all Clients of the Client SQL table
-     * @returns array of the founded Client objects, if operation was sucessful or null if not
+     * @returns array of the founded Client objects, if operation was successful or null if not
      */
     async readAll() {
-        try {
-            const resp = await Client.findAll({ include: Address });
-            return daoUtil.getDataValues(resp);
-        } catch (e) {
-            console.error("ClientDAO readAll: Could not execute the query");
-            return false;
-        }
+        return this.service.readAll({include: Address });
     }
 
     /**
      * The method updates existing client data in the Client SQL table
      * @param {Client} data object with the client data, such as clientUsername or name
-     * @returns true, if the operation was sucessful or false if not
+     * @returns true, if the operation was successful or false if not
      */
-    async update(data) {
+     update = validateInput(async(data) => {
         const { addressIdDelete, ...client } = data;
+        if(addressIdDelete)
+            client.addressId = null;
 
-        if (!client || client.clientUsername == null || stringValidator.isBlank(client.clientUsername)) {
-            console.error("ClientDAO update: Wrong parameter provided");
-            return false;
-        }
+        if(!client.username)
+            return this.service.updateById(client);
 
         try {
-            if(addressIdDelete)
-                client.addressId = null;
+            const existingClient = this.service.searchOne({where: {username: client.username}});
+            const isServiceError = existingClient.type && existingClient.type === SERVICE_ERROR_TYPE_NAME.description;
 
-            const resp = await Client.update(
-                client, { where: { clientUsername: client.clientUsername } }
-            );
+            if(!isServiceError && existingClient.id !== client.id)
+                return new ServiceError({
+                    reason: SEReason.NOT_UNIQUE,
+                    field: 'username',
+                    message: 'The client with this username already exists'
+                });
 
-            return resp[0] > 0;
+                return this.service.updateById(client);
         } catch (e) {
-            console.error("ClientDAO update: Could not execute the query");
-            console.error(e);
-            return false;
+            console.error(`ClientService update(): Could not execute the query`, e);
+            return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
         }
-    }
+    }, clientUpdate);
 
     /**
      * The method deletes client with provided primary key(clientUsername)
      * @param {string} primaryKey primary key of the client
-     * @returns true if operation was sucessful or false if not
+     * @returns true if operation was successful or false if not
      */
-    async delete(primaryKey) {
-        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
-            console.error("ClientDAO delete: Wrong parameter provided");
-            return false;
-        }
-
-        try {
-            await OrderData.destroy({ where: { clientUsername: primaryKey } });
-            const resp = await Client.destroy({ where: { clientUsername: primaryKey } });
-            return resp > 0;
+    delete = validateInput(async (primaryKey) => {
+        try {  
+            await this.orderService.deleteByCondition({where: {clientId: primaryKey}});
+            return this.service.deleteById(primaryKey);
         } catch (e) {
-            console.error("ClientDAO delete: Could not execute the query");
-            console.log(e);
-            return false;
+            console.error(`ClientService update(): Could not execute the query`, e);
+            return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
         }
-    }
+    }, idField); 
 }

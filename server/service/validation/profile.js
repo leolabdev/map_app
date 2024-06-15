@@ -7,11 +7,6 @@ export const profileCreate = {
     })
 };
 
-export const profileId = {
-    schema: Joi.number().required(),
-    field: 'id'
-} 
-
 export const profileUsername = {
     schema: Joi.string().required(),
     field: 'username'

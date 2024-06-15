@@ -17,10 +17,17 @@ const options = {
 export default class Manufacturer extends Model {}
 
 Manufacturer.init({
-    manufacturerUsername: {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true
+        unique: true
     },
 
     name: {

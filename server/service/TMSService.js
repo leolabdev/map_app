@@ -26,7 +26,7 @@ export default class TMSService {
         try {
             return await TMS.create(data);
         } catch (e) {
-            console.log("TMSDAO create: Could not execute the query");
+            console.log("TMSService create: Could not execute the query");
             console.log(e);
             return null;
         }
@@ -41,7 +41,7 @@ export default class TMSService {
         try {
             return await TMS.bulkCreate(data);
         } catch (e) {
-            console.log("TMSDAO createMultiple: Could not execute the query");
+            console.log("TMSService createMultiple: Could not execute the query");
             console.log(e);
             return null;
         }
@@ -54,7 +54,7 @@ export default class TMSService {
      */
     async read(primaryKey) {
         if(primaryKey == null){
-            console.error("TMSDAO read: Wrong parameter provided");
+            console.error("TMSService read: Wrong parameter provided");
             return null;
         }
 
@@ -62,7 +62,7 @@ export default class TMSService {
             const resp = await TMS.findByPk(primaryKey);
             return resp != null ? resp.dataValues : null;
         } catch (e) {
-            console.log("TMSDAO read: Could not execute the query");
+            console.log("TMSService read: Could not execute the query");
             console.log(e);
             return null;
         }
@@ -70,7 +70,7 @@ export default class TMSService {
 
     async readMultipleByIds(ids) {
         if(ids == null){
-            console.error("TMSDAO read: Wrong parameter provided");
+            console.error("TMSService read: Wrong parameter provided");
             return null;
         }
 
@@ -86,7 +86,7 @@ export default class TMSService {
             
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.log("TMSDAO read: Could not execute the query");
+            console.log("TMSService read: Could not execute the query");
             console.log(e);
             return null;
         }
@@ -101,7 +101,7 @@ export default class TMSService {
             const resp = await TMS.findAll();
             return daoUtil.getDataValues(resp);
         } catch (e) {
-            console.log("TMSDAO readAll: Could not execute the query");
+            console.log("TMSService readAll: Could not execute the query");
             console.log(e);
             return false;
         }
@@ -114,7 +114,7 @@ export default class TMSService {
      */
     async delete(primaryKey) {
         if(primaryKey == null){
-            console.log("TMSDAO delete: Wrong parameter provided");
+            console.log("TMSService delete: Wrong parameter provided");
             return false;
         }
 
@@ -133,7 +133,7 @@ export default class TMSService {
             const resp = await TMS.destroy({ where: { } });
             return resp > 0;
         } catch (e) {
-            console.log("TMSDAO deleteAll: Could not execute the query");
+            console.log("TMSService deleteAll: Could not execute the query");
             console.log(e);
             return false;
         }

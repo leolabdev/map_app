@@ -17,10 +17,17 @@ const options = {
 export default class Client extends Model {}
 
 Client.init({
-    clientUsername: {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true
+    },
+
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true
+        unique: true
     },
 
     name: {

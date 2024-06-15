@@ -1,5 +1,5 @@
 export const ClientReq = {
-    clientUsername: true,
+    username: true,
     name: true
 }
 

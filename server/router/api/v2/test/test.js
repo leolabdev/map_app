@@ -11,6 +11,8 @@ import AddressService from "../../../../service/AddressService.js";
 import isRespServiceError from "./routeBuilder/core/service/validateInput.js";
 import throwAPIError from "./routeBuilder/core/error/throwAPIError.js";
 import ClientService from "../../../../service/ClientService.js";
+import ManufacturerService from "../../../../service/ManufacturerService.js";
+import OrderDataService from "../../../../service/OrderDataService.js";
 
 const router = express.Router();
 
@@ -39,16 +41,62 @@ async function testRead(req, res) {
     return true;
 }
 
-const service = new AddressService();
+const serviceA = new AddressService();
+const serviceC = new ClientService();
+const serviceM = new ManufacturerService();
+
+const serviceO = new OrderDataService();
 
 new RouteBuilder('/test/:id', Method.POST).addController(t).attachToRouter(router);
 
 async function t(req, res) {
-    const resp = await service.delete(req.params.id);
+    const a = {
+        city: 'lolcity',
+        street: 'lolstreet',
+        building: 'lolbuild',
+        lon: 23,
+        lat: 24,
+    }
+    const aResp = await serviceA.create(a);
+
+    const c = {
+        clientUsername: 'lol',
+        name: 'lol',
+        addressId: aResp.id
+    }
+    const cResp = await serviceC.create(c);
+
+    const aM = {
+        city: 'lolcity1',
+        street: 'lolstreet1',
+        building: 'lolbuild1',
+        lon: 24,
+        lat: 25,
+    }
+    const amResp = await serviceA.create(aM);
+
+    const m = {
+        manufacturerUsername: 'lol1',
+        name: 'lol1',
+        addressId: amResp.id
+    }
+    const mResp = await serviceM.create(m);
+
+    const o = {
+        manufacturerId: mResp.id,
+        clientId: cResp.id,
+        shipmentAddressId: amResp.id,
+        deliveryAddressId: aResp.id,
+    }
+    const oResp = await serviceO.create(o);
+
+    return {oResp, o};
+
+    /* const resp = await service.delete(req.params.id);
     if(isRespServiceError(resp))
         return throwAPIError(resp, null, ErrorLocation.PARAM);
 
-    return resp;
+    return resp; */
 }
 
 export default router;
