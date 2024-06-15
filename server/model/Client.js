@@ -24,7 +24,7 @@ Client.init({
         primaryKey: true
     },
 
-    clientUsername: {
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
