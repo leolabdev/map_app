@@ -1,11 +1,9 @@
-import StringValidator from "../util/StringValidator.js";
-import DaoUtil from "../util/DaoUtil.js";
 import Data from "../model/Data.js";
 import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
-
-const stringValidator = new StringValidator();
-const daoUtil = new DaoUtil();
+import { dataCreate, dataName, dataUpdate } from "./validation/data.js";
+import { idField } from "./validation/idField.js";
+import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Data SQL table.
@@ -23,18 +21,7 @@ export default class DataService {
      * @returns created Data object, if operation was successful or null if not
      */
     async create(data) {
-        const { name, value } = data;
-
-        if(!daoUtil.containNoNullArr([name, value]) || !daoUtil.containNoBlankArr([name, value])){
-            console.error("DataDAO create: Wrong parameter provided");
-            return null;
-        }
-        try {
-            return await Data.create(data);
-        } catch (e) {
-            console.error("DataDAO create: Could not execute the query");
-            return null;
-        }
+        return this.service.create(data, dataCreate);
     }
 
     /**
@@ -43,18 +30,7 @@ export default class DataService {
      * @returns founded Data object, if operation was successful or null if not
      */
     async read(primaryKey) {
-        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
-            console.error("DataDAO read: Wrong parameter provided");
-            return null;
-        }
-
-        try {
-            const resp = await Data.findByPk(primaryKey);
-            return resp != null ? resp.dataValues : null;
-        } catch (e) {
-            console.error("DataDAO read: Could not execute the query");
-            return null;
-        }
+        return this.service.readOneById(primaryKey, idField);
     }
 
     /**
@@ -62,13 +38,7 @@ export default class DataService {
      * @returns array of the founded Data objects, if operation was successful or null if not
      */
     async readAll() {
-        try {
-            const resp = await Data.findAll();
-            return daoUtil.getDataValues(resp);
-        } catch (e) {
-            console.error("DataDAO: Could not execute the query");
-            return null;
-        }
+        return this.service.readAll();
     }
 
     /**
@@ -77,24 +47,7 @@ export default class DataService {
      * @returns true, if the operation was successful or false if not
      */
     async update(data) {
-        const { name, value } = data;
-
-        if(!daoUtil.containNoNullArr([name, value]) || !daoUtil.containNoBlankArr([name, value])){
-            console.error("DataDAO update: Wrong parameter provided");
-            return false;
-        }
-
-        try {
-            const resp = await Data.update(
-                data, { where: { name: name } }
-            );
-
-            return resp[0] > 0;
-        } catch (e) {
-            console.error("DataDAO update: Could not execute the query");
-            console.log(e);
-            return false;
-        }
+        return this.service.update(data, dataUpdate, { where: { name: data.name } });
     }
 
     /**
@@ -102,19 +55,7 @@ export default class DataService {
      * @param {string} primaryKey primary key of the data
      * @returns true if operation was successful or false if not
      */
-    async delete(primaryKey) {
-        if(primaryKey == null || stringValidator.isBlank(primaryKey)){
-            console.error("DataDAO delete: Wrong parameter provided");
-            return false;
-        }
-
-        try {
-            const resp = await Data.destroy({ where: { name: primaryKey } });
-            return resp > 0;
-        } catch (e) {
-            console.error("DataDAO delete: Could not execute the query");
-            console.log(e);
-            return false;
-        }
-    }
+    delete = validateInput(async (primaryKey) => {
+        return this.service.deleteByCondition({ where: { name: primaryKey } });
+    }, dataName); 
 }
