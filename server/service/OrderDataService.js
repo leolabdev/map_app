@@ -150,4 +150,20 @@ export default class OrderDataService {
             return false;
         }
     }
+
+     /**
+     * The method deletes order with provided primary key(orderId)
+     * @param {sequelize.DestroyOptions} condition primary key of the order
+     * @returns true if operation was successful or false if not
+     */
+     async deleteByCondition(condition) {
+        try {
+            const resp = await OrderData.destroy(condition);
+            return resp > 0;
+        } catch (e) {
+            console.log("OrderDataDAO delete: Could not execute the query");
+            console.log(e);
+            return false;
+        }
+    }
 }
