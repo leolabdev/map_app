@@ -27,13 +27,13 @@ OrderData.init({
         primaryKey: true
     },
 
-    manufacturerUsername: {
-        type: DataTypes.STRING(255),
+    manufacturerId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
 
-    clientUsername: {
-        type: DataTypes.STRING(255),
+    clientId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
 
@@ -48,12 +48,12 @@ OrderData.init({
     }
 }, options);
 
-Manufacturer.hasMany(OrderData, { foreignKey: 'manufacturerUsername' });
-Client.hasMany(OrderData, { foreignKey: 'clientUsername' });
+Manufacturer.hasMany(OrderData, { foreignKey: 'manufacturerId' });
+Client.hasMany(OrderData, { foreignKey: 'clientId' });
 Address.hasMany(OrderData, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
 Address.hasMany(OrderData, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
 
-OrderData.belongsTo(Manufacturer, { foreignKey: 'manufacturerUsername' });
-OrderData.belongsTo(Client, { foreignKey: 'clientUsername' });
+OrderData.belongsTo(Manufacturer, { foreignKey: 'manufacturerId' });
+OrderData.belongsTo(Client, { foreignKey: 'clientId' });
 OrderData.belongsTo(Address, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
 OrderData.belongsTo(Address, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });

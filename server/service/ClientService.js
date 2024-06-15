@@ -72,7 +72,7 @@ export default class ClientService {
     async update(data) {
         const { addressIdDelete, ...client } = data;
 
-        if (!client || client.clientUsername == null || stringValidator.isBlank(client.clientUsername)) {
+        if (!client || client.id == null || stringValidator.isBlank(client.id)) {
             console.error("ClientDAO update: Wrong parameter provided");
             return false;
         }
@@ -82,7 +82,7 @@ export default class ClientService {
                 client.addressId = null;
 
             const resp = await Client.update(
-                client, { where: { clientUsername: client.clientUsername } }
+                client, { where: { id: client.id } }
             );
 
             return resp[0] > 0;
@@ -105,8 +105,8 @@ export default class ClientService {
         }
 
         try {
-            await OrderData.destroy({ where: { clientUsername: primaryKey } });
-            const resp = await Client.destroy({ where: { clientUsername: primaryKey } });
+            await OrderData.destroy({ where: { id: primaryKey } });
+            const resp = await Client.destroy({ where: { id: primaryKey } });
             return resp > 0;
         } catch (e) {
             console.error("ClientDAO delete: Could not execute the query");
