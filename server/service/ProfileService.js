@@ -1,5 +1,3 @@
-import DaoUtil from "../util/DaoUtil.js";
-import Address from "../model/Address.js";
 import Profile from "../model/Profile.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -7,10 +5,10 @@ import {DEFactory} from "../router/api/v2/test/routeBuilder/core/service/dataExt
 import {ServiceError} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import {SEReason} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import {validateInput} from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
-import {profileCreate, profileId, profileSignIn, profileUpdate, profileUsername} from "./validation/profile.js";
+import {profileCreate, profileSignIn, profileUpdate, profileUsername} from "./validation/profile.js";
 import BasicService from "./BasicService.js";
+import { idField } from "./validation/idField.js";
 
-const daoUtil = new DaoUtil();
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
@@ -76,7 +74,7 @@ export default class ProfileService {
      * @returns founded Client object, if operation was successful or null if not
      */
     read = async (primaryKey) => {
-        return this.service.readOneById(primaryKey, profileId);
+        return this.service.readOneById(primaryKey, idField);
     }
 
     /**
@@ -129,6 +127,6 @@ export default class ProfileService {
      * @returns true if operation was successful or false if not
      */
     delete = (primaryKey) => {
-        return this.service.deleteById(primaryKey, profileId);
+        return this.service.deleteById(primaryKey, idField);
     }
 }
