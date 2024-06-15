@@ -75,7 +75,7 @@ export default class AreaService {
             return resp > 0;
         } catch (e) {
             console.error('AreaDAO: Could not execute the query');
-            console.log(e);
+            console.error(e);
             return false;
         }
     }
