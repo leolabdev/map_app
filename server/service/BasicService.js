@@ -74,16 +74,18 @@ export default class BasicService{
     /**
      * Read all objects
      *
-     * @type { (options: sequelize.FindOptions<any>) => Promise<any> | Promise<ServiceError>}
+     * @type { (options: sequelize.FindOptions<any>, validation: ServiceValidation | undefined) => Promise<any> | Promise<ServiceError>}
      */
-    async readAll(options={}) {
-        try {
-            const resp = await this.model.findAll(options);
-            return this.extractor.extract(resp);
-        } catch (e) {
-            console.error(`${this.serviceName} readAll(): Could not execute the query`, e);
-            return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
-        }
+    async readAll(options={}, validation) {    
+        return validateInput(async () => {
+            try {
+                const resp = await this.model.findAll(options);
+                return this.extractor.extract(resp);
+            } catch (e) {
+                console.error(`${this.serviceName} readAll(): Could not execute the query`, e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }, validation)(options);
     }
 
     
@@ -141,4 +143,21 @@ export default class BasicService{
             }
         }, validation)(primaryKey, options);
     } 
+
+    /**
+     * Delete objects by condition
+     *
+     * @type { (condition: sequelize.DestroyOptions | undefined, validation: ServiceValidation | undefined) => Promise<any> | Promise<ServiceError>}
+     */
+    async deleteByCondition(condition, validation) {
+        return validateInput(async () => {
+            try {
+                const resp = await this.model.destroy(condition);
+                return resp > 0;
+            } catch (e) {
+                console.error(`${this.serviceName} deleteByCondition(): Could not execute the query`, e);
+                return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
+            }
+        }, validation)(condition, validation);
+    }
 }
