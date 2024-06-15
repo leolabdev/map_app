@@ -26,12 +26,11 @@ export default class ManufacturerService {
      * @returns created Manufacturer object, if operation was successful or null if not
      */
     async create(data) {
-        const { manufacturerUsername } = data;
 
-        if(!daoUtil.containNoNullArr([manufacturerUsername]) || !daoUtil.containNoBlankArr([manufacturerUsername])){
+        /* if(!daoUtil.containNoNullArr([id]) || !daoUtil.containNoBlankArr([id])){
             console.error("ManufacturerDAO: Wrong parameter provided");
             return null;
-        }
+        } */
         try {
             return await Manufacturer.create(data);
         } catch (e) {
@@ -82,7 +81,7 @@ export default class ManufacturerService {
     async update(data) {
         const { addressIdDelete, ...manufacturer } = data;
 
-        if (!manufacturer || manufacturer.manufacturerUsername == null || stringValidator.isBlank(manufacturer.manufacturerUsername)) {
+        if (!manufacturer || manufacturer.id == null || stringValidator.isBlank(manufacturer.id)) {
             console.error("ManufacturerDAO update: Wrong parameter provided");
             return false;
         }
@@ -92,7 +91,7 @@ export default class ManufacturerService {
                 manufacturer.addressId = null;
 
             const resp = await Manufacturer.update(
-                manufacturer, { where: { manufacturerUsername: manufacturer.manufacturerUsername } }
+                manufacturer, { where: { id: manufacturer.id } }
             );
 
             return resp[0] > 0;
@@ -115,8 +114,8 @@ export default class ManufacturerService {
         }
 
         try {
-            await OrderData.destroy({ where: { manufacturerUsername: primaryKey } });
-            const resp = await Manufacturer.destroy({ where: { manufacturerUsername: primaryKey } });
+            await OrderData.destroy({ where: { id: primaryKey } });
+            const resp = await Manufacturer.destroy({ where: { id: primaryKey } });
             return resp > 0;
         } catch (e) {
             console.error("ManufacturerDAO delete: Could not execute the query");

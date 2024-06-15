@@ -8,14 +8,10 @@ export const manufacturerCreate = {
     })
 };
 
-export const manufacturerName = {
-    schema: Joi.string().required(),
-    field: 'manufacturerUsername'
-} 
-
 export const manufacturerUpdate = {
     schema: Joi.object({
-        manufacturerUsername: Joi.string().required(),
+        id: Joi.number().required(),
+        manufacturerUsername: Joi.string(),
         name: Joi.string(),
         addressId: Joi.number(),
         addressIdDelete: Joi.number()

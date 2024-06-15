@@ -22,13 +22,13 @@ export default class OrderDataService {
      * @returns created Order object, if operation was successful or null if not
      */
     async create(data) {
-        const { manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId } = data;
+        const { manufacturerId, clientId, shipmentAddressId, deliveryAddressId } = data;
 
-        if(!daoUtil.containNoNullArr([manufacturerUsername, clientUsername, shipmentAddressId, deliveryAddressId]) ||
-            !daoUtil.containNoBlankArr([manufacturerUsername, clientUsername])){
+        /* if(!daoUtil.containNoNullArr([manufacturerId, clientId, shipmentAddressId, deliveryAddressId]) ||
+            !daoUtil.containNoBlankArr([manufacturerId, clientId])){
             console.log("OrderDataDAO create: Wrong parameter provided");
             return null;
-        }
+        } */
 
         try {
             return  await OrderData.create(data);
