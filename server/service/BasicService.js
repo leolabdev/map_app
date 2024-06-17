@@ -1,8 +1,8 @@
 import sequelize, {Model} from "sequelize";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
-import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
-import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
-import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
+import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 
 export default class BasicService{

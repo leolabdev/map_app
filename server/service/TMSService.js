@@ -1,8 +1,8 @@
 import DaoUtil from "../util/DaoUtil.js";
 import TMS from "../model/TMS.js";
 import { Op } from "sequelize";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
 
 
 const daoUtil = new DaoUtil();
