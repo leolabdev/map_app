@@ -56,7 +56,7 @@ const routesToRegister = {
     '/data/order': order,
     '/data/data': data,
     '/data/area': area,
-    '/profile': profile
+    '/data/profile': profile
 }
 app.use(commonErrorCatcher);
 mapEndpoints(app, '/api/v2', routesToRegister);
