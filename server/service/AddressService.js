@@ -2,7 +2,7 @@ import Address from "../model/Address.js";
 import BasicService from "./BasicService.js";
 import { addressCreate, addressSearch, addressUpdate } from "./validation/address.js";
 import { idField } from "./validation/idField.js";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Address SQL table.

@@ -1,14 +1,17 @@
 import express from "express";
-import {APIError} from "./routeBuilder/core/error/APIError.js";
-import {ErrorReason} from "./routeBuilder/core/error/ErrorReason.js";
-import {RouteBuilder} from "./routeBuilder/RouteBuilder.js";
-import {Method} from "./routeBuilder/core/enums/Method.js";
 import ProfileService from "../../../../service/ProfileService.js";
-import {profileCreate, profileSignIn, profileUpdate} from "./routeBuilder/rules/validation/profile.js";
-import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes, ProfileUpdateReq} from "./routeBuilder/rules/serialization/profile.js";
-import {ErrorLocation} from "./routeBuilder/core/error/ErrorLocation.js";
-import isRespServiceError from "./routeBuilder/core/service/validateInput.js";
-import throwAPIError from "./routeBuilder/core/error/throwAPIError.js";
+import {profileCreate, profileSignIn, profileUpdate} from "../routeBuilder/rules/validation/profile.js";
+import {ProfileCreateReq, ProfileCreateRes, ProfileSignInReq, ProfileSignInRes, ProfileUpdateReq} from "../routeBuilder/rules/serialization/profile.js";
+import {ErrorLocation} from "../routeBuilder/core/error/ErrorLocation.js";
+import isRespServiceError from "../routeBuilder/core/service/validateInput.js";
+import {APIError} from "../routeBuilder/core/error/APIError.js";
+import {ErrorReason} from "../routeBuilder/core/error/ErrorReason.js";
+import {RouteBuilder} from "../routeBuilder/RouteBuilder.js";
+import {Method} from "../routeBuilder/core/enums/Method.js";
+import { Resource } from "../routeBuilder/rules/authorization/Resource.js";
+import { Action } from "../routeBuilder/core/enums/Action.js";
+import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
+
 
 const router = express.Router();
 const profileService = new ProfileService();

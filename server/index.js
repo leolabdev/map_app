@@ -21,13 +21,12 @@ import * as addressData from "./router/api/v2/data/address.js";
 import * as order from "./router/api/v2/data/order.js";
 import * as data from "./router/api/v2/data/data.js";
 import * as area from "./router/api/v2/data/area.js";
-import * as test from "./router/api/v2/test/test.js";
-import * as profile from "./router/api/v2/test/profile.js";
+import * as profile from "./router/api/v2/data/profile.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
 import {mapEndpoints} from "./util/settings/mapEndpoints.js";
-import {commonErrorCatcher} from "./router/api/v2/test/routeBuilder/core/middleware/commonErrorCatcher.js";
+import {commonErrorCatcher} from "./router/api/v2/routeBuilder/core/middleware/commonErrorCatcher.js";
 
 const app = express();
 //for ip access through proxy
@@ -47,6 +46,7 @@ app.use('/dao/order', orderDaoRouter.default);
 app.use('/dao/data', dataDaoRouter.default);
 app.use('/dao/area', areaDaoRouter.default);
 
+// v2
 const routesToRegister = {
     '/routing/address': address,
     '/routing/route': route,
@@ -56,8 +56,7 @@ const routesToRegister = {
     '/data/order': order,
     '/data/data': data,
     '/data/area': area,
-    '/test': test,
-    '/profile': profile
+    '/data/profile': profile
 }
 app.use(commonErrorCatcher);
 mapEndpoints(app, '/api/v2', routesToRegister);

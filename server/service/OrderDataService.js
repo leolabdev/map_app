@@ -1,10 +1,10 @@
 import DaoUtil from "../util/DaoUtil.js";
 import OrderData from "../model/OrderData.js";
 import {Op} from "sequelize";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
 import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
 
 const daoUtil = new DaoUtil();
 

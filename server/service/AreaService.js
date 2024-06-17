@@ -1,8 +1,8 @@
 import Area from "../model/Area.js";
 import {Op} from "sequelize";
 import BasicService from "./BasicService.js";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
-import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
 import { areaCreate, areaName, areaUpdate } from "./validation/area.js";
 
 /**

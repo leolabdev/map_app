@@ -1,9 +1,9 @@
 import Data from "../model/Data.js";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
 import { dataCreate, dataName, dataUpdate } from "./validation/data.js";
 import { idField } from "./validation/idField.js";
-import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Data SQL table.

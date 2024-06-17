@@ -1,11 +1,11 @@
 import express from "express";
 import ThrottlingQueue from "../../../../util/throttlingQueue.js";
 import APILimitTracker from "../../../../util/APILimitTracker.js";
-import validate from "../test/routeBuilder/core/pipelineHandlers/validate.js";
-import { addressReverse } from "../test/routeBuilder/rules/validation/address.js";
-import { catchErrors } from "../test/routeBuilder/core/pipelineHandlers/catchErrors.js";
-import { formatResponse } from "../test/routeBuilder/core/pipelineHandlers/formatResponse.js";
-import { addReqLimit } from "../test/routeBuilder/core/pipelineHandlers/addReqLimit..js";
+import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
+import { addressReverse } from "../routeBuilder/rules/validation/address.js";
+import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
+import { addReqLimit } from "../routeBuilder/core/pipelineHandlers/addReqLimit..js";
+import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
 
 
 const router = express.Router();

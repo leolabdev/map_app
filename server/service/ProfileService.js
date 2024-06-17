@@ -1,13 +1,13 @@
 import Profile from "../model/Profile.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import {DEFactory} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
-import {ServiceError} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
-import {SEReason} from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
-import {validateInput} from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
 import {profileCreate, profileSignIn, profileUpdate, profileUsername} from "./validation/profile.js";
 import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
+import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 
 /**

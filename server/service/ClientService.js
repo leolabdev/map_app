@@ -1,14 +1,14 @@
 import Address from "../model/Address.js";
 import Client from "../model/Client.js";
-import { DEFactory } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import BasicService from "./BasicService.js";
 import { clientCreate, clientUpdate } from "./validation/client.js";
 import { idField } from "./validation/idField.js";
-import { ServiceError } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
-import { SERVICE_ERROR_TYPE_NAME } from "../router/api/v2/test/routeBuilder/core/config.js";
-import { SEReason } from "../router/api/v2/test/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import OrderDataService from "./OrderDataService.js";
-import { validateInput } from "../router/api/v2/test/routeBuilder/core/service/validateInput.js";
+import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
+import { SERVICE_ERROR_TYPE_NAME } from "../router/api/v2/routeBuilder/core/config.js";
+import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Client SQL table.
