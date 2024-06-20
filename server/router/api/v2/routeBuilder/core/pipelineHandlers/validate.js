@@ -19,7 +19,7 @@ const validate = (schema, location='body', field=null) => {
                await schema.validateAsync(req[location], {abortEarly: false});
             else
                 throw new APIError({
-                    message: 'Error on validation. Provided param is not a schema',
+                    message: 'validate(): Error on validation. Provided param is not a schema',
                     reason: ErrorReason.SERVER_MISCONFIGURED
                 })
 

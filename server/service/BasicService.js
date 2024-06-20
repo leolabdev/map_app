@@ -95,9 +95,11 @@ export default class BasicService{
      * @type { (objectToUpdate: any, validation: ServiceValidation | undefined, options: sequelize.UpdateOptions | undefined) => Promise<any> | Promise<ServiceError>}
      */
     async update (objectToUpdate, validation, options={}) {
+        console.log('Basic', validation);
         return validateInput(async () => {
             try{
                 const resp = await this.model.update(objectToUpdate, options);
+                
                 return resp[0] > 0;
             } catch (e){
                 console.error(`${this.serviceName} update(): Could not execute the query`, e);
