@@ -8,8 +8,6 @@ import {APIError} from "../routeBuilder/core/error/APIError.js";
 import {ErrorReason} from "../routeBuilder/core/error/ErrorReason.js";
 import {RouteBuilder} from "../routeBuilder/RouteBuilder.js";
 import {Method} from "../routeBuilder/core/enums/Method.js";
-import { Resource } from "../routeBuilder/rules/authorization/Resource.js";
-import { Action } from "../routeBuilder/core/enums/Action.js";
 import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
 
 
@@ -82,6 +80,25 @@ async function getAll(req, res) {
     if(!profiles)
         throw new APIError({
             reason: ErrorReason.WRONG_CREDENTIALS, message: 'Could not read all profiles'
+        });
+
+    return profiles;
+}
+
+
+new RouteBuilder('/:id', Method.GET)
+    .serializeRes(ProfileCreateRes)
+    .addController(getOne).attachToRouter(router);
+async function getOne(req, res) {
+    const { id } = req.params;
+
+    const profiles = await profileService.read(id);
+
+    if(!profiles)
+        throw new APIError({
+            reason: ErrorReason.UNEXPECTED, 
+            message: 'Could not read this profile',
+            additional: profiles
         });
 
     return profiles;

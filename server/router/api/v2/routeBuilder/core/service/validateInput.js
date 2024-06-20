@@ -29,7 +29,8 @@ export function validateInput(fn, validationSchema) {
                 await schema.validateAsync(request, {abortEarly: false});
             else
                 throw new ServiceError({
-                    reason: SEReason.MISCONFIGURED
+                    reason: SEReason.MISCONFIGURED,
+                    message: 'Provided validation schema is not Joi schema'
                 });
                 
             return fn(request, ...params);

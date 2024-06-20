@@ -101,12 +101,12 @@ export default class ProfileService {
      * @returns true, if the operation was successful or false if not
      */
     update = validateInput(async (data) => {
-        const { id, username, password } = data;
+        const { id, username } = data;
 
         if(username){
             try{
                 const profile = await this.searchByUserName(username);
-                if(profile.id && profile.id !== id)
+                if(profile?.id && profile.id !== id)
                     return new ServiceError({
                         reason: SEReason.NOT_UNIQUE,
                         message: 'User with that username already exists',
@@ -118,7 +118,7 @@ export default class ProfileService {
             }
         }   
 
-        return this.service.update({username, password}, { where: { id } });
+        return this.service.updateById(data, null);
     }, profileUpdate);
 
     /**
