@@ -1,1 +1,1697 @@
-{"openapi":"3.0.3","info":{"title":"MapApp","version":"1.0","description":"An API for application, which helps delivery companies to plan their routes.","x-logo":{"url":""}},"servers":[{"url":"http://localhost:8081/api/v2","description":"Local server","x-last-modified":1718622672779}],"paths":{"/data/profile/:id":{"summary":"User profile","description":"User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.","get":{"tags":["profile"],"parameters":[{"$ref":"#/components/parameters/id","name":"id","x-last-modified":1718888757237}],"responses":{"200":{"$ref":"#/components/responses/200 one","x-last-modified":1718889279313},"400":{"$ref":"#/components/responses/400","x-last-modified":1718889211678},"401":{"$ref":"#/components/responses/401","x-last-modified":1718889224633},"403":{"$ref":"#/components/responses/403","x-last-modified":1718889237158},"404":{"$ref":"#/components/responses/404","x-last-modified":1718889898774},"500":{"$ref":"#/components/responses/500","x-last-modified":1718889259586}},"summary":"Read profile by id","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"},"delete":{"tags":["profile"],"parameters":[{"$ref":"#/components/parameters/id","name":"id","x-last-modified":1718889306137}],"responses":{"204":{"$ref":"#/components/responses/204","x-last-modified":1718889326604},"400":{"$ref":"#/components/responses/400","x-last-modified":1718889339851},"401":{"$ref":"#/components/responses/401","x-last-modified":1718889350835},"403":{"$ref":"#/components/responses/403","x-last-modified":1718889364428},"404":{"$ref":"#/components/responses/404","x-last-modified":1718889927760},"500":{"$ref":"#/components/responses/500","x-last-modified":1718889941430}},"summary":"Delete profile","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"},"x-last-modified":1718888538590},"/data/client":{"summary":"Client","description":"Client is an object representing the client to whom a parcel should be delivered. It contains the Address object, which holds the Client address. While creating orders or calculating the route via Client id, Address of the Client will be used as a delivery address.\nNotice that only registered users having created a Profile can save their Clients' data.","get":{"tags":["client"]},"put":{"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ProfileUpdate"}}},"required":true},"tags":["client"],"responses":{"204":{"$ref":"#/components/responses/204","x-last-modified":1718890060914},"400":{"$ref":"#/components/responses/400","x-last-modified":1718890078434},"401":{"$ref":"#/components/responses/401","x-last-modified":1718890117079},"403":{"$ref":"#/components/responses/403","x-last-modified":1718890132208},"404":{"$ref":"#/components/responses/404","x-last-modified":1718890145614},"409":{"$ref":"#/components/responses/409","x-last-modified":1718890158175},"500":{"$ref":"#/components/responses/500","x-last-modified":1718890182150}},"summary":"Update profile","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes  |\n| Authorization                  | only own |"},"post":{"requestBody":{"description":"The recommended way of Client creation is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClientCreateWithAddress"}}},"required":true},"tags":["client"],"responses":{"201":{"$ref":"#/components/responses/201","x-last-modified":1718887903713},"400":{"$ref":"#/components/responses/400","x-last-modified":1718887948467},"401":{"$ref":"#/components/responses/401","x-last-modified":1718895012807},"403":{"$ref":"#/components/responses/403","x-last-modified":1718895023952},"409":{"$ref":"#/components/responses/409","x-last-modified":1718887965493},"500":{"$ref":"#/components/responses/500","x-last-modified":1718887982927}},"summary":"Create client","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n"},"x-last-modified":1718894471411},"/data/profile":{"summary":"User profile","description":"User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.","put":{"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ProfileUpdate"}}},"required":true},"tags":["profile"],"responses":{"204":{"$ref":"#/components/responses/204","x-last-modified":1718890060914},"400":{"$ref":"#/components/responses/400","x-last-modified":1718890078434},"401":{"$ref":"#/components/responses/401","x-last-modified":1718890117079},"403":{"$ref":"#/components/responses/403","x-last-modified":1718890132208},"404":{"$ref":"#/components/responses/404","x-last-modified":1718890145614},"409":{"$ref":"#/components/responses/409","x-last-modified":1718890158175},"500":{"$ref":"#/components/responses/500","x-last-modified":1718890182150}},"summary":"Update profile","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes  |\n| Authorization                  | only own |"},"post":{"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ProfileCreate"}}},"required":true},"tags":["profile"],"responses":{"201":{"$ref":"#/components/responses/201","x-last-modified":1718887903713},"400":{"$ref":"#/components/responses/400","x-last-modified":1718887948467},"409":{"$ref":"#/components/responses/409","x-last-modified":1718887965493},"500":{"$ref":"#/components/responses/500","x-last-modified":1718887982927}},"summary":"Create user profile","description":"| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | no                        |\n| Authorization                  | no                        |\n| Pagination                       | no                        |\n| Search                             | no                        |"},"x-last-modified":1718894530946}},"components":{"schemas":{"APIErrorRes":{"description":"Error response. Notice that errors field is always an array. Data can be ever empty object, null or undefined.","type":"object","properties":{"data":{"description":"An empty object for the data field","type":"object"},"errors":{"type":"array","items":{"$ref":"#/components/schemas/APIError"}}},"x-last-modified":1718628043172},"APIError":{"description":"Interface for all errors, which may occur. Notice that the error has type property, which can be used for determining the object type and be parsed accordingly. If any unexpected errors occurred where will be additional field containing the error. The name field is common reason describing what kind of error happened and it is a enum value. The reason field is a concrete reason why the error happened and it is a enum value. The location field is describing possible error place in the request and it a enum value.\n\nErrorName enum:\n| Key | Value |\n| -------- | -------- |\n| NOT_FOUND | 'NOT_FOUND' | \n| BAD_REQUEST | 'BAD_REQUEST' | \n| VALIDATION | 'VALIDATION' | \n| NOT_AUTHENTICATED | 'NOT_AUTHENTICATED' | \n| NOT_AUTHORIZED | 'NOT_AUTHORIZED' | \n| TOO_MANY_REQUESTS | 'TOO_MANY_REQUESTS' | \n| SERVER_ERROR | 'SERVER_ERROR' | \n| UNEXPECTED | 'UNEXPECTED' | \n\nErrorReason enum:\n| Key | Value |\n| -------- | -------- |\n| NOT_FOUND | 'NOT_FOUND' | \n| BAD_REQUEST | 'BAD_REQUEST' | \n| REQUIRED | 'REQUIRED' | \n| NOT_ALLOWED | 'NOT_ALLOWED' | \n| VALIDATION | 'VALIDATION' | \n| NOT_STRING | 'NOT_STRING' | \n| NOT_NUMBER | 'NOT_NUMBER' | \n| NOT_BOOLEAN | 'NOT_BOOLEAN' | \n| NOT_AUTHENTICATED | 'NOT_AUTHENTICATED' | \n| AUTH_TOKEN_NOT_PROVIDED | 'AUTH_TOKEN_NOT_PROVIDED' | \n| INVALID_AUTH_TOKEN_FORMAT | 'INVALID_AUTH_TOKEN_FORMAT' | \n| INVALID_AUTH_TOKEN | 'INVALID_AUTH_TOKEN' | \n| AUTHENTICATION_FAILED | 'AUTHENTICATION_FAILED' | \n| WRONG_CREDENTIALS | 'WRONG_CREDENTIALS' | \n| NOT_AUTHORIZED | 'NOT_AUTHORIZED' | \n| TOO_MANY_REQUESTS | 'TOO_MANY_REQUESTS' | \n| SERVER_MISCONFIGURED | 'SERVER_MISCONFIGURED' | \n| SERVER_ERROR | 'SERVER_ERROR' | \n| UNEXPECTED | 'UNEXPECTED' | \n\nErrorLocation enum:\n| Key | Value |\n| -------- | -------- |\n| HEADER | 'header' | \n| BODY | 'body' | \n| PARAM | 'param' | \n| QUERY | 'query' | ","required":[],"enum":[],"type":"object","properties":{"reason":{"description":"The reason for the error","type":"string","example":"REQUIRED"},"status":{"description":"The HTTP status code","type":"integer","example":400},"location":{"description":"The approximate location of the error","type":"string","example":"body"},"message":{"description":"The error message","type":"string","example":"\"password\" is required"},"endpoint":{"description":"The endpoint where the error occurred","type":"string","example":"/api/v2/data/profile"},"field":{"description":"The field causing the error","type":"string","example":"password"},"additional":{"nullable":true,"description":"Additional information about the error","type":"string"},"name":{"description":"The name of the error","type":"string","example":"VALIDATION"},"type":{"description":"The type of the error","type":"string","example":"APIError"}},"x-last-modified":1718631391947},"ProfileCreate":{"description":"Profile creation request body","required":["username","password"],"type":"object","properties":{"username":{"description":"unique","type":"string","example":"user1"},"password":{"type":"string","example":"my_password"}},"x-last-modified":1718631417714},"ProfileUpdate":{"description":"Profile update request body","required":["id"],"type":"object","properties":{"id":{"description":"read-only","type":"number","example":1},"username":{"description":"unique","type":"string","example":"user1"},"password":{"type":"string","example":"my_password"}},"x-last-modified":1718888436324},"ClientCreate":{"description":"Client creation request body","required":["username"],"type":"object","properties":{"username":{"description":"unique","type":"string","example":"client1"},"name":{"type":"string","example":"Client Name"},"addressId":{"description":"foreign","type":"integer","example":1}},"x-last-modified":1718894781864},"ClientUpdate":{"description":"Client update request body","required":["id"],"type":"object","properties":{"id":{"description":"read-only","type":"integer","example":1},"username":{"description":"unique","type":"string","example":"client1"},"name":{"type":"string","example":"Client Name"},"addressId":{"description":"foreign","type":"integer","example":1}},"x-last-modified":1718894876983},"AddressCreate":{"description":"Address creation request body","required":["city","street","building"],"type":"object","properties":{"city":{"type":"string","example":"Helsinki"},"street":{"description":"only street name","type":"string","example":"Fredrikinkatu"},"building":{"description":"may include letter","type":"string","example":"34 B"},"flat":{"type":"integer","example":56}},"x-last-modified":1718895587945},"Address":{"description":"Address object","required":["city","street","building"],"enum":["id","city","street","building","lon","lat"],"type":"object","properties":{"id":{"type":"integer","example":1},"city":{"type":"string","example":"Helsinki"},"street":{"description":"only street name","type":"string","example":"Fredrikinkatu"},"building":{"description":"may include letter","type":"string","example":"34 B"},"flat":{"type":"integer","example":56},"lon":{"description":"longitude coordinate","type":"number","example":60.34},"lat":{"description":"latitude coordinate","type":"number","example":24.12}},"x-last-modified":1718895828479},"ClientCreateWithAddress":{"description":"Client creation request body with Address","required":["username"],"type":"object","properties":{"username":{"description":"unique","type":"string","example":"client1"},"name":{"type":"string","example":"Client Name"},"Address":{"$ref":"#/components/schemas/AddressCreate"}},"x-last-modified":1718896041728}},"responses":{"200":{"content":{"application/json":{"schema":{"description":"\"data\"-field contains array of requested objects. \"metadata\"-field contains the pagination data","required":[],"type":"object","properties":{"data":{"type":"array"},"metadata":{"type":"object","properties":{"currentPage":{"description":"The current page number","type":"integer","example":1},"limit":{"description":"The limit of items per page","type":"integer","example":20}}}}},"example":{"data":[{"username":"user1","id":3},{"username":"user2","id":4}],"metadata":{"currentPage":1,"limit":20}}}},"description":"Successful request, response with body. ","x-last-modified":1718887018576},"201":{"content":{"application/json":{"schema":{"description":"\"data\"-field contains created object.","required":[],"type":"object","properties":{"data":{"type":"object"}}},"example":{"data":{"username":"user2","id":4}}}},"description":"Successfully created, response with created object.","x-last-modified":1718883610294},"204":{"description":"Successful request, response with no body. ","x-last-modified":1718887121189},"400":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"AUTHENTICATION_FAILED","status":401,"location":"header","message":"Could not authenticate with provided token. Token is invalid or expired","endpoint":"/api/v2/data/profile","field":"Authorization","name":"NOT_AUTHENTICATED","type":"APIError"}]}}},"description":"Authentication error response. It may occur if the request does not contain \"Authorization\" header with the Bearer token","x-last-modified":1718629884243},"401":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"AUTHENTICATION_FAILED","status":401,"location":"header","message":"Could not authenticate with provided token. Token is invalid or expired","endpoint":"/api/v2/data/profile","field":"Authorization","name":"NOT_AUTHENTICATED","type":"APIError"}]}}},"description":"Authentication error response. It may occur if the request does not contain \"Authorization\" header with the Bearer token","x-last-modified":1718629884243},"403":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"NOT_AUTHORIZED","status":403,"message":"Action execution denied","endpoint":"/api/v2/data/profile","name":"NOT_AUTHORIZED","type":"APIError"}]}}},"description":"Authorization error response. It may occur if the user is not allowed to execute certain action","x-last-modified":1718630393958},"404":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"NOT_FOUND","status":404,"location":"param","message":"Could not find any objects","endpoint":"/api/v2/data/profile","field":"id","name":"NOT_FOUND","type":"APIError"}]}}},"description":"Nothing found","x-last-modified":1718889834399},"409":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"NOT_UNIQUE","status":409,"location":"body","message":"User with that username already exists","endpoint":"/api/v2/data/profile","field":"username","name":"BAD_REQUEST","type":"APIError"}]}}},"description":"Conflict error response. It may occur if some of the request field(s) is not unique","x-last-modified":1718631266638},"500":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/APIErrorRes"},"example":{"errors":[{"reason":"UNEXPECTED","status":500,"message":"Unexpected server error occurred","endpoint":"/api/v2/data/profile","additional":{"message":"throwAPIError is not defined","stack":"ReferenceError: throwAPIError is not defined\n    at createProfile (file:///app/server/router/api/v2/data/profile.js:25:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async file:///app/server/router/api/v2/routeBuilder/core/pipelineHandlers/addController.js:12:30","name":"ReferenceError"},"name":"UNEXPECTED","type":"APIError"}]}}},"description":"Server error response. It occurs unexpectedly. The additional field contains an error object","x-last-modified":1718631059302},"200 one":{"content":{"application/json":{"schema":{"description":"\"data\"-field contains requested object.","required":[],"type":"object","properties":{"data":{"type":"object"}}},"example":{"data":{"username":"user1","id":1}}}},"description":"Successful request, response with body. ","x-last-modified":1718884195366}},"parameters":{"id":{"deprecated":false,"example":"1","name":"id","description":"object id field","schema":{"type":"number"},"in":"path","required":true,"x-last-modified":1718888734807}},"examples":{"ProfileCreate":{"summary":"Example of ProfileCreate request object","value":{"username":"user1","password":"my_password"},"x-last-modified":1718622389962}},"securitySchemes":{"Token auth":{"scheme":"bearer","bearerFormat":"JWT","type":"http","description":"Example of header: \n> Authorization: Bearer token","x-last-modified":1718890851739}},"headers":{}},"security":[{"JWTAuth":[]},{"Token auth":[]}],"tags":[{"name":"profile","description":"profile","externalDocs":{},"x-last-modified":1718887325659},{"name":"client","description":"client","externalDocs":{},"x-last-modified":1718887355059},{"name":"manufacturer","description":"manufacturer","externalDocs":{},"x-last-modified":1718887379701},{"name":"order","description":"order","externalDocs":{},"x-last-modified":1718894498840}],"externalDocs":{"description":"GitHub wikipages","url":"https://github.com/leolab1337/map_app/wiki"}}
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "MapApp",
+        "version": "1.0",
+        "description": "An API for application, which helps delivery companies to plan their routes.",
+        "x-logo": {
+            "url": ""
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081/api/v2",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/data/profile/{id}": {
+            "summary": "User profile",
+            "description": "User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.",
+            "get": {
+                "tags": [
+                    "profile"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718888757237
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200 one",
+                        "x-last-modified": 1718889279313
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889211678
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889224633
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889237158
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889898774
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889259586
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read profile by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
+            },
+            "delete": {
+                "tags": [
+                    "profile"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718889306137
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718889326604
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889339851
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889350835
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889364428
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889927760
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889941430
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete profile",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "id": {
+                            "value": "86"
+                        }
+                    },
+                    "name": "id",
+                    "description": "profile id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/data/client": {
+            "summary": "Client",
+            "description": "Client is an object representing the client to whom a parcel should be delivered. It contains the Address object, which holds the Client address. While creating orders or calculating the route via Client id, Address of the Client will be used as a delivery address.\nNotice that only registered users having created a Profile can save their Clients' data.",
+            "get": {
+                "tags": [
+                    "client"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200",
+                        "x-last-modified": 1719224505066
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1719224545166
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1719224573070
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read all Clients",
+                "description": "Read all Client associated with the logged-in user Profile. It is possible to request only own Clients\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | yes |"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "The recommended way of Client update is with specifying an Address object if there is a need to update address info. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientCreateWithAddress"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "client"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718890060914
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718890078434
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718890117079
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718890132208
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718890145614
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718890158175
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718890182150
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "operationId": "client_update",
+                "summary": "Update Client",
+                "description": "| Requirement / Function | Is Required / Has |\n| ---------------------- | ----------------- |\n| Authentication         | yes |\n| Authorization          | only own |"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "The recommended way of Client creation is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "client"
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201",
+                        "x-last-modified": 1718887903713
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718887948467
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718895012807
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718895023952
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718887965493
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718887982927
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "operationId": "client_create",
+                "summary": "Create client",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only for own Profile  |\n"
+            }
+        },
+        "/data/profile": {
+            "summary": "User profile",
+            "description": "User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.",
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "profile"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718890060914
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718890078434
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718890117079
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718890132208
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718890145614
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718890158175
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718890182150
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Update profile",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes  |\n| Authorization                  | only own |"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "profile"
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201",
+                        "x-last-modified": 1718887903713
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718887948467
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718887965493
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718887982927
+                    }
+                },
+                "summary": "Create user profile",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------  |\n| Authentication             | no |\n| Authorization              | no |"
+            },
+            "x-last-modified": 1718894530946
+        },
+        "/data/client/{id}": {
+            "summary": "Client",
+            "description": "Client is an object representing the client to whom a parcel should be delivered. It contains the Address object, which holds the Client address. While creating orders or calculating the route via Client id, Address of the Client will be used as a delivery address.\nNotice that only registered users having created a Profile can save their Clients' data.",
+            "get": {
+                "tags": [
+                    "client"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200 one",
+                        "x-last-modified": 1718889279313
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889211678
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889224633
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889237158
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889898774
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889259586
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read Client by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
+            },
+            "delete": {
+                "tags": [
+                    "client"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718889326604
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889339851
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889350835
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889364428
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889927760
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889941430
+                    }
+                },
+                "deprecated": false,
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete Client by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "id": {
+                            "value": "74"
+                        }
+                    },
+                    "name": "id",
+                    "description": "client id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/data/manufacturer": {
+            "summary": "Client",
+            "description": "Manufacturer is an object representing the manufacturer from whom a parcel should be shipped. It contains the Address object, which holds the Manufacturer address. While creating orders or calculating the route via Manufacturer id, Address of the Manufacturer will be used as a shipment address.\nNotice that only registered users having created a Profile can save their Manufacturer' data.",
+            "get": {
+                "tags": [
+                    "manufacturer"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200",
+                        "x-last-modified": 1719224505066
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1719224545166
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1719224573070
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read all Manufacturers",
+                "description": "Read all Manufacturers associated with the logged-in user Profile. It is possible to request only own Manufacturers\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | yes |"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "The recommended way of Manufacturer create is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ManufacturerCreateWithAddress"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "manufacturer"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718890060914
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718890078434
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718890117079
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718890132208
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718890145614
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718890158175
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718890182150
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "operationId": "manufacturer_update",
+                "summary": "Update Manufacturer",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes  |\n| Authorization                  | only own |"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "The recommended way of Manufacturer create is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientCreateWithAddress"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "manufacturer"
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201",
+                        "x-last-modified": 1718887903713
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718887948467
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718895012807
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/409",
+                        "x-last-modified": 1718887965493
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718887982927
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "operationId": "manufacturer_create",
+                "summary": "Create manufacturer",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only for own Profile  |\n"
+            },
+            "x-last-modified": 1719225191338
+        },
+        "/data/manufacturer/{id}": {
+            "summary": "Manufacturer",
+            "description": "Manufacturer is an object representing the manufacturer from whom a parcel should be shipped. It contains the Address object, which holds the Manufacturer address. While creating orders or calculating the route via Manufacturer id, Address of the Manufacturer will be used as a shipment address.\nNotice that only registered users having created a Profile can save their Manufacturer' data.",
+            "get": {
+                "tags": [
+                    "manufacturer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718888757237
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200 one",
+                        "x-last-modified": 1718889279313
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889211678
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889224633
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889237158
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889898774
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889259586
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read Manufacturer by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
+            },
+            "delete": {
+                "tags": [
+                    "manufacturer"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718889306137
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718889326604
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889339851
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889350835
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889364428
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889927760
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889941430
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete manufacturer",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "id": {
+                            "value": "86"
+                        }
+                    },
+                    "name": "id",
+                    "description": "manufacturer id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/data/order": {
+            "summary": "Order",
+            "description": "Order is an object holding a delivery info: shipment and delivery addresses, as well as from whom to whom parcel should be delivered. It is required to create a profile first, before these endpoints can be used.",
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200",
+                        "x-last-modified": 1719224505066
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1719224545166
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1719224573070
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read all Orders",
+                "description": "Read all Orders associated with the logged-in user Profile. It is possible to request only own Orders\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | no |"
+            },
+            "put": {
+                "requestBody": {
+                    "description": "There are multiple ways to update orders, the easiests and recommended one is to specify client and manufacturers ids. If there is a need to change delivery or shipment address, it is possible to specify the ShipmentAddress or DeliveryAddress objects.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "order"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718890060914
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718890078434
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718890117079
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718890132208
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718890145614
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718890182150
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Update Order",
+                "description": "| Requirement / Function | Is Required / Has |\n| ---------------------- | ----------------- |\n| Authentication         | yes |\n| Authorization          | only own |"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "There are multiple ways to create an order, the easiests and recommended one is to specify client and manufacturers ids. If there is a need to change delivery or shipment address, it is possible to specify the ShipmentAddress or DeliveryAddress objects.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClientCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "order"
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201",
+                        "x-last-modified": 1718887903713
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718887948467
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718895012807
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718887982927
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Order",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only for own Profile |\n"
+            }
+        },
+        "/data/order/{id}": {
+            "summary": "User profile",
+            "description": "Order is an object holding a delivery info: shipment and delivery addresses, as well as from whom to whom parcel should be delivered. It is required to create a profile first, before these endpoints can be used.",
+            "get": {
+                "tags": [
+                    "order"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718888757237
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200 one",
+                        "x-last-modified": 1718889279313
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889211678
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889224633
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889237158
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889898774
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889259586
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read order by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
+            },
+            "delete": {
+                "tags": [
+                    "order"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/id",
+                        "name": "id",
+                        "x-last-modified": 1718889306137
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204",
+                        "x-last-modified": 1718889326604
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400",
+                        "x-last-modified": 1718889339851
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401",
+                        "x-last-modified": 1718889350835
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403",
+                        "x-last-modified": 1718889364428
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404",
+                        "x-last-modified": 1718889927760
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500",
+                        "x-last-modified": 1718889941430
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete order",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "id": {
+                            "value": "86"
+                        }
+                    },
+                    "name": "id",
+                    "description": "order id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/data/order/done": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OrderDone"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "order"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Done orders",
+                "description": "Delievered orders ids can be sent and they will be deleted from the system.\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "APIErrorRes": {
+                "description": "Error response. Notice that errors field is always an array. Data can be ever empty object, null or undefined.",
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "description": "An empty object for the data field",
+                        "type": "object"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/APIError"
+                        }
+                    }
+                },
+                "x-last-modified": 1718628043172
+            },
+            "APIError": {
+                "description": "Interface for all errors, which may occur. Notice that the error has type property, which can be used for determining the object type and be parsed accordingly. If any unexpected errors occurred where will be additional field containing the error. The name field is common reason describing what kind of error happened and it is a enum value. The reason field is a concrete reason why the error happened and it is a enum value. The location field is describing possible error place in the request and it a enum value.\n\nErrorName enum:\n| Key | Value |\n| -------- | -------- |\n| NOT_FOUND | 'NOT_FOUND' | \n| BAD_REQUEST | 'BAD_REQUEST' | \n| VALIDATION | 'VALIDATION' | \n| NOT_AUTHENTICATED | 'NOT_AUTHENTICATED' | \n| NOT_AUTHORIZED | 'NOT_AUTHORIZED' | \n| TOO_MANY_REQUESTS | 'TOO_MANY_REQUESTS' | \n| SERVER_ERROR | 'SERVER_ERROR' | \n| UNEXPECTED | 'UNEXPECTED' | \n\nErrorReason enum:\n| Key | Value |\n| -------- | -------- |\n| NOT_FOUND | 'NOT_FOUND' | \n| BAD_REQUEST | 'BAD_REQUEST' | \n| REQUIRED | 'REQUIRED' | \n| NOT_ALLOWED | 'NOT_ALLOWED' | \n| VALIDATION | 'VALIDATION' | \n| NOT_STRING | 'NOT_STRING' | \n| NOT_NUMBER | 'NOT_NUMBER' | \n| NOT_BOOLEAN | 'NOT_BOOLEAN' | \n| NOT_AUTHENTICATED | 'NOT_AUTHENTICATED' | \n| AUTH_TOKEN_NOT_PROVIDED | 'AUTH_TOKEN_NOT_PROVIDED' | \n| INVALID_AUTH_TOKEN_FORMAT | 'INVALID_AUTH_TOKEN_FORMAT' | \n| INVALID_AUTH_TOKEN | 'INVALID_AUTH_TOKEN' | \n| AUTHENTICATION_FAILED | 'AUTHENTICATION_FAILED' | \n| WRONG_CREDENTIALS | 'WRONG_CREDENTIALS' | \n| NOT_AUTHORIZED | 'NOT_AUTHORIZED' | \n| TOO_MANY_REQUESTS | 'TOO_MANY_REQUESTS' | \n| SERVER_MISCONFIGURED | 'SERVER_MISCONFIGURED' | \n| SERVER_ERROR | 'SERVER_ERROR' | \n| UNEXPECTED | 'UNEXPECTED' | \n\nErrorLocation enum:\n| Key | Value |\n| -------- | -------- |\n| HEADER | 'header' | \n| BODY | 'body' | \n| PARAM | 'param' | \n| QUERY | 'query' | ",
+                "required": [],
+                "enum": [],
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "description": "The reason for the error",
+                        "type": "string",
+                        "example": "REQUIRED"
+                    },
+                    "status": {
+                        "description": "The HTTP status code",
+                        "type": "integer",
+                        "example": 400
+                    },
+                    "location": {
+                        "description": "The approximate location of the error",
+                        "type": "string",
+                        "example": "body"
+                    },
+                    "message": {
+                        "description": "The error message",
+                        "type": "string",
+                        "example": "\"password\" is required"
+                    },
+                    "endpoint": {
+                        "description": "The endpoint where the error occurred",
+                        "type": "string",
+                        "example": "/api/v2/data/profile"
+                    },
+                    "field": {
+                        "description": "The field causing the error",
+                        "type": "string",
+                        "example": "password"
+                    },
+                    "additional": {
+                        "nullable": true,
+                        "description": "Additional information about the error",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the error",
+                        "type": "string",
+                        "example": "VALIDATION"
+                    },
+                    "type": {
+                        "description": "The type of the error",
+                        "type": "string",
+                        "example": "APIError"
+                    }
+                },
+                "x-last-modified": 1718631391947
+            },
+            "ProfileCreate": {
+                "description": "Profile creation request body",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "user1"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "my_password"
+                    }
+                },
+                "x-last-modified": 1718631417714
+            },
+            "ProfileUpdate": {
+                "description": "Profile update request body",
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "read-only",
+                        "type": "number",
+                        "example": 1
+                    },
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "user1"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "my_password"
+                    }
+                },
+                "x-last-modified": 1718888436324
+            },
+            "ClientUpdate": {
+                "description": "Client update request body",
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "read-only",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "client1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Client Name"
+                    },
+                    "addressId": {
+                        "description": "foreign",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "x-last-modified": 1718894876983
+            },
+            "AddressCreate": {
+                "description": "Address creation request body",
+                "required": [
+                    "city",
+                    "street",
+                    "building"
+                ],
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "example": "Helsinki"
+                    },
+                    "street": {
+                        "description": "only street name",
+                        "type": "string",
+                        "example": "Fredrikinkatu"
+                    },
+                    "building": {
+                        "description": "may include letter",
+                        "type": "string",
+                        "example": "34 B"
+                    },
+                    "flat": {
+                        "type": "integer",
+                        "example": 56
+                    }
+                },
+                "x-last-modified": 1718895587945
+            },
+            "Address": {
+                "description": "Address object",
+                "required": [
+                    "city",
+                    "street",
+                    "building"
+                ],
+                "enum": [
+                    "id",
+                    "city",
+                    "street",
+                    "building",
+                    "lon",
+                    "lat"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Helsinki"
+                    },
+                    "street": {
+                        "description": "only street name",
+                        "type": "string",
+                        "example": "Fredrikinkatu"
+                    },
+                    "building": {
+                        "description": "may include letter",
+                        "type": "string",
+                        "example": "34 B"
+                    },
+                    "flat": {
+                        "type": "integer",
+                        "example": 56
+                    },
+                    "lon": {
+                        "description": "longitude coordinate",
+                        "type": "number",
+                        "example": 60.34
+                    },
+                    "lat": {
+                        "description": "latitude coordinate",
+                        "type": "number",
+                        "example": 24.12
+                    }
+                },
+                "x-last-modified": 1718895828479
+            },
+            "ClientCreateWithAddress": {
+                "description": "Client creation request body with Address",
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "client1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Client Name"
+                    },
+                    "Address": {
+                        "$ref": "#/components/schemas/AddressCreate"
+                    }
+                },
+                "x-last-modified": 1718896041728
+            },
+            "ManufacturerUpdate": {
+                "description": "Manufacturer update request body",
+                "required": [
+                    "id"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "read-only",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "manufacturer1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Manufacturer Name"
+                    },
+                    "addressId": {
+                        "description": "foreign",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "x-last-modified": 1719225405609
+            },
+            "ManufacturerCreateWithAddress": {
+                "description": "Manufacturer creation request body with Address",
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "manufacturer1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Manufacturer Name"
+                    },
+                    "Address": {
+                        "$ref": "#/components/schemas/AddressCreate"
+                    }
+                },
+                "x-last-modified": 1719225435463
+            },
+            "ManufacturerCreate": {
+                "description": "Manufacturer creation request body (not recommended way)",
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "manufacturer1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Manufacturer Name"
+                    },
+                    "addressId": {
+                        "description": "foreign",
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "x-last-modified": 1719225504829
+            },
+            "ClientCreate": {
+                "description": "Client creation request body (not recommended way)",
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "client1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Client Name"
+                    },
+                    "addressId": {
+                        "description": "foreign",
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "OrderUpdate": {
+                "description": "Update an Order by specified id in the body",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "manufacturerId": {
+                        "type": "integer"
+                    },
+                    "clientId": {
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "manufacturerId": 1,
+                    "clientId": 1
+                }
+            },
+            "OrderCreate": {
+                "description": "Object for creating an order",
+                "type": "object",
+                "properties": {
+                    "manufacturerId": {
+                        "type": "integer"
+                    },
+                    "client": {
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "manufacturerId": 1,
+                    "client": 1
+                }
+            },
+            "OrderDone": {
+                "description": "Delivered orders, that can be sent here and be deleted from the system",
+                "type": "object",
+                "properties": {
+                    "orderIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "example": {
+                    "orderIds": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "description": "\"data\"-field contains array of requested objects. \"metadata\"-field contains the pagination data",
+                            "required": [],
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array"
+                                },
+                                "metadata": {
+                                    "type": "object",
+                                    "properties": {
+                                        "currentPage": {
+                                            "description": "The current page number",
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "limit": {
+                                            "description": "The limit of items per page",
+                                            "type": "integer",
+                                            "example": 20
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "example": {
+                            "data": [
+                                {
+                                    "username": "user1",
+                                    "id": 3
+                                },
+                                {
+                                    "username": "user2",
+                                    "id": 4
+                                }
+                            ],
+                            "metadata": {
+                                "currentPage": 1,
+                                "limit": 20
+                            }
+                        }
+                    }
+                },
+                "description": "Successful request, response with body. ",
+                "x-last-modified": 1718887018576
+            },
+            "201": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "description": "\"data\"-field contains created object.",
+                            "required": [],
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "example": {
+                            "data": {
+                                "username": "user2",
+                                "id": 4
+                            }
+                        }
+                    }
+                },
+                "description": "Successfully created, response with created object.",
+                "x-last-modified": 1718883610294
+            },
+            "204": {
+                "description": "Successful request, response with no body. ",
+                "x-last-modified": 1718887121189
+            },
+            "400": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "NOT_STRING",
+                                    "status": 400,
+                                    "location": "body",
+                                    "message": "\"username\" field must be a string",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "field": "Authorization",
+                                    "name": "VALIDATION",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Validation error response. Some of the fields are not specified, have wrong data type or otherwise in wrong format"
+            },
+            "401": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "AUTHENTICATION_FAILED",
+                                    "status": 401,
+                                    "location": "header",
+                                    "message": "Could not authenticate with provided token. Token is invalid or expired",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "field": "Authorization",
+                                    "name": "NOT_AUTHENTICATED",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Authentication error response. It may occur if the request does not contain \"Authorization\" header with the Bearer token",
+                "x-last-modified": 1718629884243
+            },
+            "403": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "NOT_AUTHORIZED",
+                                    "status": 403,
+                                    "message": "Action execution denied",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "name": "NOT_AUTHORIZED",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Authorization error response. It may occur if the user is not allowed to execute certain action",
+                "x-last-modified": 1718630393958
+            },
+            "404": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "NOT_FOUND",
+                                    "status": 404,
+                                    "location": "param",
+                                    "message": "Could not find any objects",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "field": "id",
+                                    "name": "NOT_FOUND",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Nothing found",
+                "x-last-modified": 1718889834399
+            },
+            "409": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "NOT_UNIQUE",
+                                    "status": 409,
+                                    "location": "body",
+                                    "message": "User with that username already exists",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "field": "username",
+                                    "name": "BAD_REQUEST",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Conflict error response. It may occur if some of the request field(s) is not unique",
+                "x-last-modified": 1718631266638
+            },
+            "500": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/APIErrorRes"
+                        },
+                        "example": {
+                            "errors": [
+                                {
+                                    "reason": "UNEXPECTED",
+                                    "status": 500,
+                                    "message": "Unexpected server error occurred",
+                                    "endpoint": "/api/v2/data/profile",
+                                    "additional": {
+                                        "message": "throwAPIError is not defined",
+                                        "stack": "ReferenceError: throwAPIError is not defined\n    at createProfile (file:///app/server/router/api/v2/data/profile.js:25:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async file:///app/server/router/api/v2/routeBuilder/core/pipelineHandlers/addController.js:12:30",
+                                        "name": "ReferenceError"
+                                    },
+                                    "name": "UNEXPECTED",
+                                    "type": "APIError"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "description": "Server error response. It occurs unexpectedly. The additional field contains an error object",
+                "x-last-modified": 1718631059302
+            },
+            "200 one": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "description": "\"data\"-field contains requested object.",
+                            "required": [],
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "example": {
+                            "data": {
+                                "username": "user1",
+                                "id": 1
+                            }
+                        }
+                    }
+                },
+                "description": "Successful request, response with body. ",
+                "x-last-modified": 1718884195366
+            }
+        },
+        "parameters": {
+            "id": {
+                "deprecated": false,
+                "example": "1",
+                "name": "id",
+                "description": "object id field",
+                "schema": {
+                    "type": "number"
+                },
+                "in": "path",
+                "required": true,
+                "x-last-modified": 1718888734807
+            }
+        },
+        "examples": {
+            "ProfileCreate": {
+                "summary": "Example of ProfileCreate request object",
+                "value": {
+                    "username": "user1",
+                    "password": "my_password"
+                },
+                "x-last-modified": 1718622389962
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "scheme": "bearer",
+                "type": "http",
+                "description": "Bearer token"
+            }
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "profile",
+            "description": "profile",
+            "externalDocs": {},
+            "x-last-modified": 1718887325659
+        },
+        {
+            "name": "client",
+            "description": "client",
+            "externalDocs": {},
+            "x-last-modified": 1718887355059
+        },
+        {
+            "name": "manufacturer",
+            "description": "manufacturer",
+            "externalDocs": {},
+            "x-last-modified": 1718887379701
+        },
+        {
+            "name": "order",
+            "description": "order",
+            "externalDocs": {},
+            "x-last-modified": 1718894498840
+        }
+    ],
+    "externalDocs": {
+        "description": "GitHub wikipages",
+        "url": "https://github.com/leolab1337/map_app/wiki"
+    }
+}
