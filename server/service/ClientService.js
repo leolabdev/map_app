@@ -35,7 +35,7 @@ export default class ClientService {
      * @returns founded Client object, if operation was successful or null if not
      */
     async read(primaryKey) {
-        return this.service.readOneById(primaryKey, idField, { include: Address });
+        return this.service.readOneById(primaryKey, idField);
     }
 
     /**
@@ -43,7 +43,7 @@ export default class ClientService {
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
     async readAll() {
-        return this.service.readAll({include: Address });
+        return this.service.readAll();
     }
 
     /**
@@ -51,9 +51,7 @@ export default class ClientService {
      * @param {Client} data object with the client data, such as clientUsername or name
      * @returns true, if the operation was successful or false if not
      */
-     update = validateInput(async(data) => {
-        const { ...client } = data;
-
+     update = validateInput(async(client) => {
         if(!client.username)
             return this.service.updateById(client);
 
@@ -82,10 +80,11 @@ export default class ClientService {
      */
     delete = validateInput(async (primaryKey) => {
         try {  
-            await this.orderService.deleteByCondition({where: {clientId: primaryKey}});
+            await this.orderService.deleteByCondition({where: {senderId: primaryKey}});
+            await this.orderService.deleteByCondition({where: {recipientId: primaryKey}});
             return this.service.deleteById(primaryKey);
         } catch (e) {
-            console.error(`ClientService update(): Could not execute the query`, e);
+            console.error(`ClientService delete(): Could not execute the query`, e);
             return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
         }
     }, idField); 

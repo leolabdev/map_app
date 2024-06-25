@@ -1,12 +1,9 @@
-import DaoUtil from "../util/DaoUtil.js";
 import OrderData from "../model/OrderData.js";
 import {Op} from "sequelize";
 import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
 import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
 import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
-
-const daoUtil = new DaoUtil();
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
@@ -44,7 +41,7 @@ export default class OrderDataService {
     async readByIds(primaryKeys) {
         return this.service.readAll({
             where: {
-                orderId: {
+                id: {
                     [Op.or]: primaryKeys
                 }
             },
