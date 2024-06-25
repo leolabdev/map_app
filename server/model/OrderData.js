@@ -25,27 +25,19 @@ OrderData.init({
         primaryKey: true
     },
 
-    manufacturerId: {
+    senderId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
 
-    clientId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-    shipmentAddressId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-    deliveryAddressId: {
+    recipientId: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 }, options);
 
-Client.hasMany(OrderData, { foreignKey: 'clientId' });
+Client.hasMany(OrderData, { foreignKey: 'senderId' });
+Client.hasMany(OrderData, { foreignKey: 'recipientId' });
 
-OrderData.belongsTo(Client, { foreignKey: 'clientId' })
+OrderData.belongsTo(Client, { foreignKey: 'senderId' });
+OrderData.belongsTo(Client, { foreignKey: 'recipientId' });
