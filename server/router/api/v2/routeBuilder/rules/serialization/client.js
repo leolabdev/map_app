@@ -18,7 +18,7 @@ export const ClientCreateRes = {
 }
 
 export const ClientReadRes = {
-    id: string,
+    id: true,
     username: true,
     name: true,
     type: true,
@@ -29,17 +29,7 @@ export const ClientReadRes = {
 }
 
 export const ClientUpdateReq = {
-    id: string,
-    username: true,
-    name: true,
-    type: true,
-    city: true,
-    street: true,
-    building: true,
-    flat: true
-}
-export const ClientUpdateRes = {
-    id: string,
+    id: true,
     username: true,
     name: true,
     type: true,
