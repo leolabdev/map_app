@@ -42,10 +42,6 @@
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889224633
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889237158
-                    },
                     "404": {
                         "$ref": "#/components/responses/404",
                         "x-last-modified": 1718889898774
@@ -87,10 +83,6 @@
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889350835
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889364428
-                    },
                     "404": {
                         "$ref": "#/components/responses/404",
                         "x-last-modified": 1718889927760
@@ -127,7 +119,7 @@
         },
         "/data/client": {
             "summary": "Client",
-            "description": "Client is an object representing the client to whom a parcel should be delivered. It contains the Address object, which holds the Client address. While creating orders or calculating the route via Client id, Address of the Client will be used as a delivery address.\nNotice that only registered users having created a Profile can save their Clients' data.",
+            "description": "Client is an object representing the client of the delivery company. It has a type field, which may have only \"recipient\" or \"sender\" values. Type \"sender\" is a company from which the parcels are being shipped. Type \"recipient\" is a person/another company to whom a parcels are delivered.\nNotice that only registered users having created a Profile can save their Clients' data.",
             "get": {
                 "tags": [
                     "client"
@@ -159,11 +151,11 @@
             },
             "put": {
                 "requestBody": {
-                    "description": "The recommended way of Client update is with specifying an Address object if there is a need to update address info. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "description": "Notice that only the id field and  fields, that need to be updated should be provided",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ClientCreateWithAddress"
+                                "$ref": "#/components/schemas/ClientUpdate"
                             }
                         }
                     },
@@ -185,10 +177,6 @@
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718890117079
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718890132208
-                    },
                     "404": {
                         "$ref": "#/components/responses/404",
                         "x-last-modified": 1718890145614
@@ -207,13 +195,12 @@
                         "BearerAuth": []
                     }
                 ],
-                "operationId": "client_update",
                 "summary": "Update Client",
                 "description": "| Requirement / Function | Is Required / Has |\n| ---------------------- | ----------------- |\n| Authentication         | yes |\n| Authorization          | only own |"
             },
             "post": {
                 "requestBody": {
-                    "description": "The recommended way of Client creation is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
+                    "description": "Notice that the Client will be automatically associated with the logged-in user profile",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -239,10 +226,6 @@
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718895012807
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718895023952
-                    },
                     "409": {
                         "$ref": "#/components/responses/409",
                         "x-last-modified": 1718887965493
@@ -267,6 +250,7 @@
             "description": "User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.",
             "put": {
                 "requestBody": {
+                    "description": "Notice that only the id field and  fields, that need to be updated should be provided",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -291,10 +275,6 @@
                     "401": {
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718890117079
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718890132208
                     },
                     "404": {
                         "$ref": "#/components/responses/404",
@@ -351,12 +331,11 @@
                 },
                 "summary": "Create user profile",
                 "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------  |\n| Authentication             | no |\n| Authorization              | no |"
-            },
-            "x-last-modified": 1718894530946
+            }
         },
         "/data/client/{id}": {
             "summary": "Client",
-            "description": "Client is an object representing the client to whom a parcel should be delivered. It contains the Address object, which holds the Client address. While creating orders or calculating the route via Client id, Address of the Client will be used as a delivery address.\nNotice that only registered users having created a Profile can save their Clients' data.",
+            "description": "Client is an object representing the client of the delivery company. It has a type field, which may have only \"recipient\" or \"sender\" values. Type \"sender\" is a company from which the parcels are being shipped. Type \"recipient\" is a person/another company to whom a parcels are delivered.\nNotice that only registered users having created a Profile can save their Clients' data.",
             "get": {
                 "tags": [
                     "client"
@@ -373,10 +352,6 @@
                     "401": {
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889224633
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889237158
                     },
                     "404": {
                         "$ref": "#/components/responses/404",
@@ -411,10 +386,6 @@
                     "401": {
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889350835
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889364428
                     },
                     "404": {
                         "$ref": "#/components/responses/404",
@@ -451,253 +422,9 @@
                 }
             ]
         },
-        "/data/manufacturer": {
-            "summary": "Client",
-            "description": "Manufacturer is an object representing the manufacturer from whom a parcel should be shipped. It contains the Address object, which holds the Manufacturer address. While creating orders or calculating the route via Manufacturer id, Address of the Manufacturer will be used as a shipment address.\nNotice that only registered users having created a Profile can save their Manufacturer' data.",
-            "get": {
-                "tags": [
-                    "manufacturer"
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/200",
-                        "x-last-modified": 1719224505066
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1719224545166
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1719224573070
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "Read all Manufacturers",
-                "description": "Read all Manufacturers associated with the logged-in user Profile. It is possible to request only own Manufacturers\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | yes |"
-            },
-            "put": {
-                "requestBody": {
-                    "description": "The recommended way of Manufacturer create is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ManufacturerCreateWithAddress"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "tags": [
-                    "manufacturer"
-                ],
-                "responses": {
-                    "204": {
-                        "$ref": "#/components/responses/204",
-                        "x-last-modified": 1718890060914
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718890078434
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718890117079
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718890132208
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718890145614
-                    },
-                    "409": {
-                        "$ref": "#/components/responses/409",
-                        "x-last-modified": 1718890158175
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718890182150
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "operationId": "manufacturer_update",
-                "summary": "Update Manufacturer",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes  |\n| Authorization                  | only own |"
-            },
-            "post": {
-                "requestBody": {
-                    "description": "The recommended way of Manufacturer create is with specifying an Address object. In some edge cases the addressId field can be used.\nNotice that it is not possible to create the address object separately",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ClientCreateWithAddress"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "tags": [
-                    "manufacturer"
-                ],
-                "responses": {
-                    "201": {
-                        "$ref": "#/components/responses/201",
-                        "x-last-modified": 1718887903713
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718887948467
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718895012807
-                    },
-                    "409": {
-                        "$ref": "#/components/responses/409",
-                        "x-last-modified": 1718887965493
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718887982927
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "operationId": "manufacturer_create",
-                "summary": "Create manufacturer",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only for own Profile  |\n"
-            },
-            "x-last-modified": 1719225191338
-        },
-        "/data/manufacturer/{id}": {
-            "summary": "Manufacturer",
-            "description": "Manufacturer is an object representing the manufacturer from whom a parcel should be shipped. It contains the Address object, which holds the Manufacturer address. While creating orders or calculating the route via Manufacturer id, Address of the Manufacturer will be used as a shipment address.\nNotice that only registered users having created a Profile can save their Manufacturer' data.",
-            "get": {
-                "tags": [
-                    "manufacturer"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/id",
-                        "name": "id",
-                        "x-last-modified": 1718888757237
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/200 one",
-                        "x-last-modified": 1718889279313
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718889211678
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718889224633
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889237158
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718889898774
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718889259586
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "Read Manufacturer by id",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
-            },
-            "delete": {
-                "tags": [
-                    "manufacturer"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/id",
-                        "name": "id",
-                        "x-last-modified": 1718889306137
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "$ref": "#/components/responses/204",
-                        "x-last-modified": 1718889326604
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718889339851
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718889350835
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889364428
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718889927760
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718889941430
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "Delete manufacturer",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
-            },
-            "parameters": [
-                {
-                    "examples": {
-                        "id": {
-                            "value": "86"
-                        }
-                    },
-                    "name": "id",
-                    "description": "manufacturer id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/data/order": {
             "summary": "Order",
-            "description": "Order is an object holding a delivery info: shipment and delivery addresses, as well as from whom to whom parcel should be delivered. It is required to create a profile first, before these endpoints can be used.",
+            "description": "Order is an object holding a sender and recipient info. These objects can also be used in calculating a route.",
             "get": {
                 "tags": [
                     "order"
@@ -725,11 +452,11 @@
                     }
                 ],
                 "summary": "Read all Orders",
-                "description": "Read all Orders associated with the logged-in user Profile. It is possible to request only own Orders\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | no |"
+                "description": "Read all Orders associated with the logged-in user Profile.\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own  |\n| Pagination                       | yes |\n| Search                             | no |"
             },
             "put": {
                 "requestBody": {
-                    "description": "There are multiple ways to update orders, the easiests and recommended one is to specify client and manufacturers ids. If there is a need to change delivery or shipment address, it is possible to specify the ShipmentAddress or DeliveryAddress objects.",
+                    "description": "Notice that only the id field and  fields, that need to be updated should be provided",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -744,28 +471,19 @@
                 ],
                 "responses": {
                     "204": {
-                        "$ref": "#/components/responses/204",
-                        "x-last-modified": 1718890060914
+                        "$ref": "#/components/responses/204"
                     },
                     "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718890078434
+                        "$ref": "#/components/responses/400"
                     },
                     "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718890117079
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718890132208
+                        "$ref": "#/components/responses/401"
                     },
                     "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718890145614
+                        "$ref": "#/components/responses/404"
                     },
                     "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718890182150
+                        "$ref": "#/components/responses/500"
                     }
                 },
                 "security": [
@@ -778,7 +496,7 @@
             },
             "post": {
                 "requestBody": {
-                    "description": "There are multiple ways to create an order, the easiests and recommended one is to specify client and manufacturers ids. If there is a need to change delivery or shipment address, it is possible to specify the ShipmentAddress or DeliveryAddress objects.",
+                    "description": "Notice that the Order will be automatically associated with the logged-in user profile",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -820,7 +538,7 @@
         },
         "/data/order/{id}": {
             "summary": "User profile",
-            "description": "Order is an object holding a delivery info: shipment and delivery addresses, as well as from whom to whom parcel should be delivered. It is required to create a profile first, before these endpoints can be used.",
+            "description": "Order is an object holding a sender and recipient info. These objects can also be used in calculating a route.",
             "get": {
                 "tags": [
                     "order"
@@ -844,10 +562,6 @@
                     "401": {
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889224633
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889237158
                     },
                     "404": {
                         "$ref": "#/components/responses/404",
@@ -890,10 +604,6 @@
                         "$ref": "#/components/responses/401",
                         "x-last-modified": 1718889350835
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403",
-                        "x-last-modified": 1718889364428
-                    },
                     "404": {
                         "$ref": "#/components/responses/404",
                         "x-last-modified": 1718889927760
@@ -931,6 +641,7 @@
         "/data/order/done": {
             "post": {
                 "requestBody": {
+                    "description": "Notice that all ids, which are not associated with the user profile will be ignored",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -953,9 +664,6 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403"
-                    },
                     "500": {
                         "$ref": "#/components/responses/500"
                     }
@@ -965,8 +673,38 @@
                         "BearerAuth": []
                     }
                 ],
-                "summary": "Done orders",
+                "summary": "Delivered orders",
                 "description": "Delievered orders ids can be sent and they will be deleted from the system.\n\n| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
+            }
+        },
+        "/data/profile/signIn": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignIn"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    }
+                },
+                "summary": "Signing in profile",
+                "description": "In the response the Bearer token will be returned, which should be used for authentication in the system. Notice that authentication is required for almost every /data endpoints. 403 will be returned if credetials are wrong"
             }
         }
     },
@@ -1087,6 +825,103 @@
                 },
                 "x-last-modified": 1718888436324
             },
+            "ClientCreate": {
+                "description": "Client creation request body",
+                "required": [
+                    "username",
+                    "type",
+                    "city",
+                    "street",
+                    "building"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "description": "unique",
+                        "type": "string",
+                        "example": "client1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Client Name"
+                    },
+                    "type": {
+                        "description": "recipient or sender",
+                        "type": "string",
+                        "example": "recipient"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Helsinki"
+                    },
+                    "street": {
+                        "description": "street name only, without building",
+                        "type": "string",
+                        "example": "Punanotkonkatu"
+                    },
+                    "building": {
+                        "description": "can be number or number with letter",
+                        "type": "string",
+                        "example": "3"
+                    },
+                    "flat": {
+                        "description": "optional and not validated",
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "OrderUpdate": {
+                "description": "Object for updating an order",
+                "type": "object",
+                "properties": {
+                    "senderId": {
+                        "description": "foreign key to client table with type sender",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "recipientId": {
+                        "description": "foreign key to client table with type recipient",
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "OrderCreate": {
+                "description": "Object for creating an order",
+                "type": "object",
+                "properties": {
+                    "senderId": {
+                        "description": "foreign key to client table with type sender",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "recipientId": {
+                        "description": "foreign key to client table with type recipient",
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "OrderDone": {
+                "description": "Delivered orders, that can be sent here and be deleted from the system",
+                "type": "object",
+                "properties": {
+                    "orderIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "example": {
+                    "orderIds": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            },
             "ClientUpdate": {
                 "description": "Client update request body",
                 "required": [
@@ -1108,269 +943,46 @@
                         "type": "string",
                         "example": "Client Name"
                     },
-                    "addressId": {
-                        "description": "foreign",
-                        "type": "integer",
-                        "example": 1
-                    }
-                },
-                "x-last-modified": 1718894876983
-            },
-            "AddressCreate": {
-                "description": "Address creation request body",
-                "required": [
-                    "city",
-                    "street",
-                    "building"
-                ],
-                "type": "object",
-                "properties": {
-                    "city": {
+                    "type": {
+                        "description": "recipient or sender",
                         "type": "string",
-                        "example": "Helsinki"
-                    },
-                    "street": {
-                        "description": "only street name",
-                        "type": "string",
-                        "example": "Fredrikinkatu"
-                    },
-                    "building": {
-                        "description": "may include letter",
-                        "type": "string",
-                        "example": "34 B"
-                    },
-                    "flat": {
-                        "type": "integer",
-                        "example": 56
-                    }
-                },
-                "x-last-modified": 1718895587945
-            },
-            "Address": {
-                "description": "Address object",
-                "required": [
-                    "city",
-                    "street",
-                    "building"
-                ],
-                "enum": [
-                    "id",
-                    "city",
-                    "street",
-                    "building",
-                    "lon",
-                    "lat"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
+                        "example": "recipient"
                     },
                     "city": {
                         "type": "string",
                         "example": "Helsinki"
                     },
                     "street": {
-                        "description": "only street name",
+                        "description": "street name only, without building",
                         "type": "string",
-                        "example": "Fredrikinkatu"
+                        "example": "Punanotkonkatu"
                     },
                     "building": {
-                        "description": "may include letter",
+                        "description": "can be number or number with letter",
                         "type": "string",
-                        "example": "34 B"
+                        "example": "3"
                     },
                     "flat": {
-                        "type": "integer",
-                        "example": 56
-                    },
-                    "lon": {
-                        "description": "longitude coordinate",
-                        "type": "number",
-                        "example": 60.34
-                    },
-                    "lat": {
-                        "description": "latitude coordinate",
-                        "type": "number",
-                        "example": 24.12
-                    }
-                },
-                "x-last-modified": 1718895828479
-            },
-            "ClientCreateWithAddress": {
-                "description": "Client creation request body with Address",
-                "required": [
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "description": "unique",
-                        "type": "string",
-                        "example": "client1"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Client Name"
-                    },
-                    "Address": {
-                        "$ref": "#/components/schemas/AddressCreate"
-                    }
-                },
-                "x-last-modified": 1718896041728
-            },
-            "ManufacturerUpdate": {
-                "description": "Manufacturer update request body",
-                "required": [
-                    "id"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "read-only",
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "username": {
-                        "description": "unique",
-                        "type": "string",
-                        "example": "manufacturer1"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Manufacturer Name"
-                    },
-                    "addressId": {
-                        "description": "foreign",
-                        "type": "integer",
-                        "example": 1
-                    }
-                },
-                "x-last-modified": 1719225405609
-            },
-            "ManufacturerCreateWithAddress": {
-                "description": "Manufacturer creation request body with Address",
-                "required": [
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "description": "unique",
-                        "type": "string",
-                        "example": "manufacturer1"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Manufacturer Name"
-                    },
-                    "Address": {
-                        "$ref": "#/components/schemas/AddressCreate"
-                    }
-                },
-                "x-last-modified": 1719225435463
-            },
-            "ManufacturerCreate": {
-                "description": "Manufacturer creation request body (not recommended way)",
-                "required": [
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "description": "unique",
-                        "type": "string",
-                        "example": "manufacturer1"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Manufacturer Name"
-                    },
-                    "addressId": {
-                        "description": "foreign",
-                        "type": "integer",
-                        "example": 1
-                    }
-                },
-                "x-last-modified": 1719225504829
-            },
-            "ClientCreate": {
-                "description": "Client creation request body (not recommended way)",
-                "required": [
-                    "username"
-                ],
-                "type": "object",
-                "properties": {
-                    "username": {
-                        "description": "unique",
-                        "type": "string",
-                        "example": "client1"
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Client Name"
-                    },
-                    "addressId": {
-                        "description": "foreign",
+                        "description": "optional and not validated",
                         "type": "integer",
                         "example": 1
                     }
                 }
             },
-            "OrderUpdate": {
-                "description": "Update an Order by specified id in the body",
+            "SignIn": {
+                "description": "Signing in user profile",
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "integer"
+                    "username": {
+                        "type": "string"
                     },
-                    "manufacturerId": {
-                        "type": "integer"
-                    },
-                    "clientId": {
-                        "type": "integer"
+                    "password": {
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "id": 1,
-                    "manufacturerId": 1,
-                    "clientId": 1
-                }
-            },
-            "OrderCreate": {
-                "description": "Object for creating an order",
-                "type": "object",
-                "properties": {
-                    "manufacturerId": {
-                        "type": "integer"
-                    },
-                    "client": {
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "manufacturerId": 1,
-                    "client": 1
-                }
-            },
-            "OrderDone": {
-                "description": "Delivered orders, that can be sent here and be deleted from the system",
-                "type": "object",
-                "properties": {
-                    "orderIds": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "example": {
-                    "orderIds": [
-                        1,
-                        2,
-                        3
-                    ]
+                    "username": "user1",
+                    "password": "password"
                 }
             }
         },
