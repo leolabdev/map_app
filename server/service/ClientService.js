@@ -1,4 +1,3 @@
-import Address from "../model/Address.js";
 import Client from "../model/Client.js";
 import BasicService from "./BasicService.js";
 import { clientCreate, clientUpdate } from "./validation/client.js";
@@ -53,9 +52,7 @@ export default class ClientService {
      * @returns true, if the operation was successful or false if not
      */
      update = validateInput(async(data) => {
-        const { addressIdDelete, ...client } = data;
-        if(addressIdDelete)
-            client.addressId = null;
+        const { ...client } = data;
 
         if(!client.username)
             return this.service.updateById(client);
