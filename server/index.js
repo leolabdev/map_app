@@ -4,20 +4,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import SettingsUtil, { updateTrafficSituation } from "./util/settings/SettingsUtil.js";
 import SequelizeUtil from "./modules/SequelizeUtil.js";
-import * as addressRouter from "./router/api/v1/address.js";
-import * as routingRouter from "./router/api/v1/routing.js";
-import * as manufacturerDaoRouter from "./router/dao/manufacturer.js";
-import * as clientDaoRouter from "./router/dao/client.js";
-import * as addressDaoRouter from "./router/dao/address.js";
-import * as orderDaoRouter from "./router/dao/order.js";
-import * as dataDaoRouter from "./router/dao/data.js";
-import * as areaDaoRouter from "./router/dao/area.js";
 
 import * as address from "./router/api/v2/routing/address.js";
 import * as route from "./router/api/v2/routing/route.js";
-import * as manufacturer from "./router/api/v2/data/manufacturer.js";
 import * as client from "./router/api/v2/data/client.js";
-import * as addressData from "./router/api/v2/data/address.js";
 import * as order from "./router/api/v2/data/order.js";
 import * as data from "./router/api/v2/data/data.js";
 import * as area from "./router/api/v2/data/area.js";
@@ -36,23 +26,11 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(bodyParser.json());
 
-//old API routing
-app.use('/api/v1', addressRouter.default);
-app.use('/api/v1', routingRouter.default);
-app.use('/dao/manufacturer', manufacturerDaoRouter.default);
-app.use('/dao/client', clientDaoRouter.default);
-app.use('/dao/address', addressDaoRouter.default);
-app.use('/dao/order', orderDaoRouter.default);
-app.use('/dao/data', dataDaoRouter.default);
-app.use('/dao/area', areaDaoRouter.default);
-
 // v2
 const routesToRegister = {
     '/routing/address': address,
     '/routing/route': route,
-    '/data/manufacturer': manufacturer,
     '/data/client': client,
-    '/data/address': addressData,
     '/data/order': order,
     '/data/data': data,
     '/data/area': area,

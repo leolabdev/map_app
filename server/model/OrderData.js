@@ -1,7 +1,5 @@
 import SequelizeUtil from "../modules/SequelizeUtil.js";
 import {DataTypes, Model} from "sequelize";
-import Manufacturer from "./Manufacturer.js";
-import Address from "./Address.js";
 import Client from "./Client.js";
 
 
@@ -27,33 +25,19 @@ OrderData.init({
         primaryKey: true
     },
 
-    manufacturerId: {
+    senderId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
 
-    clientId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-    shipmentAddressId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-
-    deliveryAddressId: {
+    recipientId: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 }, options);
 
-Manufacturer.hasMany(OrderData, { foreignKey: 'manufacturerId' });
-Client.hasMany(OrderData, { foreignKey: 'clientId' });
-Address.hasMany(OrderData, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
-Address.hasMany(OrderData, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
+Client.hasMany(OrderData, { foreignKey: 'senderId' });
+Client.hasMany(OrderData, { foreignKey: 'recipientId' });
 
-OrderData.belongsTo(Manufacturer, { foreignKey: 'manufacturerId' });
-OrderData.belongsTo(Client, { foreignKey: 'clientId' });
-OrderData.belongsTo(Address, { as: 'shipmentAddress', foreignKey: 'shipmentAddressId' });
-OrderData.belongsTo(Address, { as: 'deliveryAddress', foreignKey: 'deliveryAddressId' });
+OrderData.belongsTo(Client, { foreignKey: 'senderId' });
+OrderData.belongsTo(Client, { foreignKey: 'recipientId' });

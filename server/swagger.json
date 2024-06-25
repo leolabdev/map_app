@@ -31,7 +31,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200 one",
+                        "$ref": "#/components/responses/200_one",
                         "x-last-modified": 1718889279313
                     },
                     "400": {
@@ -254,7 +254,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProfileCreate"
+                                "$ref": "#/components/schemas/ProfileUpdate"
                             }
                         }
                     },
@@ -342,7 +342,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200 one",
+                        "$ref": "#/components/responses/200_one",
                         "x-last-modified": 1718889279313
                     },
                     "400": {
@@ -500,7 +500,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ClientCreate"
+                                "$ref": "#/components/schemas/OrderCreate"
                             }
                         }
                     },
@@ -552,7 +552,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200 one",
+                        "$ref": "#/components/responses/200_one",
                         "x-last-modified": 1718889279313
                     },
                     "400": {
@@ -689,9 +689,12 @@
                     },
                     "required": true
                 },
+                "tags": [
+                    "profile"
+                ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200"
+                        "$ref": "#/components/responses/200_one"
                     },
                     "400": {
                         "$ref": "#/components/responses/400"
@@ -875,6 +878,10 @@
                 "description": "Object for updating an order",
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "senderId": {
                         "description": "foreign key to client table with type sender",
                         "type": "integer",
@@ -996,7 +1003,15 @@
                             "type": "object",
                             "properties": {
                                 "data": {
-                                    "type": "array"
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    }
                                 },
                                 "metadata": {
                                     "type": "object",
@@ -1033,8 +1048,7 @@
                         }
                     }
                 },
-                "description": "Successful request, response with body. ",
-                "x-last-modified": 1718887018576
+                "description": "Successful request, response with body. "
             },
             "201": {
                 "content": {
@@ -1214,7 +1228,7 @@
                 "description": "Server error response. It occurs unexpectedly. The additional field contains an error object",
                 "x-last-modified": 1718631059302
             },
-            "200 one": {
+            "200_one": {
                 "content": {
                     "application/json": {
                         "schema": {
@@ -1235,8 +1249,7 @@
                         }
                     }
                 },
-                "description": "Successful request, response with body. ",
-                "x-last-modified": 1718884195366
+                "description": "Successful request, response with body. "
             }
         },
         "parameters": {
@@ -1259,8 +1272,7 @@
                 "value": {
                     "username": "user1",
                     "password": "my_password"
-                },
-                "x-last-modified": 1718622389962
+                }
             }
         },
         "securitySchemes": {
@@ -1279,27 +1291,15 @@
     "tags": [
         {
             "name": "profile",
-            "description": "profile",
-            "externalDocs": {},
-            "x-last-modified": 1718887325659
+            "description": "profile"
         },
         {
             "name": "client",
-            "description": "client",
-            "externalDocs": {},
-            "x-last-modified": 1718887355059
-        },
-        {
-            "name": "manufacturer",
-            "description": "manufacturer",
-            "externalDocs": {},
-            "x-last-modified": 1718887379701
+            "description": "client"
         },
         {
             "name": "order",
-            "description": "order",
-            "externalDocs": {},
-            "x-last-modified": 1718894498840
+            "description": "order"
         }
     ],
     "externalDocs": {

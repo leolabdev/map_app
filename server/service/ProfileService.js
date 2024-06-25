@@ -34,7 +34,7 @@ export default class ProfileService {
             if(isProfile)
                 return new ServiceError({
                     reason: SEReason.NOT_UNIQUE,
-                    message: 'User with that username already exists',
+                    message: 'Profile with that username already exists',
                     field: 'username'
                 });
 
@@ -109,7 +109,7 @@ export default class ProfileService {
                 if(profile?.id && profile.id !== id)
                     return new ServiceError({
                         reason: SEReason.NOT_UNIQUE,
-                        message: 'User with that username already exists',
+                        message: 'Profile with that username already exists',
                         field: 'username'
                     });
             } catch (e){
