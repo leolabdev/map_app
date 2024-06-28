@@ -31,8 +31,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200_one",
-                        "x-last-modified": 1718889279313
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "profile": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully requested"
                     },
                     "400": {
                         "$ref": "#/components/responses/400",
@@ -126,8 +142,50 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200",
-                        "x-last-modified": 1719224505066
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200"
+                                },
+                                "examples": {
+                                    "client": {
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "id": 1,
+                                                    "username": "user1",
+                                                    "name": "User",
+                                                    "type": "sender",
+                                                    "city": "Helsinki",
+                                                    "street": "Ruusulankatu",
+                                                    "building": "4B",
+                                                    "flat": 12,
+                                                    "lat": 24.9245931,
+                                                    "lon": 60.1815267
+                                                },
+                                                {
+                                                    "id": 2,
+                                                    "username": "user2",
+                                                    "name": "User",
+                                                    "type": "recipient",
+                                                    "city": "Lahti",
+                                                    "street": "Leantie",
+                                                    "building": "19",
+                                                    "flat": 67,
+                                                    "lat": 25.6664544,
+                                                    "lon": 60.9702099
+                                                }
+                                            ],
+                                            "metadata": {
+                                                "currentPage": 3,
+                                                "limit": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully requested"
                     },
                     "401": {
                         "$ref": "#/components/responses/401",
@@ -215,8 +273,32 @@
                 ],
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/201",
-                        "x-last-modified": 1718887903713
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/201"
+                                },
+                                "examples": {
+                                    "client": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1",
+                                                "name": "User",
+                                                "type": "sender",
+                                                "city": "Helsinki",
+                                                "street": "Ruusulankatu",
+                                                "building": "4B",
+                                                "flat": 12,
+                                                "lat": 24.9245931,
+                                                "lon": 60.1815267
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully created"
                     },
                     "400": {
                         "$ref": "#/components/responses/400",
@@ -313,20 +395,33 @@
                 ],
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/201",
-                        "x-last-modified": 1718887903713
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/201"
+                                },
+                                "examples": {
+                                    "profile": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Created successfully"
                     },
                     "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718887948467
+                        "$ref": "#/components/responses/400"
                     },
                     "409": {
-                        "$ref": "#/components/responses/409",
-                        "x-last-modified": 1718887965493
+                        "$ref": "#/components/responses/409"
                     },
                     "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718887982927
+                        "$ref": "#/components/responses/500"
                     }
                 },
                 "summary": "Create user profile",
@@ -342,8 +437,32 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200_one",
-                        "x-last-modified": 1718889279313
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "client": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1",
+                                                "name": "User",
+                                                "type": "sender",
+                                                "city": "Helsinki",
+                                                "street": "Ruusulankatu",
+                                                "building": "4B",
+                                                "flat": 12,
+                                                "lat": 24.9245931,
+                                                "lon": 60.1815267
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully requested"
                     },
                     "400": {
                         "$ref": "#/components/responses/400",
@@ -431,8 +550,38 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200",
-                        "x-last-modified": 1719224505066
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200"
+                                },
+                                "examples": {
+                                    "order": {
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "id": 1,
+                                                    "createdAt": 1719581003,
+                                                    "senderId": 1,
+                                                    "recipientId": 2
+                                                },
+                                                {
+                                                    "id": 2,
+                                                    "createdAt": 1719581145,
+                                                    "senderId": 3,
+                                                    "recipientId": 4
+                                                }
+                                            ],
+                                            "metadata": {
+                                                "currentPage": 3,
+                                                "limit": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "OK"
                     },
                     "401": {
                         "$ref": "#/components/responses/401",
@@ -511,8 +660,26 @@
                 ],
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/201",
-                        "x-last-modified": 1718887903713
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/201"
+                                },
+                                "examples": {
+                                    "order": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "createdAt": 1719581003,
+                                                "senderId": 1,
+                                                "recipientId": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Created"
                     },
                     "400": {
                         "$ref": "#/components/responses/400",
@@ -552,8 +719,26 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200_one",
-                        "x-last-modified": 1718889279313
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "order": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "createdAt": 1719581003,
+                                                "senderId": 1,
+                                                "recipientId": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "OK"
                     },
                     "400": {
                         "$ref": "#/components/responses/400",
@@ -694,7 +879,26 @@
                 ],
                 "responses": {
                     "200": {
-                        "$ref": "#/components/responses/200_one"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "signIn": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1",
+                                                "accessToken": "sdfgdfhgjklsdfj8r347u58hf98jn3849yfh3ruhnfjr",
+                                                "expiresOn": 1722173145
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "OK"
                     },
                     "400": {
                         "$ref": "#/components/responses/400"
@@ -713,6 +917,47 @@
     },
     "components": {
         "schemas": {
+            "200": {
+                "description": "\"data\"-field contains array of requested objects. \"metadata\"-field contains the pagination data",
+                "required": [
+                    "data",
+                    "metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "currentPage": {
+                                "description": "The current page number",
+                                "type": "integer"
+                            },
+                            "limit": {
+                                "description": "The limit of items per page",
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            },
+            "201": {
+                "description": "\"data\"-field contains created object.",
+                "required": [
+                    "data"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object"
+                    }
+                }
+            },
             "APIErrorRes": {
                 "description": "Error response. Notice that errors field is always an array. Data can be ever empty object, null or undefined.",
                 "type": "object",
@@ -991,6 +1236,18 @@
                     "username": "user1",
                     "password": "password"
                 }
+            },
+            "200_one": {
+                "description": "\"data\"-field contains requested object.",
+                "required": [
+                    "data"
+                ],
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object"
+                    }
+                }
             }
         },
         "responses": {
@@ -1062,17 +1319,10 @@
                                     "type": "object"
                                 }
                             }
-                        },
-                        "example": {
-                            "data": {
-                                "username": "user2",
-                                "id": 4
-                            }
                         }
                     }
                 },
-                "description": "Successfully created, response with created object.",
-                "x-last-modified": 1718883610294
+                "description": "Successfully created, response with created object."
             },
             "204": {
                 "description": "Successful request, response with no body. ",

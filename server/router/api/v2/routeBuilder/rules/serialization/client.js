@@ -8,13 +8,16 @@ export const ClientCreateReq = {
     flat: true
 }
 export const ClientCreateRes = {
+    id: true,
     username: true,
     name: true,
     type: true,
     city: true,
     street: true,
     building: true,
-    flat: true
+    flat: true,
+    lat: true, 
+    lon: true
 }
 
 export const ClientReadRes = {
@@ -25,7 +28,9 @@ export const ClientReadRes = {
     city: true,
     street: true,
     building: true,
-    flat: true
+    flat: true,
+    lat: true, 
+    lon: true
 }
 
 export const ClientUpdateReq = {
