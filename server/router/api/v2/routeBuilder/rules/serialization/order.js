@@ -3,15 +3,17 @@ export const OrderCreateReq = {
     recipientId: true
 }
 export const OrderCreateRes = {
+    id: true,
     senderId: true,
-    recipientId: true
+    recipientId: true,
+    createdAt: true
 }
 
 export const OrderReadRes = {
+    id: true,
     senderId: true,
     recipientId: true,
-    Sender: true,
-    Recipient: true
+    createdAt: true
 }
 
 export const OrderUpdateReq = {

@@ -17,16 +17,14 @@ export const ProfileUpdateReq = {
     username: true,
     password: true
 }
-export const ProfileUpdateRes = {
-    username: true,
-    id: true
-}
 
 export const ProfileSignInReq = {
     username: true,
     password: true
 }
 export const ProfileSignInRes = {
+    id: true,
     username: true,
-    token: true
+    accessToken: true,
+    expiresOn: true
 }
