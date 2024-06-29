@@ -237,14 +237,8 @@
                         },
                         "description": "Successfully requested"
                     },
-                    "400": {
-                        "$ref": "#/components/responses/400"
-                    },
                     "401": {
                         "$ref": "#/components/responses/401"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
@@ -282,9 +276,6 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404"
                     },
                     "409": {
                         "$ref": "#/components/responses/409"
@@ -357,14 +348,8 @@
                     "204": {
                         "$ref": "#/components/responses/204"
                     },
-                    "400": {
-                        "$ref": "#/components/responses/400"
-                    },
                     "401": {
                         "$ref": "#/components/responses/401"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
@@ -854,8 +839,8 @@
                     "400": {
                         "$ref": "#/components/responses/400"
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403"
+                    "401": {
+                        "$ref": "#/components/responses/401"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
