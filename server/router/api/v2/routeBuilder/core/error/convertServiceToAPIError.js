@@ -33,6 +33,17 @@ export function convertServiceToAPIError(err) {
             message,
             status: 409
         });
+    }
+
+    if(err.reason === SEReason.NOT_FOUND){
+        const {reason, field, message} = err;
+        return new APIError({
+            name: ErrorName.NOT_FOUND,
+            reason, 
+            field, 
+            message,
+            status: 404
+        });
     } 
 
     if(errorName === ErrorName.UNEXPECTED){
