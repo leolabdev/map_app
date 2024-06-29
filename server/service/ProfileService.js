@@ -38,8 +38,7 @@ export default class ProfileService {
                     field: 'username'
                 });
 
-            const salt = await bcrypt.genSalt(10); // Generate salt
-            const hashedPassword = await bcrypt.hash(password, salt);
+            const hashedPassword = await encryptPassword(password);
 
             return this.service.create({username, password: hashedPassword});
         } catch (e) {
@@ -102,7 +101,7 @@ export default class ProfileService {
      * @returns true, if the operation was successful or false if not
      */
     update = validateInput(async (data) => {
-        const { id, username } = data;
+        const { id, username, password } = data;
 
         if(username){
             try{
@@ -118,6 +117,9 @@ export default class ProfileService {
                 return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
             }
         }   
+
+        if(password)
+            data.password = await encryptPassword(password);
 
         return this.service.updateById(data, null);
     }, profileUpdate);
@@ -155,4 +157,13 @@ function calculateExpirationTime(jwt_expires) {
     }
 
     return Date.now() + milliseconds;
+}
+
+/**
+ * 
+ * @param {string} plainPassword 
+ */
+async function encryptPassword(plainPassword) {
+    const salt = await bcrypt.genSalt(10); // Generate salt
+    return await bcrypt.hash(plainPassword, salt);
 }
