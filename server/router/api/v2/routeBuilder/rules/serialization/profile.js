@@ -13,7 +13,6 @@ export const ProfileReadRes = {
 }
 
 export const ProfileUpdateReq = {
-    id: true,
     username: true,
     password: true
 }
