@@ -240,6 +240,9 @@
                     "401": {
                         "$ref": "#/components/responses/401"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
                     "500": {
                         "$ref": "#/components/responses/500"
                     }
@@ -276,6 +279,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     },
                     "409": {
                         "$ref": "#/components/responses/409"
@@ -350,6 +356,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
@@ -992,11 +1001,6 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "description": "read-only",
-                        "type": "number",
-                        "example": 1
-                    },
                     "username": {
                         "description": "unique",
                         "type": "string",
