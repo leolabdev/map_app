@@ -64,8 +64,9 @@ export default class ProfileService {
         if(!profile || !(await bcrypt.compare(password, profile.password)))
             return null;
 
-        const token = jwt.sign({ id: profile.id }, secret, { expiresIn: jwt_expires });
-        return { token, username, password };
+        const accessToken = jwt.sign({ id: profile.id }, secret, { expiresIn: jwt_expires });
+        const expiresOn = calculateExpirationTime(jwt_expires);
+        return { id: profile.id, username, password, accessToken, expiresOn };
     }, profileSignIn);
 
     /**
@@ -129,4 +130,29 @@ export default class ProfileService {
     delete = (primaryKey) => {
         return this.service.deleteById(primaryKey, idField);
     }
+}
+
+function calculateExpirationTime(jwt_expires) {
+    const unit = jwt_expires.slice(-1);
+    const amount = parseInt(jwt_expires.slice(0, -1), 10);
+    let milliseconds;
+
+    switch (unit) {
+        case 'h':
+            milliseconds = amount * 60 * 60 * 1000; // hours to milliseconds
+            break;
+        case 'm':
+            milliseconds = amount * 60 * 1000; // minutes to milliseconds
+            break;
+        case 's':
+            milliseconds = amount * 1000; // seconds to milliseconds
+            break;
+        default:
+            return new ServiceError({
+                reason: SEReason.MISCONFIGURED,
+                message: 'Could not determine the expiration of the JWT token, because the jwt_expires has wrong format'
+            });
+    }
+
+    return Date.now() + milliseconds;
 }
