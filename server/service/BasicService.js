@@ -95,7 +95,6 @@ export default class BasicService{
      * @type { (objectToUpdate: any, validation: ServiceValidation | undefined, options: sequelize.UpdateOptions | undefined) => Promise<any> | Promise<ServiceError>}
      */
     async update (objectToUpdate, validation, options={}) {
-        console.log('Basic', validation);
         return validateInput(async () => {
             try{
                 const resp = await this.model.update(objectToUpdate, options);
@@ -116,6 +115,10 @@ export default class BasicService{
     async updateById (objectToUpdate, validation, options={}) {
         return validateInput(async () => {
             try{
+                const isObjExists = await this.model.findByPk(objectToUpdate.id);
+                if(!isObjExists)
+                    return new ServiceError({reason: SEReason.NOT_FOUND});
+
                 const resp = await this.model.update(
                     objectToUpdate, 
                     {...options, where: {id: objectToUpdate.id}
@@ -137,6 +140,10 @@ export default class BasicService{
     async deleteById(primaryKey, validation, options={}) {
         return validateInput(async () => {
             try {
+                const isObjExists = await this.model.findByPk(primaryKey);
+                if(!isObjExists)
+                    return new ServiceError({reason: SEReason.NOT_FOUND});
+
                 const resp = await this.model.destroy({ ...options, where: { id: primaryKey } });
                 return resp > 0;
             } catch (e) {

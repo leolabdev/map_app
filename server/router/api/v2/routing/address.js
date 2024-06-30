@@ -1,8 +1,6 @@
 import express from "express";
 import ThrottlingQueue from "../../../../util/throttlingQueue.js";
 import APILimitTracker from "../../../../util/APILimitTracker.js";
-import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
-import { addressReverse } from "../routeBuilder/rules/validation/address.js";
 import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
 import { addReqLimit } from "../routeBuilder/core/pipelineHandlers/addReqLimit..js";
 import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
@@ -27,7 +25,7 @@ router.get('/validate', async (req, res, next) => {
 });
 
 const reverseQueue = new ThrottlingQueue(1500);
-router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next) => {
+router.get('/reverse', async (req, res, next) => {
     const areRequests = APILimitTracker.areRequestsLeft('maps', 'reverse');
     if(!areRequests)
         return sendDailyLimitExceeded(res);

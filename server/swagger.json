@@ -15,124 +15,6 @@
         }
     ],
     "paths": {
-        "/data/profile/{id}": {
-            "summary": "User profile",
-            "description": "User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.",
-            "get": {
-                "tags": [
-                    "profile"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/id",
-                        "name": "id",
-                        "x-last-modified": 1718888757237
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/200_one"
-                                },
-                                "examples": {
-                                    "profile": {
-                                        "value": {
-                                            "data": {
-                                                "id": 1,
-                                                "username": "user1"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successfully requested"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718889211678
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718889224633
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718889898774
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718889259586
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "Read profile by id",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
-            },
-            "delete": {
-                "tags": [
-                    "profile"
-                ],
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/id",
-                        "name": "id",
-                        "x-last-modified": 1718889306137
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "$ref": "#/components/responses/204",
-                        "x-last-modified": 1718889326604
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718889339851
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718889350835
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718889927760
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718889941430
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "Delete profile",
-                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
-            },
-            "parameters": [
-                {
-                    "examples": {
-                        "id": {
-                            "value": "86"
-                        }
-                    },
-                    "name": "id",
-                    "description": "profile id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/data/client": {
             "summary": "Client",
             "description": "Client is an object representing the client of the delivery company. It has a type field, which may have only \"recipient\" or \"sender\" values. Type \"sender\" is a company from which the parcels are being shipped. Type \"recipient\" is a person/another company to whom a parcels are delivered.\nNotice that only registered users having created a Profile can save their Clients' data.",
@@ -330,6 +212,49 @@
         "/data/profile": {
             "summary": "User profile",
             "description": "User profile is used to identify a user and allow to sign in to the application. \nSigned in user has more functionality as he/she can save different data associated with the user.",
+            "get": {
+                "tags": [
+                    "profile"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "profile": {
+                                        "value": {
+                                            "data": {
+                                                "id": 1,
+                                                "username": "user1"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successfully requested"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Read profile by id",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |\n| Pagination                       | no |\n| Search                             | no |"
+            },
             "put": {
                 "requestBody": {
                     "description": "Notice that only the id field and  fields, that need to be updated should be provided",
@@ -347,28 +272,22 @@
                 ],
                 "responses": {
                     "204": {
-                        "$ref": "#/components/responses/204",
-                        "x-last-modified": 1718890060914
+                        "$ref": "#/components/responses/204"
                     },
                     "400": {
-                        "$ref": "#/components/responses/400",
-                        "x-last-modified": 1718890078434
+                        "$ref": "#/components/responses/400"
                     },
                     "401": {
-                        "$ref": "#/components/responses/401",
-                        "x-last-modified": 1718890117079
+                        "$ref": "#/components/responses/401"
                     },
                     "404": {
-                        "$ref": "#/components/responses/404",
-                        "x-last-modified": 1718890145614
+                        "$ref": "#/components/responses/404"
                     },
                     "409": {
-                        "$ref": "#/components/responses/409",
-                        "x-last-modified": 1718890158175
+                        "$ref": "#/components/responses/409"
                     },
                     "500": {
-                        "$ref": "#/components/responses/500",
-                        "x-last-modified": 1718890182150
+                        "$ref": "#/components/responses/500"
                     }
                 },
                 "security": [
@@ -426,6 +345,32 @@
                 },
                 "summary": "Create user profile",
                 "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------  |\n| Authentication             | no |\n| Authorization              | no |"
+            },
+            "delete": {
+                "tags": [
+                    "profile"
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete profile",
+                "description": "| Requirement / Function | Is Required / Has |\n| -------------------------- | ------------------  |\n| Authentication                | yes |\n| Authorization                  | only own |"
             }
         },
         "/data/client/{id}": {
@@ -903,8 +848,8 @@
                     "400": {
                         "$ref": "#/components/responses/400"
                     },
-                    "403": {
-                        "$ref": "#/components/responses/403"
+                    "401": {
+                        "$ref": "#/components/responses/401"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
@@ -1056,11 +1001,6 @@
                 ],
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "description": "read-only",
-                        "type": "number",
-                        "example": 1
-                    },
                     "username": {
                         "description": "unique",
                         "type": "string",

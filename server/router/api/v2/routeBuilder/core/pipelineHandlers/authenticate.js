@@ -12,7 +12,8 @@ export const authenticate = (authFieldName) => {
         const authError = new APIError({
             endpoint: req.baseUrl,
             location: ErrorLocation.HEADER,
-            field: 'Authorization'
+            field: 'Authorization',
+            status: 401
         });
 
         if(!authHeader)

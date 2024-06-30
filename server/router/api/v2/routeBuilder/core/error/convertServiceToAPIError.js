@@ -13,15 +13,36 @@ export function convertServiceToAPIError(err) {
 
     const errorName = determineName(err.reason);
 
-    if(errorName === ErrorName.VALIDATION || errorName === ErrorName.BAD_REQUEST){
-        const {reason, field, additional, message} = err;
+    if(errorName === ErrorName.VALIDATION){
+        const {reason, field, message} = err;
         return new APIError({
             name: errorName,
             reason, 
             field, 
             message,
-            additional,
             status: 400
+        });
+    }
+
+    if(err.reason === SEReason.NOT_UNIQUE){
+        const {reason, field, message} = err;
+        return new APIError({
+            name: errorName,
+            reason, 
+            field, 
+            message,
+            status: 409
+        });
+    }
+
+    if(err.reason === SEReason.NOT_FOUND){
+        const {reason, field, message} = err;
+        return new APIError({
+            name: ErrorName.NOT_FOUND,
+            reason, 
+            field, 
+            message,
+            status: 404
         });
     } 
 

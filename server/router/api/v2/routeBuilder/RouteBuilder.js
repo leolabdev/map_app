@@ -44,11 +44,19 @@ export class RouteBuilder {
     }
     #successStatusCode = null;
 
+    /**
+     *
+     * @returns {RouteBuilder}
+     */
     authenticate = function (){
         this.authenticator = authenticate(this.options.authFieldName);
         return this;
     }
 
+    /**
+     *
+     * @returns {RouteBuilder}
+     */
     authorize = function (resource, action=null){
         this.authenticator = authenticate(this.options.authFieldName);
         const actionToAuthorize = action ?? determineAction(this.method);
