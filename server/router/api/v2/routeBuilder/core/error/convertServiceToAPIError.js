@@ -46,6 +46,17 @@ export function convertServiceToAPIError(err) {
         });
     } 
 
+    if(err.reason === SEReason.LIMIT_EXCEEDED){
+        const {field, message} = err;
+        return new APIError({
+            name: ErrorName.SERVER_ERROR,
+            reason: ErrorReason.SERVICE_NOT_AVAILABLE, 
+            field, 
+            message,
+            status: 503
+        });
+    } 
+
     if(errorName === ErrorName.UNEXPECTED){
         const {reason, field, additional, message} = err;
         return new APIError({

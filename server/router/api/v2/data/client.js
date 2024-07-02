@@ -2,74 +2,36 @@ import express from "express";
 import axios from "axios";
 import ResponseUtil from "../../../../util/ResponseUtil.js";
 import ClientService from "../../../../service/ClientService.js";
+import { RouteBuilder } from "../routeBuilder/RouteBuilder.js";
+import { ClientCreateReq } from "../routeBuilder/rules/serialization/client.js";
+import { clientCreate } from "../routeBuilder/rules/validation/client.js";
+import { Method } from "../routeBuilder/core/enums/Method.js";
 
 const router = express.Router();
 
-
-
 const responseUtil = new ResponseUtil();
-const clientDAO = new ClientService();
+const clientService = new ClientService();
 const host = process.env.API_HOST || "localhost";
 const port = process.env.API_PORT || 8081;
 
-/**
- * Create new client in the database
- * The post request must have at least username (it is primary key).
- * It is recommended also add to the request address of the client (it can be new or already registered in the database), since that information is used for creating orders.
- * In case, when address was not provided, it can be added by updating client data via put request.
- * ATTENTION: It is not possible to add client to the address via address route
- *
- * return (in response.data.result object) created client object (= all client data, witch was provided in the request object) or null if operation was not successful
- *
- * Examples of valid request objects (= request body). Examples 3 and 4 are recommended in the most situations:
- * 1. { clientUsername: "john" }
- *
- * 2. { clientUsername: "john",
- *      name: "John Smith"}
- *
- * 3. { clientUsername: "john",
- *      name: "John Smith",
- *      addressAdd: {
- *          city: "Helsinki",
- *          street: "Pohjoinen Rautatiekatu",
- *          building: "13",
- *          flat: 23        //optional
- *      } }
- *
- * 4. { clientUsername: "john",
- *      name: "John Smith",
- *      addressAdd: {
- *          city: "Helsinki",
- *          street: "Pohjoinen Rautatiekatu",
- *          building: "13",
- *          lat: 60.3453,   //optional
- *          lon: 40.1234    //optional
- *      } }
- */
-router.post("/", async (req, res) => {
-    const { addressAdd } = req.body;
 
-    const clientResp = await clientDAO.create(req.body);
 
-    if(!clientResp || !clientResp.dataValues || !addressAdd){
-        responseUtil.sendResultOfQuery(res, clientResp);
-        return;
-    }
+new RouteBuilder('/', Method.POST)
+    .serializeReq(ClientCreateReq)
+    .validate(clientCreate)
+    .addController(createClient).attachToRouter(router);
+async function createClient(req, res) {
+    const client = await clientService.create(req.body);
+    if(isRespServiceError(client))
+        return throwAPIError(client, null, ErrorLocation.BODY);
 
-    const client = clientResp.dataValues;
+    if(!client)
+        throw new APIError({reason: ErrorReason.UNEXPECTED, message: 'Could not create a client'});
 
-    const addedAddressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
-    const address = addedAddressResp?.data.result;
+    
 
-    if(address == null){
-        responseUtil.sendResultOfQuery(res, client);
-        return;
-    }
-
-    await clientDAO.update({clientUsername: client.clientUsername, addressId: address.addressId});
-
-    responseUtil.sendResultOfQuery(res, {...client, addressAdd: address});
-});
+    return client;
+}
 
 /**
  * Read data of the queried client by its username from the database
@@ -79,7 +41,7 @@ router.post("/", async (req, res) => {
  * http://localhost:8081/dao/client/john
  */
 router.get("/:clientUsername", async(req, res) => {
-    const result = await clientDAO.read(req.params.clientUsername);
+    const result = await clientService.read(req.params.clientUsername);
     responseUtil.sendResultOfQuery(res, result);
 });
 
@@ -91,7 +53,7 @@ router.get("/:clientUsername", async(req, res) => {
  * http://localhost:8081/dao/client/
  */
 router.get("/", async(req, res) => {
-    const result = await clientDAO.readAll();
+    const result = await clientService.readAll();
     responseUtil.sendResultOfQuery(res, result);
 });
 
@@ -130,7 +92,7 @@ router.put("/", async(req, res) => {
         request["addressId"] = addressResp?.data.addressId;
     }
 
-    const status = await clientDAO.update(request);
+    const status = await clientService.update(request);
     responseUtil.sendStatusOfOperation(res, status);
 });
 
@@ -142,7 +104,7 @@ router.put("/", async(req, res) => {
  * http://localhost:8081/dao/client/john
  */
 router.delete("/:clientUsername", async(req, res) => {
-    const status = await clientDAO.delete(req.params.clientUsername);
+    const status = await clientService.delete(req.params.clientUsername);
     responseUtil.sendStatusOfOperation(res, status);
 });
 
