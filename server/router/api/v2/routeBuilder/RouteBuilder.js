@@ -77,7 +77,7 @@ export class RouteBuilder {
     /**
     * 
     * @param {SchemaMap<any, false>} schema 
-    * @param {'body' | 'query' | 'param'=} location 
+    * @param {'body' | 'query' | 'params'=} location 
     * @param {string=} field 
     * @returns {RouteBuilder}
     */
@@ -90,6 +90,7 @@ export class RouteBuilder {
      *
      * @param {(req: Request, res: Response) => Promise<any>} controllerFn function, which gets req and res objects
      * and returns the result of the request. If there is an error, it throws it
+     * 
      * @returns {RouteBuilder}
      */
     addController = function (controllerFn){
@@ -162,7 +163,9 @@ export class RouteBuilder {
             this.authenticator, this.authorizer,
             this.reqSerializer, this.reqValidator,
             this.paginator,
+
             this.controller,
+
             this.resSerializer,
             catchErrors(this.options.respErrorFieldName),
             formatResponse(this.options.respFieldName, this.options.respErrorFieldName, this.#successStatusCode)
