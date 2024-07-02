@@ -1,6 +1,5 @@
 import express from "express";
-import ThrottlingQueue from "../../../../util/throttlingQueue.js";
-import APILimitTracker from "../../../../util/APILimitTracker.js";
+import { autocompleteQueue, reverseQueue, validateQueue } from "../../../../util/throttlingQueue.js";
 import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
 import { addReqLimit } from "../routeBuilder/core/pipelineHandlers/addReqLimit..js";
 import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
@@ -16,7 +15,6 @@ const router = express.Router();
 const addressService = new AddressService();
 
 
-const validateQueue = new ThrottlingQueue(1500);
 router.get('/validate', validate(addressValidate, 'query'), async (req, res) => {
     const reqFn = async function(){
         const resp = await addressService.validate(req.query);
@@ -26,7 +24,6 @@ router.get('/validate', validate(addressValidate, 'query'), async (req, res) => 
 });
 
 
-const reverseQueue = new ThrottlingQueue(1500);
 router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next) => {
     const reqFn = async function(){
         const resp = await addressService.reverse(req.query);
@@ -38,7 +35,6 @@ router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next)
 
 //503 error if there are no requests left for external APIs
 //429 error if user has send too many requests
-const autocompleteQueue = new ThrottlingQueue(1500);
 router.get('/autocomplete', addReqLimit(3000), validate(addressAutocomplete, 'query'), async (req, res, next) => {
     const reqFn = async function(){
         const resp = await addressService.autocomplete(req.query);
@@ -53,11 +49,8 @@ function sendServiceResp(serviceResp, res){
         const apiError = convertServiceToAPIError(serviceResp);
         return res.status(apiError.status).send({[config.respErrorFieldName]: [apiError]});
     }
-
-    if(Array.isArray(serviceResp))
-        return res.send({[config.respFieldName]: serviceResp});;
     
-    res.send({[config.respFieldName]: [serviceResp]});
+    res.send({[config.respFieldName]: serviceResp});
 }
 
 export default router;
