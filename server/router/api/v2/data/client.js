@@ -3,109 +3,175 @@ import axios from "axios";
 import ResponseUtil from "../../../../util/ResponseUtil.js";
 import ClientService from "../../../../service/ClientService.js";
 import { RouteBuilder } from "../routeBuilder/RouteBuilder.js";
-import { ClientCreateReq } from "../routeBuilder/rules/serialization/client.js";
-import { clientCreate } from "../routeBuilder/rules/validation/client.js";
+import { ClientCreateReq, ClientUpdateReq } from "../routeBuilder/rules/serialization/client.js";
+import { clientCreate, clientUpdate } from "../routeBuilder/rules/validation/client.js";
 import { Method } from "../routeBuilder/core/enums/Method.js";
+import { validateQueue } from "../../../../util/throttlingQueue.js";
+import AddressService from "../../../../service/AddressService.js";
+import { config } from "../routeBuilder/core/config.js";
+import { convertServiceToAPIError } from "../routeBuilder/core/error/convertServiceToAPIError.js";
+import isRespServiceError from "../routeBuilder/core/service/validateInput.js";
+import { serializeReq } from "../routeBuilder/core/pipelineHandlers/serializeReq.js";
+import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
+import { authenticate } from "../routeBuilder/core/pipelineHandlers/authenticate.js";
+import { APIError } from "../routeBuilder/core/error/APIError.js";
+import { ErrorReason } from "../routeBuilder/core/error/ErrorReason.js";
+import { ErrorLocation } from "../routeBuilder/core/error/ErrorLocation.js";
+import { idField } from "../routeBuilder/rules/validation/idField.js";
+import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
 
 const router = express.Router();
 
-const responseUtil = new ResponseUtil();
 const clientService = new ClientService();
-const host = process.env.API_HOST || "localhost";
-const port = process.env.API_PORT || 8081;
+const addressService = new AddressService();
 
 
+router.post('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientCreateReq), validate(clientCreate), (req, res) => {
+    const reqFn = async function(){
+        const {city, street, building} = req.body;
+        const resp = await addressService.validate({city, street, building});
+        if(isRespServiceError(resp))
+            return sendServiceResp(resp, res);
+    
+        const {lon, lat} = resp;
+        const profileId = req[config.authFieldName].id;
+        const client = await clientService.create({...req.body, lon, lat, profileId});
+        sendServiceResp(client, res);
+    }
 
-new RouteBuilder('/', Method.POST)
-    .serializeReq(ClientCreateReq)
-    .validate(clientCreate)
-    .addController(createClient).attachToRouter(router);
-async function createClient(req, res) {
-    const client = await clientService.create(req.body);
+    validateQueue.addRequest(reqFn);
+});
+
+new RouteBuilder('/', Method.GET)
+    .authenticate()
+    .addController(getProfileClients).attachToRouter(router);
+async function getProfileClients(req, res) {
+    const profileId = req[config.authFieldName]?.id;
+    const clients = clientService.readAllByProfileId(profileId);
+    if(isRespServiceError(clients))
+        return throwAPIError(clients);
+
+    if(!clients)
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, 
+            message: 'Could not find any clients'
+        });
+
+    return clients;
+}
+
+new RouteBuilder('/:id', Method.GET)
+    .authenticate()
+    .validate(idField, 'params')
+    .addController(getClient).attachToRouter(router);
+async function getClient(req, res) {
+    const profileId = req[config.authFieldName]?.id;
+    const client = await clientService.readOneByIdAndProfileId(req.params.id, profileId);
     if(isRespServiceError(client))
-        return throwAPIError(client, null, ErrorLocation.BODY);
+        return throwAPIError(client);
 
     if(!client)
-        throw new APIError({reason: ErrorReason.UNEXPECTED, message: 'Could not create a client'});
-
-    
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, 
+            message: 'Could not find the client'
+        });
 
     return client;
 }
 
-/**
- * Read data of the queried client by its username from the database
- * return (in response.data.result object) its data including all the addresses, witch the client has or null if nothing was found
- *
- * Example of the get query path:
- * http://localhost:8081/dao/client/john
- */
-router.get("/:clientUsername", async(req, res) => {
-    const result = await clientService.read(req.params.clientUsername);
-    responseUtil.sendResultOfQuery(res, result);
-});
+//TODO: bug with validate
+router.put('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientUpdateReq), validate(clientUpdate), (req, res) => {
+    console.log('body', req.body);
+    const reqFn = async function(){
+        const city = req.body['city'];
+        const street = req.body['street'];
+        const building = req.body['building'];
+        const profileId = req[config.authFieldName].id;
 
-/**
- * Read data of all clients registered in the database
- * return (in response.data.result array) them data including all the addresses, witch each client has or null if nothing was found
- *
- * Example of the get query path:
- * http://localhost:8081/dao/client/
- */
-router.get("/", async(req, res) => {
-    const result = await clientService.readAll();
-    responseUtil.sendResultOfQuery(res, result);
-});
+        //If address shouldn't be updated
+        if(!city && !street && !building){
+            const client = await clientService.create({...req.body, profileId});
+            return sendServiceResp(client, res);
+        }
 
-/**
- * Update existing client data in the database
- * The put request must have at least username (it is primary key) and fields, which should be updated.
- * ATTENTION: It is not possible to update client address via address route, since such path does not exist
- *
- * return (in response.data.isSuccess field) true if operation was not successful (= some rows in the database was changed) and false if not
- *
- * Examples of valid request objects (= request body). In 2. and 3. examples you can also provide lat, lon and flat(optional):
- *
- * 1. { clientUsername: "john",
- *      name: "John Smith",
- *      addressId: 1}
- *
- * 2. { clientUsername: "john",
- *      name: "John Smith",
- *      addressAdd: {
- *          city: "Helsinki",
- *          street: "Pohjoinen Rautatiekatu",
- *          building: "13"
- *      } }
- *
- * 3. { clientUsername: "john",
- *      name: "John Smith",
- *      addressIdDelete: 1 }   //address reference to be nulled in Client table
- */
-router.put("/", async(req, res) => {
-    const { addressAdd } = req.body;
+        let addressResp;
+        //If whole address need to be updated
+        if(city && street && building){
+            addressResp = await addressService.validate({city, street, building});
+            if(isRespServiceError(addressResp))
+                return sendServiceResp(addressResp, res);
+        } else {
+            //If only part of the address need to be updated
+            const existingClient = await clientService.readOneByIdAndProfileId(req.id, profileId);
+            if(isRespServiceError(existingClient))
+                return sendServiceResp(serviceResp, existingClient);
 
-    let request = {...req.body};
+            if(!existingClient)
+                return sendServiceResp(serviceResp, new APIError({
+                    reason: ErrorReason.NOT_FOUND, message: 'Client does not exists', 
+                    location: ErrorLocation.BODY, status: 404
+                }));
 
-    if (addressAdd != null) {
-        const addressResp = await axios.post(`http://${host}:${port}/dao/address`, addressAdd);
-        request["addressId"] = addressResp?.data.addressId;
+            const newAddress = {
+                city: city ?? existingClient['city'], 
+                street: street ?? existingClient['street'], 
+                building: building ?? existingClient['building']
+            }
+
+            addressResp = await addressService.validate(newAddress);
+            if(isRespServiceError(addressResp))
+                return sendServiceResp(addressResp, res);
+        }
+
+        const {lon, lat} = addressResp;
+        const client = await clientService.create({...req.body, lon, lat, profileId});
+        sendServiceResp(client, res);
     }
 
-    const status = await clientService.update(request);
-    responseUtil.sendStatusOfOperation(res, status);
+    validateQueue.addRequest(reqFn);
 });
 
-/**
- * Delete data of the queried client from the database
- * return (in response.data.isSuccess field) true if it was deleted (= affected rows count is more than 0) or false if not
- *
- * Example of delete query path:
- * http://localhost:8081/dao/client/john
- */
-router.delete("/:clientUsername", async(req, res) => {
-    const status = await clientService.delete(req.params.clientUsername);
-    responseUtil.sendStatusOfOperation(res, status);
-});
+new RouteBuilder('/:id', Method.DELETE)
+    .authenticate()
+    .validate(idField, 'params')
+    .successStatus(204)
+    .addController(deleteClient).attachToRouter(router);
+async function deleteClient(req, res) {
+    const profileId = req[config.authFieldName].id;
+
+    const client = clientService.readOneByIdAndProfileId(req.params.id, profileId);
+    if(!client || isRespServiceError(client))
+        return throwAPIError(client);
+
+    const isSuccess = await clientService.delete(req.params.id);
+    if(isRespServiceError(isSuccess))
+        return throwAPIError(isSuccess);
+
+    if(!isSuccess)
+        throw new APIError({
+            reason: ErrorReason.UNEXPECTED, message: 'Could not delete a client'
+        });
+
+    return isSuccess;
+}
+
+function sendServiceResp(serviceResp, res){
+    if(isRespServiceError(serviceResp)){
+        let errors = [];
+        if(Array.isArray(serviceResp)){
+            for(let i=0, l=resp.length; i<l; i++)
+                errors.push(convertServiceToAPIError(serviceResp[i]));
+        } else
+            errors[0] = convertServiceToAPIError(serviceResp);
+
+        const status = errors[0]?.status;
+        return res.status(status ?? 500).send({[config.respErrorFieldName]: errors});
+    }
+
+    if(Array.isArray(serviceResp))
+        return res.send({[config.respFieldName]: serviceResp});;
+    
+    res.send({[config.respFieldName]: serviceResp});
+}
 
 export default router;
