@@ -25,25 +25,45 @@ export default class ClientService {
      * @param {Client} data object with the client data, where clientUsername field is mandatory
      * @returns created Client object, if operation was successful or null if not
      */
-    async create(data) {
-        return this.service.create(data, clientCreate);
-    }
+    create = validateInput(async (data) => {
+        const { username } = data;
+
+        try {
+            const isClient = await this.service.searchOne({where: {
+                username: username
+            }});
+
+            if(isClient)
+                return new ServiceError({
+                    reason: SEReason.NOT_UNIQUE,
+                    message: 'Client with that username already exists',
+                    field: 'username'
+                });
+
+            return this.service.create(data);
+        } catch (e) {
+            console.error('ClientService create: Could not execute the query');
+            return new ServiceError({ reason: SEReason.UNEXPECTED, additional: e });
+        }
+    }, clientCreate)
 
     /**
      * The method reads Client with provided primary key(clientUsername)
-     * @param {string} primaryKey primary key of the client
+     * @param {number} id primary key of the client
+     * @param {number} profileId 
      * @returns founded Client object, if operation was successful or null if not
      */
-    async read(primaryKey) {
-        return this.service.readOneById(primaryKey, idField);
+    async readOneByIdAndProfileId(id, profileId) {
+        return this.service.searchOne({where: {id, profileId}});
     }
 
     /**
      * The method reads all Clients of the Client SQL table
+     * @param {number} profileId 
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
-    async readAll() {
-        return this.service.readAll();
+    async readAllByProfileId(profileId) {
+        return this.service.readAll({where: {profileId}});
     }
 
     /**
@@ -63,7 +83,7 @@ export default class ClientService {
                 return new ServiceError({
                     reason: SEReason.NOT_UNIQUE,
                     field: 'username',
-                    message: 'The client with this username already exists'
+                    message: 'Client with this username already exists'
                 });
 
                 return this.service.updateById(client);

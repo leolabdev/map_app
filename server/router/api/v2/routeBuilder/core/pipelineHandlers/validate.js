@@ -8,7 +8,7 @@ import Joi from "joi";
 /**
  * 
  * @param {SchemaMap<any, false>} schema 
- * @param {'body' | 'query' | 'param'=} location 
+ * @param {'body' | 'query' | 'params'=} location 
  * @param {string=} field 
  * @returns 
  */

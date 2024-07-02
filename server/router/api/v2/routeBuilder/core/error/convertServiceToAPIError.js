@@ -5,7 +5,7 @@ import {SEReason} from "../service/dataExtractors/error/SEReason.js";
 import {ErrorName} from "./ErrorName.js";
 
 export function convertServiceToAPIError(err) {
-    if(err.type !== SERVICE_ERROR_TYPE_NAME.description)
+    if(err?.type !== SERVICE_ERROR_TYPE_NAME.description)
         return new APIError({
             reason: ErrorReason.UNEXPECTED,
             additional: err
