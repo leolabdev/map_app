@@ -47,7 +47,7 @@ async function getOne(req, res) {
             message: 'Could not find this profile'
         });
 
-    return profiles;
+    return profile;
 }
 
 new RouteBuilder('/', Method.PUT)
