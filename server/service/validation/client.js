@@ -4,6 +4,7 @@ export const clientCreate = {
     schema: Joi.object({
         username: Joi.string().required(),
         name: Joi.string(),
+        type: Joi.string().required(),
         city: Joi.string().required(),
         street: Joi.string().required(),
         building: Joi.string().required(),    
@@ -19,6 +20,7 @@ export const clientUpdate = {
         id: Joi.number().required(),
         username: Joi.string(),
         name: Joi.string(),
+        type: Joi.string(),
         city: Joi.string(),
         street: Joi.string(),
         building: Joi.string(),    
