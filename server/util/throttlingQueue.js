@@ -1,4 +1,4 @@
-export default class ThrottlingQueue {
+class ThrottlingQueue {
     constructor(delayMs=1000) {
         this.#delayMs = delayMs;
     }
@@ -32,3 +32,7 @@ export default class ThrottlingQueue {
         this.#isProcessing = false;
     }
 }
+
+export const validateQueue = new ThrottlingQueue(1500);
+export const reverseQueue = new ThrottlingQueue(1500);
+export const autocompleteQueue = new ThrottlingQueue(1500);
