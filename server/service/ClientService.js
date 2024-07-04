@@ -76,7 +76,10 @@ export default class ClientService {
             return this.service.updateById(client);
 
         try {
-            const existingClient = this.service.searchOne({where: {username: client.username}});
+            const existingClient = await this.service.searchOne({where: {username: client.username}});
+            if(!existingClient)
+                return this.service.updateById(client);
+
             const isServiceError = existingClient.type && existingClient.type === SERVICE_ERROR_TYPE_NAME.description;
 
             if(!isServiceError && existingClient.id !== client.id)
@@ -86,7 +89,7 @@ export default class ClientService {
                     message: 'Client with this username already exists'
                 });
 
-                return this.service.updateById(client);
+            return this.service.updateById(client);
         } catch (e) {
             console.error(`ClientService update(): Could not execute the query`, e);
             return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
