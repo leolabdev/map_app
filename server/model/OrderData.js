@@ -1,6 +1,7 @@
 import SequelizeUtil from "../modules/SequelizeUtil.js";
 import {DataTypes, Model} from "sequelize";
 import Client from "./Client.js";
+import Profile from "./Profile.js";
 
 
 const sequelize = SequelizeUtil.getSequelizeInstance();
@@ -33,11 +34,18 @@ OrderData.init({
     recipientId: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+
+    profileId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, options);
 
 Client.hasMany(OrderData, { foreignKey: 'senderId' });
 Client.hasMany(OrderData, { foreignKey: 'recipientId' });
+Profile.hasMany(OrderData, { foreignKey: 'profileId' });
 
 OrderData.belongsTo(Client, { foreignKey: 'senderId' });
 OrderData.belongsTo(Client, { foreignKey: 'recipientId' });
+OrderData.belongsTo(OrderData, { foreignKey: 'profileId' });
