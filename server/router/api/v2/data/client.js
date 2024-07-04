@@ -19,6 +19,10 @@ import { ErrorReason } from "../routeBuilder/core/error/ErrorReason.js";
 import { ErrorLocation } from "../routeBuilder/core/error/ErrorLocation.js";
 import { idField } from "../routeBuilder/rules/validation/idField.js";
 import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
+import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
+import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
+import { ServiceError } from "../routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 const router = express.Router();
 
@@ -40,7 +44,7 @@ router.post('/', authenticate(config.authFieldName), serializeReq(config.respFie
     }
 
     validateQueue.addRequest(reqFn);
-});
+}, catchErrors(config.respErrorFieldName), formatResponse(config.respFieldName, config.respErrorFieldName, 201));
 
 new RouteBuilder('/', Method.GET)
     .authenticate()
@@ -79,57 +83,46 @@ async function getClient(req, res) {
     return client;
 }
 
-//TODO: bug with validate
+
 router.put('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientUpdateReq), validate(clientUpdate), (req, res) => {
-    console.log('body', req.body);
     const reqFn = async function(){
-        const city = req.body['city'];
-        const street = req.body['street'];
-        const building = req.body['building'];
         const profileId = req[config.authFieldName].id;
+        const {id, city, street, building} = req.body;
+
+        const existingClient = await clientService.readOneByIdAndProfileId(id, profileId);
+        if(isRespServiceError(existingClient))
+            return sendServiceResp(existingClient, res);
+
+        if(!existingClient)
+            return sendServiceResp(new ServiceError({
+                reason: SEReason.NOT_FOUND, message: 'Client does not exists'
+            }), res);
 
         //If address shouldn't be updated
         if(!city && !street && !building){
-            const client = await clientService.create({...req.body, profileId});
+            const client = await clientService.update({...req.body, profileId});
             return sendServiceResp(client, res);
         }
 
-        let addressResp;
-        //If whole address need to be updated
-        if(city && street && building){
-            addressResp = await addressService.validate({city, street, building});
-            if(isRespServiceError(addressResp))
-                return sendServiceResp(addressResp, res);
-        } else {
-            //If only part of the address need to be updated
-            const existingClient = await clientService.readOneByIdAndProfileId(req.id, profileId);
-            if(isRespServiceError(existingClient))
-                return sendServiceResp(serviceResp, existingClient);
-
-            if(!existingClient)
-                return sendServiceResp(serviceResp, new APIError({
-                    reason: ErrorReason.NOT_FOUND, message: 'Client does not exists', 
-                    location: ErrorLocation.BODY, status: 404
-                }));
-
-            const newAddress = {
-                city: city ?? existingClient['city'], 
-                street: street ?? existingClient['street'], 
-                building: building ?? existingClient['building']
-            }
-
-            addressResp = await addressService.validate(newAddress);
-            if(isRespServiceError(addressResp))
-                return sendServiceResp(addressResp, res);
+        const newAddress = {
+            city: city ?? existingClient['city'], 
+            street: street ?? existingClient['street'], 
+            building: building ?? existingClient['building']
         }
+        const addressResp = await addressService.validate(newAddress);
+        if(isRespServiceError(addressResp))
+            return sendServiceResp(addressResp, res);
+
+        if(!addressResp)
+            return sendServiceResp(new ServiceError({ reason: SEReason.NOT_FOUND, message: 'Could not find the address' }), res);
 
         const {lon, lat} = addressResp;
-        const client = await clientService.create({...req.body, lon, lat, profileId});
-        sendServiceResp(client, res);
+        const client = await clientService.update({...req.body, lon, lat});
+        sendServiceResp(client, res, 204);
     }
 
     validateQueue.addRequest(reqFn);
-});
+}, catchErrors(config.respErrorFieldName), formatResponse(config.respFieldName, config.respErrorFieldName, 204));
 
 new RouteBuilder('/:id', Method.DELETE)
     .authenticate()
@@ -155,11 +148,11 @@ async function deleteClient(req, res) {
     return isSuccess;
 }
 
-function sendServiceResp(serviceResp, res){
+function sendServiceResp(serviceResp, res, successStatus=200){
     if(isRespServiceError(serviceResp)){
         let errors = [];
         if(Array.isArray(serviceResp)){
-            for(let i=0, l=resp.length; i<l; i++)
+            for(let i=0, l=serviceResp.length; i<l; i++)
                 errors.push(convertServiceToAPIError(serviceResp[i]));
         } else
             errors[0] = convertServiceToAPIError(serviceResp);
@@ -168,10 +161,13 @@ function sendServiceResp(serviceResp, res){
         return res.status(status ?? 500).send({[config.respErrorFieldName]: errors});
     }
 
+    if(successStatus === 204)
+        return res.status(successStatus).send();
+
     if(Array.isArray(serviceResp))
-        return res.send({[config.respFieldName]: serviceResp});;
+        return res.status(successStatus).send({[config.respFieldName]: serviceResp});;
     
-    res.send({[config.respFieldName]: serviceResp});
+    res.status(successStatus).send({[config.respFieldName]: serviceResp});
 }
 
 export default router;
