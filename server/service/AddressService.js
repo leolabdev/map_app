@@ -3,6 +3,7 @@ import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExt
 import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import { addressAutocomplete, addressReverse, addressValidate } from "./validation/address.js";
 import APILimitTracker from "../util/APILimitTracker.js";
+import { SERVICE_ERROR_TYPE_NAME } from "../router/api/v2/routeBuilder/core/config.js";
 
 
 export default class AddressService {
@@ -23,8 +24,14 @@ export default class AddressService {
             const url = `https://geocode.maps.co/search?q=${searchText}&api_key=${key}`;
 
             const resp = await makeAPIReq(url);
-            if(!resp || resp?.length === 0)
-                return new ServiceError({ reason: SEReason.NOT_FOUND, message: 'Could not find any addresses for given query' });
+            if(!resp)
+                return new ServiceError({ reason: SEReason.UNEXPECTED, message: 'Could not get response from address validation API' });
+
+            if(resp.type === SERVICE_ERROR_TYPE_NAME.description)
+                return resp;
+
+            if(resp.length === 0)
+                return new ServiceError({ reason: SEReason.NOT_FOUND, message: 'Could not find any addresses for a given query' });
             
             return resp[0];
         } catch (e) {
@@ -45,7 +52,14 @@ export default class AddressService {
             //const key = '';
             const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&apiKey=${key}`;
 
-            return makeAPIReq(url);
+            const resp = await makeAPIReq(url);
+            if(!resp)
+                return new ServiceError({ reason: SEReason.UNEXPECTED, message: 'Could not get response from address reverse API' });
+
+            if(resp.type === SERVICE_ERROR_TYPE_NAME.description)
+                return resp;
+            
+            return resp;
         } catch (e) {
             console.error(`AddressService reverse(): Could not reverse geocode the address`, e);
             return new ServiceError({reason: SEReason.UNEXPECTED, additional: e});
@@ -69,7 +83,13 @@ export default class AddressService {
             const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${search}&lang=en&limit=5&type=street&filter=place:${cityId}&format=json&apiKey=${key}`;
 
             const resp = await makeAPIReq(url);
-            if(!resp || !resp?.results || resp.results?.length === 0)
+            if(!resp)
+                return new ServiceError({ reason: SEReason.UNEXPECTED, message: 'Could not get response from address autocomplete API' });
+
+            if(resp.type === SERVICE_ERROR_TYPE_NAME.description)
+                return resp;
+
+            if(!resp?.results || resp.results?.length === 0)
                 return new ServiceError({ reason: SEReason.NOT_FOUND, message: 'Could not find any addresses for given query' });
 
             const { results } = resp;
@@ -91,11 +111,12 @@ export default class AddressService {
 async function makeAPIReq(url) {
     try {
         const response = await fetch(url);
-        if(!response.ok)
+        if(!response.ok){
             return new ServiceError({ 
                 reason: SEReason.UNEXPECTED, 
-                message: `Service responded with status ${response.status}`
+                message: `External service responded with status ${response.status}`
             });
+        }
 
         return await response.json();
     } catch (error) {
