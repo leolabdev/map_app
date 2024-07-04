@@ -51,15 +51,15 @@ new RouteBuilder('/', Method.GET)
     .addController(getProfileClients).attachToRouter(router);
 async function getProfileClients(req, res) {
     const profileId = req[config.authFieldName]?.id;
-    const clients = clientService.readAllByProfileId(profileId);
-    if(isRespServiceError(clients))
-        return throwAPIError(clients);
-
-    if(!clients)
+    const clients = await clientService.readAllByProfileId(profileId);
+    if(!clients || clients?.length === 0)
         throw new APIError({
             reason: ErrorReason.NOT_FOUND, 
             message: 'Could not find any clients'
         });
+
+    if(isRespServiceError(clients))
+        return throwAPIError(clients);
 
     return clients;
 }
@@ -71,14 +71,14 @@ new RouteBuilder('/:id', Method.GET)
 async function getClient(req, res) {
     const profileId = req[config.authFieldName]?.id;
     const client = await clientService.readOneByIdAndProfileId(req.params.id, profileId);
-    if(isRespServiceError(client))
-        return throwAPIError(client);
-
     if(!client)
         throw new APIError({
             reason: ErrorReason.NOT_FOUND, 
             message: 'Could not find the client'
         });
+
+    if(isRespServiceError(client))
+        return throwAPIError(client);
 
     return client;
 }
