@@ -1,6 +1,7 @@
 export const OrderCreateReq = {
     senderId: true,
-    recipientId: true
+    recipientId: true,
+    profileId: true
 }
 export const OrderCreateRes = {
     id: true,
