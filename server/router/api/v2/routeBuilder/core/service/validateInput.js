@@ -80,5 +80,5 @@ function determineErrorReason(joiErrorDetails) {
 
 export default function isRespServiceError(e){
     return (e && (e.type === SERVICE_ERROR_TYPE_NAME.description) ||
-    (Array.isArray(e) && e[0].type === SERVICE_ERROR_TYPE_NAME.description));
+    (Array.isArray(e) && e[0] && e[0].type === SERVICE_ERROR_TYPE_NAME.description));
 }

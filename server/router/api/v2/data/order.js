@@ -1,88 +1,98 @@
 import express from "express";
-import ResponseUtil from "../../../../util/ResponseUtil.js";
 import OrderDataService from "../../../../service/OrderDataService.js";
+import { Method } from "../routeBuilder/core/enums/Method.js";
+import { RouteBuilder } from "../routeBuilder/RouteBuilder.js";
+import { OrderCreateReq } from "../routeBuilder/rules/serialization/order.js";
+import { orderCreate } from "../routeBuilder/rules/validation/order.js";
+import isRespServiceError from "../routeBuilder/core/service/validateInput.js";
+import { config } from "../routeBuilder/core/config.js";
+import ClientService from "../../../../service/ClientService.js";
+import { APIError } from "../routeBuilder/core/error/APIError.js";
+import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
+import { ErrorLocation } from "../routeBuilder/core/error/ErrorLocation.js";
+import { ErrorReason } from "../routeBuilder/core/error/ErrorReason.js";
 
 const router = express.Router();
 
-
-const responseUtil = new ResponseUtil();
 const orderDataDAO = new OrderDataService();
+const clientService = new ClientService();
 
-/**
- * Create new order in the database
- * The post request must have all the fields (except orderId).
- *
- * return (in response.data.result object) created order object (= all client data, which was provided in the request object) or null if operation was not successful
- * Example of the get query path:
- * http://localhost:8081/dao/order
- * Example of a valid request object (= request body):
- * 1. {
- *      manufacturerUsername: 'john',
- *      clientUsername: 'jane',
- *      shipmentAddressId: 1,
- *      deliveryAddressId: 2
- *    }
- *
- */
-router.post("/", async(req, res) => {
-    const result = await orderDataDAO.create(req.body);
-    responseUtil.sendResultOfQuery(res, result);
-});
 
-/**
- * Read data of the queried order by its id from the database
- * return (in response.data.result object) its data including client, manufacturer, delivery and shipment addresses information
- *
- * Example of the get query path:
- * http://localhost:8081/dao/order/1
- */
-router.get("/:orderId", async(req, res) => {
-    const result = await orderDataDAO.read(req.params.orderId);
-    responseUtil.sendResultOfQuery(res, result);
-});
+new RouteBuilder('/', Method.POST)
+    .serializeReq(OrderCreateReq)
+    .authenticate()
+    .validate(orderCreate)
+    .addController(createOrder).attachToRouter(router);
+async function createOrder(req, res) {
+    const { senderId, recipientId } = req.body;
+    const user = req[config.authFieldName];
 
-/**
- * Read all the data of the all orders from the database
- * return (in response.data.result object) them data including client, manufacturer, delivery and shipment addresses information
- *
- * Example of the get query path:
- * http://localhost:8081/dao/order
- */
-router.get("/", async(req, res) => {
-    const result = await orderDataDAO.readAll();
-    responseUtil.sendResultOfQuery(res, result);
-});
+    const sender = await clientService.readOneByIdAndProfileId(senderId, user.id);
+    if(!sender)
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, message: 'Could not find the sender',
+            field: 'senderId', location: ErrorLocation.BODY
+        });
+    if(isRespServiceError(sender))
+        return throwAPIError(sender);
 
-/**
- * Update the existing order in the database
- * The put request must have at least orderId (primary key) field and fields to be changed.
- *
- * return (in response.data.isSuccess field) true if operation was not successful (= some rows in the database was changed) and false if not
- *
- * Example of a valid request object (= request body):
- * 1. {
- *      orderId: 1,
- *      manufacturerUsername: 'john',   //optional
- *      clientUsername: 'jane',         //optional
- *      shipmentAddressId: 1,           //optional
- *      deliveryAddressId: 2            //optional
- *    }
- */
-router.put("/", async(req, res) => {
-    const status = await orderDataDAO.update(req.body);
-    responseUtil.sendStatusOfOperation(res, status);
-});
+    const recipient = await clientService.readOneByIdAndProfileId(recipientId, user.id);
+    if(!recipient)
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, message: 'Could not find the recipient',
+            field: 'recipientId', location: ErrorLocation.BODY
+        });
+    if(isRespServiceError(recipient))
+        return throwAPIError(sender);
 
-/**
- * Delete data of the queried order by its id from the database
- * return (in response.data.isSuccess field) true if it was deleted (= affected rows count is more than 0) or false if not
- *
- * Example of the delete query path:
- * http://localhost:8081/dao/order/1
- */
-router.delete("/:orderId", async(req, res) => {
-    const status = await orderDataDAO.delete(req.params.orderId);
-    responseUtil.sendStatusOfOperation(res, status);
-});
+    const order = await orderDataDAO.create({...req.body, profileId: user.id});
+    if(isRespServiceError(order))
+        return throwAPIError(order, null, ErrorLocation.BODY);
+
+    if(!order)
+        throw new APIError({
+            reason: ErrorReason.UNEXPECTED, message: 'Could not create an order'
+        });
+
+    return order;
+}
+
+new RouteBuilder('/', Method.GET)
+    .authenticate()
+    .addController(getAll).attachToRouter(router);
+async function getAll(req, res) {
+    const user = req[config.authFieldName];
+    
+    const orders = await orderDataDAO.readAllByProfileId(user.id);
+    if(!orders || orders?.length === 0)
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, 
+            message: 'Could not find any orders'
+        });
+    if(isRespServiceError(orders))
+        return throwAPIError(orders);
+
+    return orders;
+}
+
+new RouteBuilder('/:id', Method.GET)
+    .authenticate()
+    .addController(getOne).attachToRouter(router);
+async function getOne(req, res) {
+    const user = req[config.authFieldName];
+    
+    const orders = await orderDataDAO.readAllByProfileId(user.id);
+    if(!orders)
+        throw new APIError({
+            reason: ErrorReason.NOT_FOUND, 
+            message: 'Could not find any orders'
+        });
+    if(isRespServiceError(orders))
+        return throwAPIError(orders);
+
+    return orders;
+}
+
+
 
 export default router;

@@ -4,6 +4,8 @@ import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
 import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
 import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
+import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
@@ -27,10 +29,11 @@ export default class OrderDataService {
     /**
      * The method reads Order with provided primary key(orderId)
      * @param {int} primaryKey primary key of the order
+     * @param {int} profileId 
      * @returns founded Order object, if operation was successful or null if not
      */
-    async read(primaryKey) {
-        return this.service.readOneById(primaryKey, idField, { include: [{ all: true }] });
+    async readOneByIdAndProfileId(id, profileId) {
+        return this.service.readOneById(id, idField, { where: {profileId}, include: [{ all: true }] });
     }
 
     /**
@@ -51,10 +54,12 @@ export default class OrderDataService {
 
     /**
      * The method reads all Orders of the OrderData SQL table
+     * @param {int} profileId 
      * @returns array of the founded Order objects, if operation was successful or null if not
      */
-    async readAll() {
-        return this.service.readAll({ include: [{ all: true }] });
+    async readAllByProfileId(profileId) {
+        const profiles = await this.service.rawQuery('SELECT * FROM OrderData');
+        return null;
     }
 
     /**
