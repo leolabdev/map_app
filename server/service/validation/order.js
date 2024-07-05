@@ -9,7 +9,7 @@ export const orderCreate = {
 };
 
 export const orderIds = {
-    schema: Joi.array().required(),
+    schema: Joi.array().items(Joi.number()).required(),
     field: 'orderIds'
 } 
 

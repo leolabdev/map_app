@@ -26,8 +26,8 @@ export default class SequelizeUtil {
     static getSequelizeInstance = () => {
         if (!instance){
             instance = createInstance();
-            //Add auto sync
-            instance.sync({alter: true});
+            //Adds auto sync for model changes, if set to true
+            instance.sync({alter: false});
         }
 
         return instance;
