@@ -24,7 +24,7 @@ export function validateInput(fn, validationSchema) {
                     reason: SEReason.REQUIRED,
                     message: 'validateInput(): request object is not defined'
                 });
-
+            
             if(Joi.isSchema(schema)) 
                 await schema.validateAsync(request, {abortEarly: false});
             else
