@@ -1,11 +1,13 @@
 import OrderData from "../model/OrderData.js";
-import {Op} from "sequelize";
+import {Op, QueryTypes} from "sequelize";
 import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
 import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
 import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
 import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import Client from "../model/Client.js";
+import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
@@ -33,24 +35,35 @@ export default class OrderDataService {
      * @returns founded Order object, if operation was successful or null if not
      */
     async readOneByIdAndProfileId(id, profileId) {
-        return this.service.readOneById(id, idField, { where: {profileId}, include: [{ all: true }] });
+        return this.service.readOneById(id, idField, {
+            where: {profileId}, 
+            include: [
+                { model: Client, as: 'Sender' },
+                { model: Client, as: 'Recipient' }
+            ]
+        });
     }
 
     /**
      * The method reads Order with provided primary keys(orderId)
      * @param {int[]} primaryKeys array with primary keys of the orders
+     * @param {number} profileId 
      * @returns array with founded Order objects, if operation was successful or null if not
      */
-    async readByIds(primaryKeys) {
-        return this.service.readAll({
+    deleteProfileOrdersByIds = validateInput(async (primaryKeys, profileId) => {
+        return this.service.deleteByCondition({
             where: {
                 id: {
                     [Op.or]: primaryKeys
-                }
+                },
+                profileId
             },
-            include: [{ all: true }]
-        }, orderIds);
-    }
+            include: [
+                { model: Client, as: 'Sender' },
+                { model: Client, as: 'Recipient' }
+           ]
+        });
+    }, orderIds);
 
     /**
      * The method reads all Orders of the OrderData SQL table
@@ -58,8 +71,15 @@ export default class OrderDataService {
      * @returns array of the founded Order objects, if operation was successful or null if not
      */
     async readAllByProfileId(profileId) {
-        const profiles = await this.service.rawQuery('SELECT * FROM OrderData');
-        return null;
+        return this.service.readAll({
+            where: {
+                profileId
+            },
+            include: [
+                { model: Client, as: 'Sender' },
+                { model: Client, as: 'Recipient' }
+            ]
+          });
     }
 
     /**
