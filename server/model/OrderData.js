@@ -46,6 +46,6 @@ Client.hasMany(OrderData, { foreignKey: 'senderId' });
 Client.hasMany(OrderData, { foreignKey: 'recipientId' });
 Profile.hasMany(OrderData, { foreignKey: 'profileId' });
 
-OrderData.belongsTo(Client, { foreignKey: 'senderId' });
-OrderData.belongsTo(Client, { foreignKey: 'recipientId' });
+OrderData.belongsTo(Client, { as: 'Sender', foreignKey: 'senderId' });
+OrderData.belongsTo(Client, { as: 'Recipient', foreignKey: 'recipientId' });
 OrderData.belongsTo(OrderData, { foreignKey: 'profileId' });
