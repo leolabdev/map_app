@@ -935,6 +935,9 @@
                         },
                         "description": "Success with body"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
                     "404": {
                         "$ref": "#/components/responses/404"
                     },
@@ -945,8 +948,185 @@
                         "$ref": "#/components/responses/503_daily_limit"
                     }
                 },
+                "security": [
+                    {}
+                ],
                 "summary": "Get address by coordinates",
                 "description": "Request an found address information for provided latitude and longitude coordinates. Notice, that the closes address (if any) will be returned and its latitude and longitude can be slightly different than in the request.\n\nNotice, that the enpoint is using an external API, which has some limits.\n\nThe first limit is the daily limit, wherefore when this limit is exceeded the LIMIT_EXCEEDED error with status 503 will be returned.\n\nThe second limit is how much requests per second can be made. The API can handle it automatically by adding a throttling for each request to this endpoint. In case when there are multiple requests made even from different clients, the response will be delayed. The more simultenious requests there are the longer client should wait. It is advised to add some indication for the client that the request is delayed."
+            }
+        },
+        "/address/validate": {
+            "get": {
+                "tags": [
+                    "address"
+                ],
+                "parameters": [
+                    {
+                        "examples": {
+                            "1": {
+                                "value": "Helsinki"
+                            }
+                        },
+                        "name": "city",
+                        "description": "city",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "1": {
+                                "value": "Korppaanmäentie"
+                            }
+                        },
+                        "name": "street",
+                        "description": "Street name only",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "1": {
+                                "value": "37"
+                            }
+                        },
+                        "name": "building",
+                        "description": "building number, can be also with a letter \"34 D\"",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "1": {
+                                        "value": {
+                                            "data": {
+                                                "lat": "60.2037651",
+                                                "lon": "24.8959926",
+                                                "display_name": "Korppaanmäentie, Pikku Huopalahti, Ruskeasuo, Western major district, Helsinki, Helsinki sub-region, Uusimaa, Southern Finland, Mainland Finland, 00300, Finland",
+                                                "class": "highway",
+                                                "type": "tertiary",
+                                                "importance": 0.43001
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Success with body"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    },
+                    "503": {
+                        "$ref": "#/components/responses/503_daily_limit"
+                    }
+                },
+                "security": [
+                    {}
+                ],
+                "summary": "Validate address exsistance",
+                "description": "Validate that the address exsists. The found address information will be returned.\n\nNotice, that the enpoint is using an external API, which has some limits.\n\nThe first limit is the daily limit, wherefore when this limit is exceeded the LIMIT_EXCEEDED error with status 503 will be returned.\n\nThe second limit is how much requests per second can be made. The API can handle it automatically by adding a throttling for each request to this endpoint. In case when there are multiple requests made even from different clients, the response will be delayed. The more simultenious requests there are the longer client should wait. It is advised to add some indication for the client that the request is delayed."
+            }
+        },
+        "/address/autocomplete": {
+            "get": {
+                "tags": [
+                    "address"
+                ],
+                "parameters": [
+                    {
+                        "examples": {
+                            "1": {
+                                "value": "Helsinki"
+                            }
+                        },
+                        "name": "city",
+                        "description": "city, supported values: Helsinki, Vantaa, Espoo, Lahti, Tampere and Turku",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "examples": {
+                            "1": {
+                                "value": "Hiekka"
+                            }
+                        },
+                        "name": "search",
+                        "description": "Street name to autocomplete",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/200_one"
+                                },
+                                "examples": {
+                                    "1": {
+                                        "value": {
+                                            "data": {
+                                                "lat": "60.2037651",
+                                                "lon": "24.8959926",
+                                                "display_name": "Korppaanmäentie, Pikku Huopalahti, Ruskeasuo, Western major district, Helsinki, Helsinki sub-region, Uusimaa, Southern Finland, Mainland Finland, 00300, Finland",
+                                                "class": "highway",
+                                                "type": "tertiary",
+                                                "importance": 0.43001
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Success with body"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    },
+                    "503": {
+                        "$ref": "#/components/responses/503_daily_limit"
+                    }
+                },
+                "security": [
+                    {}
+                ],
+                "summary": "Street name autocomplete",
+                "description": "Search for street names in the specified city.\n\nNotice, that there is a limited cities amount are supported: Helsinki, Vantaa, Espoo, Lahti, Tampere and Turku.\n\nNotice, that the enpoint is using an external API, which has some limits.\n\nThe first limit is the daily limit, wherefore when this limit is exceeded the LIMIT_EXCEEDED error with status 503 will be returned.\n\nThe second limit is how much requests per second can be made. The API can handle it automatically by adding a throttling for each request to this endpoint. In case when there are multiple requests made even from different clients, the response will be delayed. The more simultenious requests there are the longer client should wait. It is advised to add some indication for the client that the request is delayed."
             }
         }
     },
