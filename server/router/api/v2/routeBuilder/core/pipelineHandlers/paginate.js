@@ -1,6 +1,11 @@
 
 import {PAGINATION_MAX, config} from "../config.js";
 
+/**
+ * 
+ * @param {defaultPage: Number, defaultLimit: number, max: number} paginationSettings 
+ * @returns 
+ */
 export const paginate = (paginationSettings) => {
     return (req, res, next) => {
         const {page, limit} = req.query;

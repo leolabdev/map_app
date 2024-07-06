@@ -48,10 +48,12 @@ router.post('/', authenticate(config.authFieldName), serializeReq(config.respFie
 
 new RouteBuilder('/', Method.GET)
     .authenticate()
+    .paginate()
     .addController(getProfileClients).attachToRouter(router);
 async function getProfileClients(req, res) {
     const profileId = req[config.authFieldName]?.id;
-    const clients = await clientService.readAllByProfileId(profileId);
+    const {pagination} = req;
+    const clients = await clientService.readAllByProfileId(profileId, pagination);
     if(!clients || clients?.length === 0)
         throw new APIError({
             reason: ErrorReason.NOT_FOUND, 

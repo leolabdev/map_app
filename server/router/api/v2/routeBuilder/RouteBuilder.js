@@ -110,7 +110,7 @@ export class RouteBuilder {
 
     /**
      *
-     * @param{Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be exposed
+     * @param {Record<string, boolean>} shapeObject object in {field: isExposed} form with fields to be exposed
      * @returns {RouteBuilder}
      */
     serializeRes = function (shapeObject){
@@ -120,7 +120,7 @@ export class RouteBuilder {
 
     /**
      *
-     * @param{{defaultPage=1, defaultLimit=PAGINATION_MAX, max=PAGINATION_MAX}=} pagination
+     * @param {{defaultPage: number | undefined, defaultLimit: number | undefined, max: number | undefined}=} pagination
      * @returns {RouteBuilder}
      */
     paginate = function (pagination){
