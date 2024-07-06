@@ -59,11 +59,13 @@ async function createOrder(req, res) {
 
 new RouteBuilder('/', Method.GET)
     .authenticate()
+    .paginate()
     .addController(getAll).attachToRouter(router);
 async function getAll(req, res) {
     const user = req[config.authFieldName];
+    const {pagination} = req;
     
-    const orders = await orderService.readAllByProfileId(user.id);
+    const orders = await orderService.readAllByProfileId(user.id, pagination);
     if(!orders || orders?.length === 0)
         throw new APIError({
             reason: ErrorReason.NOT_FOUND, 

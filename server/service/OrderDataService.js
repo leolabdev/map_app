@@ -70,7 +70,7 @@ export default class OrderDataService {
      * @param {int} profileId 
      * @returns array of the founded Order objects, if operation was successful or null if not
      */
-    async readAllByProfileId(profileId) {
+    async readAllByProfileId(profileId, pagination) {
         return this.service.readAll({
             where: {
                 profileId
@@ -78,7 +78,9 @@ export default class OrderDataService {
             include: [
                 { model: Client, as: 'Sender' },
                 { model: Client, as: 'Recipient' }
-            ]
+            ],
+            limit: pagination?.limit,
+            offset: pagination?.offset
           });
     }
 
