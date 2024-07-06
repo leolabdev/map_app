@@ -62,8 +62,12 @@ export default class ClientService {
      * @param {number} profileId 
      * @returns array of the founded Client objects, if operation was successful or null if not
      */
-    async readAllByProfileId(profileId) {
-        return this.service.readAll({where: {profileId}});
+    async readAllByProfileId(profileId, pagination) {
+        return this.service.readAll({
+            where: {profileId},
+            limit: pagination?.limit,
+            offset: pagination?.offset
+        });
     }
 
     /**
