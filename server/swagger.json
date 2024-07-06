@@ -1094,14 +1094,13 @@
                                 "examples": {
                                     "1": {
                                         "value": {
-                                            "data": {
-                                                "lat": "60.2037651",
-                                                "lon": "24.8959926",
-                                                "display_name": "Korppaanmäentie, Pikku Huopalahti, Ruskeasuo, Western major district, Helsinki, Helsinki sub-region, Uusimaa, Southern Finland, Mainland Finland, 00300, Finland",
-                                                "class": "highway",
-                                                "type": "tertiary",
-                                                "importance": 0.43001
-                                            }
+                                            "data": [
+                                                "Hiekkakiventie",
+                                                "Hiekkakivenpolku",
+                                                "Hiekkalaiturintie",
+                                                "Hiekkalaiturinaukio",
+                                                "Hiekkalaituri"
+                                            ]
                                         }
                                     }
                                 }
