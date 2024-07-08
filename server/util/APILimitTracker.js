@@ -13,6 +13,11 @@ export default class APILimitTracker{
         //geoapify token has 3000 requests per day: 3000 * 0.9 percents = 2700 per day
         'geoapify': {
             'autocomplete': { amountLeft: 2700 }
+        },
+
+        //ORS /optimization token has 500 requests per day: 500 * 0.9 percents = 450 per day
+        'ors': {
+            'optimize': { amountLeft: 450 }
         }
     }
 
