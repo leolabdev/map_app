@@ -20,7 +20,6 @@ export default class AddressService {
             const searchText = `${building}+${street}+${city}+Finland`
 
             const key = process.env.MAPS_API_KEY;
-            //const key = '';
             const url = `https://geocode.maps.co/search?q=${searchText}&api_key=${key}`;
 
             const resp = await makeAPIReq(url);
@@ -49,7 +48,6 @@ export default class AddressService {
             const {lon, lat} = coordinates;
 
             const key = process.env.MAPS_API_KEY;
-            //const key = '';
             const url = `https://geocode.maps.co/reverse?lon=${lon}&lat=${lat}&apiKey=${key}`;
 
             const resp = await makeAPIReq(url);
@@ -78,7 +76,6 @@ export default class AddressService {
             if(!cityId)
                 return new ServiceError({ reason: SEReason.NOT_FOUND, message: `Can not find the ${city} city or it is not supported` });
 
-            //const key = '';
             const key = process.env.GEOAPIFY_API_KEY;
             const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${search}&lang=en&limit=5&type=street&filter=place:${cityId}&format=json&apiKey=${key}`;
 
