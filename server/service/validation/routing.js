@@ -13,13 +13,17 @@ export const routingCoordinates = {
         endCoordinateIndex: Joi.number(),
         avoidCityCenters: Joi.boolean(),
         cityCentersToAvoid: Joi.array().items(Joi.string()),
-        isTrafficSituation: Joi.boolean(),
+        isTrafficSituation: Joi.boolean()
     })
 };
 
 export const routingOrders = {
     schema: Joi.object({
-        lon: Joi.number().required(),
-        lat: Joi.number().required()
+        orderIds: Joi.array().items(Joi.number()),
+        startOrderId: Joi.number(),
+        endOrderId: Joi.number(),
+        avoidCityCenters: Joi.boolean(),
+        cityCentersToAvoid: Joi.array().items(Joi.string()),
+        isTrafficSituation: Joi.boolean()
     })
 };
