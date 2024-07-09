@@ -33,6 +33,10 @@ class ThrottlingQueue {
     }
 }
 
+//maps.co
 export const validateQueue = new ThrottlingQueue(1500);
 export const reverseQueue = new ThrottlingQueue(1500);
+//geoapify
 export const autocompleteQueue = new ThrottlingQueue(1500);
+//ors (/optimization)
+export const routingQueue = new ThrottlingQueue(500);

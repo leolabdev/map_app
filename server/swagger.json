@@ -1127,6 +1127,153 @@
                 "summary": "Street name autocomplete",
                 "description": "Search for street names in the specified city.\n\nNotice, that there is a limited cities amount are supported: Helsinki, Vantaa, Espoo, Lahti, Tampere and Turku.\n\nNotice, that the enpoint is using an external API, which has some limits.\n\nThe first limit is the daily limit, wherefore when this limit is exceeded the LIMIT_EXCEEDED error with status 503 will be returned.\n\nThe second limit is how much requests per second can be made. The API can handle it automatically by adding a throttling for each request to this endpoint. In case when there are multiple requests made even from different clients, the response will be delayed. The more simultenious requests there are the longer client should wait. It is advised to add some indication for the client that the request is delayed."
             }
+        },
+        "/data/routing/route": {
+            "post": {
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoutingCoordinates"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "routing"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "bbox": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "format": "float",
+                                                        "type": "number"
+                                                    },
+                                                    "example": [
+                                                        24.912149,
+                                                        60.159777,
+                                                        24.968127,
+                                                        60.187661
+                                                    ]
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "Feature"
+                                                },
+                                                "properties": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "way_points": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "format": "int32",
+                                                                "type": "integer"
+                                                            },
+                                                            "example": [
+                                                                0,
+                                                                235
+                                                            ]
+                                                        },
+                                                        "summary": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "distance": {
+                                                                    "format": "float",
+                                                                    "type": "number",
+                                                                    "example": 6138.2
+                                                                },
+                                                                "duration": {
+                                                                    "format": "float",
+                                                                    "type": "number",
+                                                                    "example": 1193.2
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "geometry": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "coordinates": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "format": "float",
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "example": [
+                                                                [
+                                                                    24.968127,
+                                                                    60.183877
+                                                                ],
+                                                                [
+                                                                    24.96799,
+                                                                    60.18394
+                                                                ],
+                                                                [
+                                                                    24.967846,
+                                                                    60.184014
+                                                                ]
+                                                            ]
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "LineString"
+                                                        }
+                                                    }
+                                                },
+                                                "info": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "distance": {
+                                                            "format": "float",
+                                                            "type": "number",
+                                                            "example": 6138.2
+                                                        },
+                                                        "duration": {
+                                                            "format": "float",
+                                                            "type": "number",
+                                                            "example": 1193.2
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Found route"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500"
+                    },
+                    "503": {
+                        "$ref": "#/components/responses/503_daily_limit"
+                    }
+                },
+                "security": [
+                    {}
+                ],
+                "summary": "Calculate route for specified coordinates",
+                "description": "The route is calculated throught coordinates specified in the coordinates array.\n\nNotice, that the enpoint is using an external API, which has some limits.\n\nThe first limit is the daily limit, wherefore when this limit is exceeded the LIMIT_EXCEEDED error with status 503 will be returned.\n\nThe second limit is how much requests per second can be made. The API can handle it automatically by adding a throttling for each request to this endpoint. In case when there are multiple requests made even from different clients, the response will be delayed. The more simultenious requests there are the longer client should wait. It is advised to add some indication for the client that the request is delayed.\n\nNotice that the route will be the shortest one that can be between the coordinates, so order of them almost does not matter.\n\nNotice, that if the startCoordinateIndex is not specified the first coordinate in the coordinates array will be used as start point. If the endCoordinateIndex is not specified the last coordinate will be used the end point in the route.\n\nThe route can also be modified for avoiding centers of the cities. There are two possible ways to do it. If avoidCityCenters is set up to true all the centers will be avoided (which can be found in the system). If only part of the centers should be avoided the cityCentersToAvoid array with city names should be specified. Notice, that if avoidCityCenters is true all centers will be avoided even if cityCentersToAvoid is also specified.\n\nThe isTrafficSituation set to true will add avoidance of the places with a slow traffic (for Finland only). These places list is updated every 15 min."
+            }
         }
     },
     "components": {
@@ -1455,6 +1602,63 @@
                 "properties": {
                     "data": {
                         "type": "object"
+                    }
+                }
+            },
+            "RoutingCoordinates": {
+                "description": "Rote calculation by coordinates",
+                "required": [
+                    "coordinates"
+                ],
+                "type": "object",
+                "properties": {
+                    "coordinates": {
+                        "description": "array with arrays in form longitude, latitude",
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "format": "float",
+                                "type": "number"
+                            }
+                        },
+                        "example": [
+                            [
+                                24.9120593,
+                                60.1598419
+                            ],
+                            [
+                                24.9686917,
+                                60.1836934
+                            ]
+                        ]
+                    },
+                    "startCoordinateIndex": {
+                        "format": "int32",
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "endCoordinateIndex": {
+                        "format": "int32",
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "avoidCityCenters": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "cityCentersToAvoid": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Helsinki"
+                        ]
+                    },
+                    "isTrafficSituation": {
+                        "type": "boolean",
+                        "example": true
                     }
                 }
             }
