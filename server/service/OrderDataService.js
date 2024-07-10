@@ -4,8 +4,6 @@ import BasicService from "./BasicService.js";
 import { idField } from "./validation/idField.js";
 import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
 import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
-import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
-import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
 import Client from "../model/Client.js";
 import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
 
@@ -42,6 +40,10 @@ export default class OrderDataService {
                 { model: Client, as: 'Recipient' }
             ]
         });
+    }
+
+    async readOneById(id) {
+        return this.service.readOneById(id, idField);
     }
 
     /**
@@ -81,7 +83,19 @@ export default class OrderDataService {
             ],
             limit: pagination?.limit,
             offset: pagination?.offset
-          });
+        });
+    }
+
+    async readAllByIds(orderIds) {
+        return this.service.readAll({
+            where: {
+                [Op.or]: {id: orderIds}
+            },
+            include: [
+                { model: Client, as: 'Sender' },
+                { model: Client, as: 'Recipient' }
+            ]
+        });
     }
 
     /**
