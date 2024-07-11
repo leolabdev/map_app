@@ -9,7 +9,7 @@ import { config } from "../routeBuilder/core/config.js";
 import { RoutingOrders, RoutingRoute } from "../routeBuilder/rules/serialization/routing.js";
 import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
 import { routingCoordinates, routingOrders } from "../routeBuilder/rules/validation/routing.js";
-import { APIError } from "../routeBuilder/core/error/APIError.js";
+import { determineResError } from "../routeBuilder/core/pipelineHandlers/determineResError.js";
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.post('/', serializeReq(config.respFieldName, RoutingRoute), validate(rout
         });
     }
     routingQueue.addRequest(reqFn);
-}, catchErrors(), formatResponse());
+}, determineResError(), catchErrors(), formatResponse());
 
 router.post('/orders', serializeReq(config.respFieldName, RoutingOrders), validate(routingOrders), async (req, res, next) => {
     const reqFn = async function(){
