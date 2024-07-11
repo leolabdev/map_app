@@ -57,6 +57,12 @@ function determineErrorReason(joiErrorDetails) {
     switch (joiErrorDetails.type) {
         case 'string.base':
             return ErrorReason.NOT_STRING;
+        case 'number.base':
+            return ErrorReason.NOT_NUMBER;
+        case 'boolean.base':
+            return ErrorReason.NOT_BOOLEAN;
+        case 'array.base':
+            return ErrorReason.NOT_ARRAY;
         case 'any.required':
             return ErrorReason.REQUIRED;
         default:
