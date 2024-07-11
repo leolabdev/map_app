@@ -31,6 +31,6 @@ router.post('/orders', serializeReq(config.respFieldName, RoutingOrders), valida
         });
     }
     routingQueue.addRequest(reqFn);
-}, catchErrors(), formatResponse());
+}, determineResError(), catchErrors(), formatResponse());
 
 export default router;
