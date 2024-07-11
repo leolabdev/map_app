@@ -7,6 +7,7 @@ import AddressService from "../../../../service/AddressService.js";
 import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
 import { addressAutocomplete, addressReverse, addressValidate } from "../routeBuilder/rules/validation/address.js";
 import { registerController } from "../routeBuilder/core/util/registerController.js";
+import { determineResError } from "../routeBuilder/core/pipelineHandlers/determineResError.js";
 
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.get('/validate', validate(addressValidate, 'query'), async (req, res, nex
         });
     }
     validateQueue.addRequest(reqFn);
-}, catchErrors(), formatResponse());
+}, determineResError(), catchErrors(), formatResponse());
 
 
 router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next) => {
@@ -31,7 +32,7 @@ router.get('/reverse', validate(addressReverse, 'query'), async (req, res, next)
     }
 
     reverseQueue.addRequest(reqFn);
-}, catchErrors(), formatResponse());
+}, determineResError(), catchErrors(), formatResponse());
 
 //503 error if there are no requests left for external APIs
 //429 error if user has send too many requests
@@ -43,6 +44,6 @@ router.get('/autocomplete', addReqLimit(3000), validate(addressAutocomplete, 'qu
     }
 
     autocompleteQueue.addRequest(reqFn);
-}, catchErrors(), formatResponse());
+}, determineResError(), catchErrors(), formatResponse());
 
 export default router;
