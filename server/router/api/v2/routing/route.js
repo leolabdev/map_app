@@ -1,54 +1,36 @@
 import express from "express";
-import CityCenterUtil from "../../../../util/CityCenterUtil.js";
-import AreaService from "../../../../service/AreaService.js";
-import OrderDataService from "../../../../service/OrderDataService.js";
-import OptimizationUtil from "../../../../util/OptimizationUtil.js";
 import RoutingService from "../../../../service/RoutingService.js";
 import { routingQueue } from "../../../../util/throttlingQueue.js";
-import isRespServiceError from "../routeBuilder/core/service/validateInput.js";
-import { convertServiceToAPIError } from "../routeBuilder/core/error/convertServiceToAPIError.js";
+import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
+import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
+import { registerController } from "../routeBuilder/core/util/registerController.js";
+import { serializeReq } from "../routeBuilder/core/pipelineHandlers/serializeReq.js";
 import { config } from "../routeBuilder/core/config.js";
+import { RoutingOrders, RoutingRoute } from "../routeBuilder/rules/serialization/routing.js";
+import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
+import { routingCoordinates, routingOrders } from "../routeBuilder/rules/validation/routing.js";
+import { APIError } from "../routeBuilder/core/error/APIError.js";
 
 const router = express.Router();
 
-const areaDAO = new AreaService();
 const routingService = new RoutingService();
 
-router.post('/', async (req, res, next) => {
+router.post('/', serializeReq(config.respFieldName, RoutingRoute), validate(routingCoordinates), async (req, res, next) => {
     const reqFn = async function(){
-        const resp = await routingService.findRouteByCoordinates(req.body);
-        sendServiceResp(resp, res);
+        registerController(res, next, async () => {
+            return await routingService.findRouteByCoordinates(req.body);
+        });
     }
     routingQueue.addRequest(reqFn);
-});
+}, catchErrors(), formatResponse());
 
-
-const orderService = new OrderDataService();
-
-router.post('/orders', async (req, res) => {
+router.post('/orders', serializeReq(config.respFieldName, RoutingOrders), validate(routingOrders), async (req, res, next) => {
     const reqFn = async function(){
-        const resp = await routingService.findRouteByOrderIds(req.body);
-        sendServiceResp(resp, res);
+        registerController(res, next, async () => {
+            return routingService.findRouteByOrderIds(req.body);
+        });
     }
     routingQueue.addRequest(reqFn);
-});
-
-
-function sendServiceResp(serviceResp, res){
-    if(Array.isArray(serviceResp) && isRespServiceError(serviceResp[0])){
-        const errors = [];
-        for(let i=0, l=serviceResp.length; i<l; i++)
-            errors.push(convertServiceToAPIError(serviceResp[i]));
-
-        return res.status(errors[0].status).send({[config.respErrorFieldName]: errors});
-    }
-
-    if(isRespServiceError(serviceResp)){
-        const resp = convertServiceToAPIError(serviceResp);
-        return res.status(resp.status).send({[config.respErrorFieldName]: [resp]});
-    }
-    
-    res.send({[config.respFieldName]: serviceResp});
-}
+}, catchErrors(), formatResponse());
 
 export default router;
