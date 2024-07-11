@@ -1,6 +1,4 @@
 import express from "express";
-import axios from "axios";
-import ResponseUtil from "../../../../util/ResponseUtil.js";
 import ClientService from "../../../../service/ClientService.js";
 import { RouteBuilder } from "../routeBuilder/RouteBuilder.js";
 import { ClientCreateReq, ClientUpdateReq } from "../routeBuilder/rules/serialization/client.js";
@@ -9,20 +7,19 @@ import { Method } from "../routeBuilder/core/enums/Method.js";
 import { validateQueue } from "../../../../util/throttlingQueue.js";
 import AddressService from "../../../../service/AddressService.js";
 import { config } from "../routeBuilder/core/config.js";
-import { convertServiceToAPIError } from "../routeBuilder/core/error/convertServiceToAPIError.js";
 import isRespServiceError from "../routeBuilder/core/service/validateInput.js";
 import { serializeReq } from "../routeBuilder/core/pipelineHandlers/serializeReq.js";
 import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
 import { authenticate } from "../routeBuilder/core/pipelineHandlers/authenticate.js";
 import { APIError } from "../routeBuilder/core/error/APIError.js";
 import { ErrorReason } from "../routeBuilder/core/error/ErrorReason.js";
-import { ErrorLocation } from "../routeBuilder/core/error/ErrorLocation.js";
 import { idField } from "../routeBuilder/rules/validation/idField.js";
 import throwAPIError from "../routeBuilder/core/error/throwAPIError.js";
 import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
 import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
-import { ServiceError } from "../routeBuilder/core/service/dataExtractors/error/ServiceError.js";
-import { SEReason } from "../routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import { registerController } from "../routeBuilder/core/util/registerController.js";
+import isServiceError from "../routeBuilder/core/service/dataExtractors/error/isServiceError.js";
+import { determineResError } from "../routeBuilder/core/pipelineHandlers/determineResError.js";
 
 const router = express.Router();
 
@@ -30,21 +27,22 @@ const clientService = new ClientService();
 const addressService = new AddressService();
 
 
-router.post('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientCreateReq), validate(clientCreate), (req, res) => {
+router.post('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientCreateReq), validate(clientCreate), (req, res, next) => {
     const reqFn = async function(){
-        const {city, street, building} = req.body;
-        const resp = await addressService.validate({city, street, building});
-        if(isRespServiceError(resp))
-            return sendServiceResp(resp, res);
-    
-        const {lon, lat} = resp;
-        const profileId = req[config.authFieldName].id;
-        const client = await clientService.create({...req.body, lon, lat, profileId});
-        sendServiceResp(client, res);
+        registerController(res, next, async () => {
+            const {city, street, building} = req.body;
+            const resp = await addressService.validate({city, street, building});
+            if(isServiceError(resp))
+                return resp;
+        
+            const {lon, lat} = resp;
+            const profileId = req[config.authFieldName].id;
+            return await clientService.create({...req.body, lon, lat, profileId});
+        });
     }
 
     validateQueue.addRequest(reqFn);
-}, catchErrors(config.respErrorFieldName), formatResponse(config.respFieldName, config.respErrorFieldName, 201));
+}, determineResError(), catchErrors(), formatResponse(null, null, 201));
 
 new RouteBuilder('/', Method.GET)
     .authenticate()
@@ -59,9 +57,6 @@ async function getProfileClients(req, res) {
             reason: ErrorReason.NOT_FOUND, 
             message: 'Could not find any clients'
         });
-
-    if(isRespServiceError(clients))
-        return throwAPIError(clients);
 
     return clients;
 }
@@ -79,52 +74,48 @@ async function getClient(req, res) {
             message: 'Could not find the client'
         });
 
-    if(isRespServiceError(client))
-        return throwAPIError(client);
-
     return client;
 }
 
 
-router.put('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientUpdateReq), validate(clientUpdate), (req, res) => {
+router.put('/', authenticate(config.authFieldName), serializeReq(config.respFieldName, ClientUpdateReq), validate(clientUpdate), (req, res, next) => {
     const reqFn = async function(){
-        const profileId = req[config.authFieldName].id;
-        const {id, city, street, building} = req.body;
+        registerController(res, next, async () => {
+            const profileId = req[config.authFieldName].id;
+            const {id, city, street, building} = req.body;
 
-        const existingClient = await clientService.readOneByIdAndProfileId(id, profileId);
-        if(isRespServiceError(existingClient))
-            return sendServiceResp(existingClient, res);
+            const existingClient = await clientService.readOneByIdAndProfileId(id, profileId);
+            if(isServiceError(existingClient))
+                return existingClient;
 
-        if(!existingClient)
-            return sendServiceResp(new ServiceError({
-                reason: SEReason.NOT_FOUND, message: 'Client does not exists'
-            }), res);
+            if(!existingClient)
+                return new APIError({
+                    reason: ErrorReason.NOT_FOUND, message: 'Client does not exists'
+                });
 
-        //If address shouldn't be updated
-        if(!city && !street && !building){
-            const client = await clientService.update({...req.body, profileId});
-            return sendServiceResp(client, res);
-        }
+            //If address shouldn't be updated
+            if(!city && !street && !building)
+                return await clientService.update({...req.body, profileId});
 
-        const newAddress = {
-            city: city ?? existingClient['city'], 
-            street: street ?? existingClient['street'], 
-            building: building ?? existingClient['building']
-        }
-        const addressResp = await addressService.validate(newAddress);
-        if(isRespServiceError(addressResp))
-            return sendServiceResp(addressResp, res);
+            const newAddress = {
+                city: city ?? existingClient['city'], 
+                street: street ?? existingClient['street'], 
+                building: building ?? existingClient['building']
+            }
+            const addressResp = await addressService.validate(newAddress);
+            if(isServiceError(addressResp))
+                return addressResp;
 
-        if(!addressResp)
-            return sendServiceResp(new ServiceError({ reason: SEReason.NOT_FOUND, message: 'Could not find the address' }), res);
+            if(!addressResp)
+                return new APIError({ reason: ErrorReason.NOT_FOUND, message: 'Could not find the address' });
 
-        const {lon, lat} = addressResp;
-        const client = await clientService.update({...req.body, lon, lat});
-        sendServiceResp(client, res, 204);
+            const {lon, lat} = addressResp;
+            return clientService.update({...req.body, lon, lat});
+        });
     }
 
     validateQueue.addRequest(reqFn);
-}, catchErrors(config.respErrorFieldName), formatResponse(config.respFieldName, config.respErrorFieldName, 204));
+}, determineResError(), catchErrors(), formatResponse(null, null, 204));
 
 new RouteBuilder('/:id', Method.DELETE)
     .authenticate()
@@ -139,8 +130,8 @@ async function deleteClient(req, res) {
         return throwAPIError(client);
 
     const isSuccess = await clientService.delete(req.params.id);
-    if(isRespServiceError(isSuccess))
-        return throwAPIError(isSuccess);
+    if(isServiceError(isSuccess))
+        return isSuccess;
 
     if(!isSuccess)
         throw new APIError({
@@ -148,28 +139,6 @@ async function deleteClient(req, res) {
         });
 
     return isSuccess;
-}
-
-function sendServiceResp(serviceResp, res, successStatus=200){
-    if(isRespServiceError(serviceResp)){
-        let errors = [];
-        if(Array.isArray(serviceResp)){
-            for(let i=0, l=serviceResp.length; i<l; i++)
-                errors.push(convertServiceToAPIError(serviceResp[i]));
-        } else
-            errors[0] = convertServiceToAPIError(serviceResp);
-
-        const status = errors[0]?.status;
-        return res.status(status ?? 500).send({[config.respErrorFieldName]: errors});
-    }
-
-    if(successStatus === 204)
-        return res.status(successStatus).send();
-
-    if(Array.isArray(serviceResp))
-        return res.status(successStatus).send({[config.respFieldName]: serviceResp});;
-    
-    res.status(successStatus).send({[config.respFieldName]: serviceResp});
 }
 
 export default router;
