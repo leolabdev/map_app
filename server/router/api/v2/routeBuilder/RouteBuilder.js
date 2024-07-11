@@ -16,6 +16,7 @@ import {config} from "./core/config.js";
 import {ErrorName} from "./core/error/ErrorName.js";
 import { paginate } from "./core/pipelineHandlers/paginate.js";
 import { addReqLimit } from "./core/pipelineHandlers/addReqLimit..js";
+import { determineResError } from "./core/pipelineHandlers/determineResError.js";
 
 
 export class RouteBuilder {
@@ -23,9 +24,9 @@ export class RouteBuilder {
      *
      * @param {string} endpoint endpoint of the route
      * @param {Method} method one of 4 http method to use in router
-     * @param {{respFieldName: string, respErrorFieldName: string, authFieldName: string}} options
+     * @param {{respFieldName?: string, respErrorFieldName?: string, authFieldName?: string, autoDetectErrors?: boolean}} options
      */
-    constructor(endpoint='/', method=Method.GET, options=config) {
+    constructor(endpoint='/', method=Method.GET, options={}) {
         this.endpoint = endpoint;
         this.method = method;
 
@@ -40,7 +41,7 @@ export class RouteBuilder {
         this.paginator = null;
         this.reqLimiter = null;
 
-        this.options = {...config, ...options};
+        this.options = {...config, autoDetectErrors: true, ...options};
     }
     #successStatusCode = null;
 
@@ -166,15 +167,19 @@ export class RouteBuilder {
 
             this.controller,
 
+            this.options.autoDetectErrors ? determineResError(this.options.respFieldName, this.options.respErrorFieldName) : null,
             this.resSerializer,
             catchErrors(this.options.respErrorFieldName),
             formatResponse(this.options.respFieldName, this.options.respErrorFieldName, this.#successStatusCode)
         ];
 
-        for(let i=0, len=pipeHandlersToApply.length; i<len; i++)
-            pipeHandlersToApply[i] = pipeHandlersToApply[i] ?? this.#pipeHandlerMocker;
+        const handlers = [];
+        for(let i=0, len=pipeHandlersToApply.length; i<len; i++){
+            if(pipeHandlersToApply[i])
+                handlers.push(pipeHandlersToApply[i]);
+        }
 
-        return router[this.method](this.endpoint, ...pipeHandlersToApply);
+        return router[this.method](this.endpoint, ...handlers);
     }
     #pipeHandlerMocker = function (req, res, next) { return next(); }
 }

@@ -84,7 +84,7 @@ function determineName(reason){
     const validation = [
         ErrorReason.REQUIRED, ErrorReason.VALIDATION, 
         ErrorReason.NOT_STRING, ErrorReason.NOT_NUMBER, 
-        ErrorReason.NOT_BOOLEAN
+        ErrorReason.NOT_BOOLEAN, ErrorReason.NOT_ARRAY
     ];
     const notAuthenticated = [
         ErrorReason.NOT_AUTHENTICATED, ErrorReason.AUTH_TOKEN_NOT_PROVIDED,

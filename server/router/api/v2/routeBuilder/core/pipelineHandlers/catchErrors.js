@@ -1,32 +1,28 @@
-import {API_ERROR_TYPE_NAME, API_MULTIPLE_ERROR, config} from "../config.js";
-import {APIError} from "../error/APIError.js";
+import {config} from "../config.js";
+import convertAnyErrorToAPIError from "../error/convertAnyErrorToAPIError.js";
 
 export const catchErrors = (respErrorFieldName) => {
     return (err, req, res, next) => {
         respErrorFieldName = respErrorFieldName ?? config.respErrorFieldName;
+        const oldErrors = res[respErrorFieldName];
         let previousErrors = [];
-        if(Array.isArray(res[respErrorFieldName]))
-            previousErrors = res[respErrorFieldName];
+        if(oldErrors)
+            previousErrors = Array.isArray(oldErrors) ? oldErrors : [oldErrors];
 
         const {respStatusFieldName} = config;
+        const apiError = convertAnyErrorToAPIError(err);
 
-        if(err.type === API_MULTIPLE_ERROR){
-            const errors = err.errors;
-
-            for(let i=0, l=errors.length; i<l; i++)
-                errors[i].endpoint = req.originalUrl;
+        if(Array.isArray(apiError)){
+            for(let i=0, l=apiError.length; i<l; i++)
+                apiError[i].endpoint = req.originalUrl;
             
-            res[respErrorFieldName] = [...previousErrors, ...errors];
-            res[respStatusFieldName] = err.status ?? errors[0].status;
-        }else {
-            const error = err.type === API_ERROR_TYPE_NAME.description ?
-            err :
-            new APIError({additional: err});
+            res[respErrorFieldName] = [...previousErrors, ...apiError];
+            res[respStatusFieldName] = apiError[0].status ?? 500;
+        } else {
+            apiError.endpoint = req.originalUrl;
 
-            error.endpoint = req.originalUrl;
-
-            res[respErrorFieldName] = [...previousErrors, error];
-            res[respStatusFieldName] = error.status;
+            res[respErrorFieldName] = [...previousErrors, apiError];
+            res[respStatusFieldName] = apiError.status ?? 500;
         }
 
         return next();

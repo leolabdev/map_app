@@ -1,4 +1,5 @@
 import {createAsyncHandler} from "../util/createAsyncHandler.js";
+import { registerController } from "../util/registerController.js";
 
 /**
  *
@@ -9,7 +10,8 @@ import {createAsyncHandler} from "../util/createAsyncHandler.js";
  */
 export function addController(respFieldName, controllerFn) {
     return createAsyncHandler(async function(req, res, next) {
-        res[respFieldName] = await controllerFn(req, res);
-        return next();
+        registerController(res, next, async () => {
+            return controllerFn(req, res);
+        }, {respFieldName});
     });
 }

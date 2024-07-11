@@ -9,6 +9,7 @@ export const SEReason = Object.freeze({
    NOT_STRING: 'NOT_STRING',
    NOT_NUMBER: 'NOT_NUMBER',
    NOT_BOOLEAN: 'NOT_BOOLEAN',
+   NOT_ARRAY: 'NOT_ARRAY',
 
    LIMIT_EXCEEDED: 'LIMIT_EXCEEDED',
 

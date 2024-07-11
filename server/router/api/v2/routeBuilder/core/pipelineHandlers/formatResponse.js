@@ -45,6 +45,9 @@ function cleanResObject(res, respFieldName, respErrorFieldName, respStatusFieldN
 }
 
 function serializeError(error) {
+    if(!error)
+        return error;
+    
     if (error.additional instanceof Error) {
         return {
             ...error,
