@@ -3,11 +3,13 @@ import {User} from "../authentication/User.js";
 import {APIError} from "../error/APIError.js";
 import {ErrorReason} from "../error/ErrorReason.js";
 import {ErrorLocation} from "../error/ErrorLocation.js";
+import { config } from "../config.js";
 
 const secret = 'your_secret_key';
 
 export const authenticate = (authFieldName) => {
     return function(req, res, next){
+        authFieldName = authFieldName ?? config.authFieldName;
         const authHeader = req.headers.authorization;
         const authError = new APIError({
             endpoint: req.baseUrl,

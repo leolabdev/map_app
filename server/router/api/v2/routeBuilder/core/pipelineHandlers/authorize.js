@@ -4,9 +4,11 @@ import {createAsyncHandler} from "../util/createAsyncHandler.js";
 import {ErrorLocation} from "../error/ErrorLocation.js";
 import {Action} from "../enums/Action.js";
 import {ErrorName} from "../error/ErrorName.js";
+import { config } from "../config.js";
 
 export function authorize(authFieldName, action, resource, isAllowedFn) {
     return createAsyncHandler(async (req, res, next) => {
+        authFieldName = authFieldName ?? config.authFieldName;
         const user = req[authFieldName];
         if(!user)
             throw new APIError({
