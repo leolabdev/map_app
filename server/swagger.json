@@ -1261,6 +1261,9 @@
                     "400": {
                         "$ref": "#/components/responses/400"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
                     "500": {
                         "$ref": "#/components/responses/500"
                     },
@@ -1282,7 +1285,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RoutingCoordinates"
+                                "$ref": "#/components/schemas/RoutingOrders"
                             }
                         }
                     },
@@ -1407,6 +1410,9 @@
                     },
                     "400": {
                         "$ref": "#/components/responses/400"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     },
                     "500": {
                         "$ref": "#/components/responses/500"
@@ -1791,6 +1797,53 @@
                         "format": "int32",
                         "type": "integer",
                         "example": 0
+                    },
+                    "avoidCityCenters": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "cityCentersToAvoid": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Helsinki"
+                        ]
+                    },
+                    "isTrafficSituation": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "RoutingOrders": {
+                "description": "Rote calculation by coordinates",
+                "required": [
+                    "orderIds"
+                ],
+                "type": "object",
+                "properties": {
+                    "orderIds": {
+                        "description": "array with orders' ids",
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "example": [
+                            1,
+                            2
+                        ]
+                    },
+                    "startOrderId": {
+                        "format": "int32",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "endOrderId": {
+                        "format": "int32",
+                        "type": "integer",
+                        "example": 2
                     },
                     "avoidCityCenters": {
                         "type": "boolean",
