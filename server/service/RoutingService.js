@@ -40,8 +40,6 @@ export default class RoutingService {
         return this.#findRoute(key, optimizedCoords, avoidCityCenters, cityCentersToAvoid, isTrafficSituation);
     }, routingCoordinates);
 
-    
-    //TODO: pass only orderIds, which belong to the logged in user in the controller, same for startOrderId and endOrderId
     findRouteByOrderIds = validateInput(async (request) => {
         try{
             const {

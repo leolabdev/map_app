@@ -6,6 +6,9 @@ import { orderCreate, orderIds, orderUpdate } from "./validation/order.js";
 import { DEFactory } from "../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory.js";
 import Client from "../model/Client.js";
 import { validateInput } from "../router/api/v2/routeBuilder/core/service/validateInput.js";
+import { ServiceError } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError.js";
+import { SEReason } from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason.js";
+import isServiceError from "../router/api/v2/routeBuilder/core/service/dataExtractors/error/isServiceError.js";
 
 /**
  * The class provides functionality for manipulating(CRUD operations) with Order SQL table.
@@ -96,6 +99,34 @@ export default class OrderDataService {
                 { model: Client, as: 'Recipient' }
             ]
         });
+    }
+
+    /**
+     * 
+     * @param {number} profileId 
+     * @param {number[]} orderIds 
+     * @returns 
+     */
+    async readOrderIdsByProfileIdAndIds(profileId, orderIds) {
+        const orders = await this.service.readAll({
+            attributes: ['id'],
+            where: {
+                profileId,
+                [Op.or]: {id: orderIds}
+            },
+            include: [
+                { model: Client, as: 'Sender' },
+                { model: Client, as: 'Recipient' }
+            ]
+        });
+
+        if(orders && (isServiceError(orders) || isServiceError(orders[0])))
+            return orders;
+
+        if(!orders || orders.length === 0)
+            return new ServiceError({reason: SEReason.NOT_FOUND, message: 'Could not find any orders'});
+
+        return orders.map(o => o.id);
     }
 
     /**
