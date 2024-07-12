@@ -67,7 +67,7 @@ export default class RoutingService {
                 if(!endOrder)
                     return new ServiceError({reason: SEReason.NOT_FOUND, message: 'Could not find ending order', field: 'endOrderId'});
             }
-    
+
             const start = startOrder ? [startOrder.Sender.lon, startOrder.Sender.lat] : undefined;
             const end = endOrder ? [endOrder.Recipient.lon, endOrder.Recipient.lat] : undefined;
             const shipments = this.#getShipmentDeliveryRequestBody(queriedOrders);
