@@ -11,6 +11,15 @@ import { config } from "../config.js";
  * @returns 
  */
 export async function registerController(res, next, controllerFn, options={}) {
-    res[options.respFieldName ?? config.respFieldName] = await controllerFn();
+    const [isError, resp] = await controllerFn().then((result) => {
+        return [false, result];
+    }).catch((err) => {
+        return [true, err];
+    });
+
+    if(isError)
+        return next(resp);
+
+    res[options.respFieldName ?? config.respFieldName] = resp;
     return next();
 }
