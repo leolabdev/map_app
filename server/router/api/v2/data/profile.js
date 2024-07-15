@@ -20,8 +20,6 @@ new RouteBuilder('/', Method.POST)
     .addController(createProfile).attachToRouter(router);
 async function createProfile(req, res) {
     const profile = await profileService.create(req.body);
-    if(isRespServiceError(profile))
-        return throwAPIError(profile, null, ErrorLocation.BODY);
 
     if(!profile)
         throw new APIError({
@@ -38,8 +36,6 @@ new RouteBuilder('/', Method.GET)
 async function getOne(req, res) {
     const { user } = req;
     const profile = await profileService.read(user.id);
-    if(isRespServiceError(profile))
-        return throwAPIError(profile);
 
     if(!profile)
         throw new APIError({
@@ -59,8 +55,6 @@ new RouteBuilder('/', Method.PUT)
 async function updateProfile(req, res) {
     const { user } = req; 
     const isSuccess = await profileService.update({...req.body, id: user.id});
-    if(isRespServiceError(isSuccess))
-        return throwAPIError(isSuccess);
 
     if(!isSuccess)
         throw new APIError({
@@ -77,8 +71,6 @@ new RouteBuilder('/', Method.DELETE)
 async function deleteProfile(req, res) {
     const { user } = req; 
     const isSuccess = await profileService.delete(user.id);
-    if(isRespServiceError(isSuccess))
-        return throwAPIError(isSuccess, null, ErrorLocation.BODY);
 
     if(!isSuccess)
         throw new APIError({
@@ -94,8 +86,6 @@ new RouteBuilder('/signIn', Method.POST)
     .addController(signIn).attachToRouter(router);
 async function signIn(req, res) {
     const profile = await profileService.authenticate(req.body);
-    if(isRespServiceError(profile))
-        return throwAPIError(isSuccess, null, ErrorLocation.BODY);
 
     if(!profile)
         throw new APIError({
