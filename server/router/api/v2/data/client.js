@@ -123,20 +123,24 @@ new RouteBuilder('/:id', Method.DELETE)
     .successStatus(204)
     .addController(deleteClient).attachToRouter(router);
 async function deleteClient(req, res) {
-    const profileId = req[config.authFieldName].id;
+    const profileId = req['user'].id;
 
-    const client = clientService.readOneByIdAndProfileId(req.params.id, profileId);
-    if(!client || isRespServiceError(client))
-        return throwAPIError(client);
+    const client = await clientService.readOneByIdAndProfileId(req.params.id, profileId);
+    if(!client)
+        return new APIError({
+            reason: ErrorReason.NOT_FOUND, message: 'Could not find any clients'
+        });
+    if(isServiceError(client))
+        return client;
 
     const isSuccess = await clientService.delete(req.params.id);
-    if(isServiceError(isSuccess))
-        return isSuccess;
-
     if(!isSuccess)
-        throw new APIError({
+        return new APIError({
             reason: ErrorReason.UNEXPECTED, message: 'Could not delete a client'
         });
+
+    if(isServiceError(isSuccess))
+        return isSuccess;
 
     return isSuccess;
 }
