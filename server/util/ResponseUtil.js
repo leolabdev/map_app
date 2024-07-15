@@ -27,27 +27,4 @@ export default class ResponseUtil {
 
         res.end();
     }
-
-    /**
-     * The method sorts orders by shipment addresses
-     * @param {Array.<Object>} ordersArr array of the order ORM objects
-     * @returns {Object.<Array.<Object>>|null} sorted by shipment addresses order objects
-     */
-    sortOrdersByShipmentAddress(ordersArr){
-        let result = null;
-        if(ordersArr != null){
-            result = {};
-            for(let i=0; i<ordersArr.length; i++){
-                const currentShipmentAddressId = ordersArr[i].shipmentAddressId;
-
-                if(result[currentShipmentAddressId] === undefined){
-                    result[currentShipmentAddressId] = [ ordersArr[i] ];
-                } else{
-                    result[currentShipmentAddressId].push(ordersArr[i]);
-                }
-            }
-        }
-
-        return result;
-    }
 }
