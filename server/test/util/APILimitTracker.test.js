@@ -1,15 +1,7 @@
-import APILimitTracker from "../../util/APILimitTracker";
+import APILimitTracker from "../../util/APILimitTracker.js";
 
 describe('APILimitTracker test suite', () => {
-    /**
-     * @type {APILimitTracker}
-     */
-    let tracker;
-    beforeEach(() => {
-        tracker = new APILimitTracker();
-    });
-
-    describe('areRequestsLeft() should return true for tracked endpoints', () => {
+    describe('areRequestsLeft() should return', () => {
         /**
          * @type {{api: string, endpoints: string[]}[]}
          */
@@ -27,10 +19,29 @@ describe('APILimitTracker test suite', () => {
                 endpoints: ['optimize']
             }
         ]
-        it.each(endpoints)('$api api', ({api, endpoints}) => {
-            const tracker.areRequestsLeft(api, endpoints[0]);
-            expect(1).toBe(1);
+        it.each(endpoints)('true for $api api', ({api, endpoints}) => {
+            for(let i=0, l=endpoints.length; i<l; i++){
+                const areRequestsLeft = APILimitTracker.areRequestsLeft(api, endpoints[0]);
+                expect(areRequestsLeft).toBe(true);
+            }
+        });
+
+        it('false for non-existing api and endpoint', () => {
+            const areRequestsLeft = APILimitTracker.areRequestsLeft('nope', 'someRoute');
+
+            expect(areRequestsLeft).toBe(false);
+        });
+
+        it('false for invalid api param', () => {
+            const areRequestsLeft = APILimitTracker.areRequestsLeft(null, 'optimize');
+
+            expect(areRequestsLeft).toBe(false);
+        });
+
+        it('false for invalid endpoint param', () => {
+            const areRequestsLeft = APILimitTracker.areRequestsLeft('geoapify', undefined);
+
+            expect(areRequestsLeft).toBe(false);
         });
     });
-    
 });
