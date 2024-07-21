@@ -17,7 +17,10 @@ const config = {
     //Run test from this folder(s) only
     testMatch: [
         `${testDir}/**/*.test.js`
-    ]
+    ],
+    transform: {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
 }
 
 export default config;
