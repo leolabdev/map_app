@@ -66,7 +66,7 @@ export default class AreaService {
      * @returns true if operation was successful or false if not
      */
     async delete(primaryKey) {
-        return this.service.deleteById(primaryKey, areaName);
+        return this.service.deleteByCondition({where: {areaName: primaryKey}});
     }
 
     async deleteAllCityCenters() {
