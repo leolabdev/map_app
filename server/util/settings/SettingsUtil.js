@@ -105,7 +105,7 @@ async function convertCityCentersFileToGeoJson(filePath) {
 
 export async function updateTrafficSituation(maxAcceptableValue){
     const areaName = 'SlowTraffic';
-    areaDAO.delete(areaName);
+    await areaDAO.delete(areaName);
 
     const slowStationIds = await getSlowTMSIds(maxAcceptableValue);
     const stationPolygon = await tmsDAO.readMultipleByIds(slowStationIds);
