@@ -21,7 +21,9 @@
     "sequelize": "^6.17.0"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test_db_start": "echo Start docker DB... && docker compose -f test_docker-compose.yml up -d && echo DB is ready!",
+    "test_db_stop": "echo Stop docker DB and remove volume... && docker compose -f test_docker-compose.yml down && docker volume rm map_app_map-app-test-db",
     "dev": "nodemon --legacy-watch ./server"
   },
   "repository": {
