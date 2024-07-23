@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: map-app-db-test
+    image: mariadb:11.3.2
+    ports:
+      - 3306:3306
+    env_file: .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - map-app-test-db:/var/lib/mysql
+volumes:
+  map-app-test-db:
