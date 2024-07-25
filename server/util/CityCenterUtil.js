@@ -18,17 +18,6 @@ export default class CityCenterUtil {
         return CityCenterUtil.#instance;
     }
 
-    static async getCityCenter(cityName) {
-        const instance = CityCenterUtil.getInstance();
-        const areCentersInitialized = await this.#initCityCenters();
-        if(!areCentersInitialized){
-            console.error('Could not init city centers.');
-            return null;
-        }
-
-        return instance.#cityCenters[cityName] || null ;
-    }
-
     static async getAllCityCentersArr() {
         const instance = CityCenterUtil.getInstance();
         const areCentersInitialized = await this.#initCityCenters();
