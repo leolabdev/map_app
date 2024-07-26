@@ -12,5 +12,11 @@ services:
       - MYSQL_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - map-app-test-db:/var/lib/mysql
+      - ./test-init.sql:/docker-entrypoint-initdb.d/init.sql
+  adminer:
+    build:
+      dockerfile: adminer.Dockerfile
+    ports:
+      - 8080:8080
 volumes:
   map-app-test-db:
