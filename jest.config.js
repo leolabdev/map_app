@@ -24,6 +24,9 @@ const config = {
     setupFiles: [
       '<rootDir>/server/test/test_utils/env.js',
       '<rootDir>/server/test/test_utils/disable-console-log.js'
+    ],
+    setupFilesAfterEnv: [
+      '<rootDir>/server/test/test_utils/connect-to-db.js'
     ]
 }
 
