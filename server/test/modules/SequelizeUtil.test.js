@@ -9,6 +9,6 @@ describe('SequelizeUtil test suite', () => {
         const resp = await clientService.readOneByIdAndProfileId(1, 1);
 
         expect(isConnected).toBe(true);
-        expect(resp).toBeDefined();
+        expect(resp).toBe(null);
     });
 });
