@@ -7,9 +7,6 @@ services:
     env_file: .env
     environment:
       - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
-      - MYSQL_DATABASE=${DATABASE}
-      - MYSQL_USER=${DATABASE_USER}
-      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - map-app-test-db:/var/lib/mysql
       - ./test-init.sql:/docker-entrypoint-initdb.d/init.sql
