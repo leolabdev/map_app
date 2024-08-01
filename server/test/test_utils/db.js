@@ -8,8 +8,13 @@ const db = createInstance();
  * @returns values from Sequelize response 
  */
 export async function makeDBQuery(query){
-    const [resp] = await db.query(query);
-    return resp;
+    try{
+        const [resp] = await db.query(query);
+        return resp;
+    }catch(e){
+        console.error('makeDBQuery(): ', e);
+        throw e;
+    }
 }
 
 /**
