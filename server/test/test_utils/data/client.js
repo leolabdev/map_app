@@ -1,9 +1,8 @@
 /**
- * @type { {username: string, password: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
+ * @type { {username: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
  */
 export const clientRecipient1 = {
     username: 'john',
-    password: 'password1',
     name: 'John',
     type: 'Recipient',
     city: 'Helsinki',
@@ -15,11 +14,10 @@ export const clientRecipient1 = {
 }
 
 /**
- * @type { {username: string, password: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
+ * @type { {username: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
  */
 export const clientSender1 = {
     username: 'greg',
-    password: 'password2',
     name: 'Greg',
     type: 'Sender',
     city: 'Helsinki',
@@ -32,11 +30,10 @@ export const clientSender1 = {
 
 
 /**
- * @type { {username: string, password: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
+ * @type { {username: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
  */
 export const clientRecipient2 = {
     username: 'joe',
-    password: 'password3',
     name: 'Joe',
     type: 'Recipient',
     city: 'Espoo',
@@ -48,11 +45,10 @@ export const clientRecipient2 = {
 }
 
 /**
- * @type { {username: string, password: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
+ * @type { {username: string, name: string, type: 'Sender' | 'Recipient', city: string, building: string, building: string, flat: number, lat: number, lon: number} }
  */
 export const clientSender2 = {
     username: 'mark',
-    password: 'password4',
     name: 'Mark',
     type: 'Sender',
     city: 'Espoo',
