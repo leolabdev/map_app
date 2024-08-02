@@ -1,43 +1,15 @@
 import { Op } from "sequelize";
-import { SERVICE_ERROR_TYPE_NAME } from "../../router/api/v2/routeBuilder/core/config";
-import { SEReason } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
 import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import ProfileService from "../../service/ProfileService";
-import { makeDBQuery } from "../test_utils/db";
+import { emptyTable, insertInto, makeDBQuery, selectById, selectFrom } from "../test_utils/db";
+import {requiredError, notStringError, notNumberError, notUniqueError, notFoundError, serviceError} from '../test_utils/data/serviceErrors';
+import {profile1, profile2, profile3} from '../test_utils/data/profiles';
 
 describe('ProfileService test suite', () => {
     /**
      * @type {ProfileService}
      */
     let profileService;
-
-    /**
-     * @type { {username: string, password: string} }
-     */
-    const profile1 = {
-        username: 'john',
-        password: 'password1'
-    }
-    /**
-     * @type { {username: string, password: string} }
-     */
-    const profile2 = {
-        username: 'greg',
-        password: 'password2'
-    }
-    /**
-     * @type { {username: string, password: string} }
-     */
-    const profile3 = {
-        username: 'paul',
-        password: 'password3'
-    }
-
-    const requiredError = {reason: SEReason.REQUIRED, type: SERVICE_ERROR_TYPE_NAME.description};
-    const notStringError = {reason: SEReason.NOT_STRING, type: SERVICE_ERROR_TYPE_NAME.description};
-    const notNumberError = {reason: SEReason.NOT_NUMBER, type: SERVICE_ERROR_TYPE_NAME.description};
-    const notUniqueError = { reason: SEReason.NOT_UNIQUE, type: SERVICE_ERROR_TYPE_NAME.description };
-    const notFoundError = { reason: SEReason.NOT_FOUND, type: SERVICE_ERROR_TYPE_NAME.description };
 
     beforeEach(() => {
         profileService = new ProfileService();
@@ -73,7 +45,7 @@ describe('ProfileService test suite', () => {
         it('Should return ServiceError with reason NOT_UNIQUE if Profile with username already exists', async () => {
             const existingUserName = 'user1';
 
-            await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${existingUserName}", "password")`);
+            await insertInto('Profile', {username: existingUserName, password: 'password'});
 
             const actual = await profileService.create({username: existingUserName, password: 'pass'});
 
@@ -81,7 +53,6 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return array of two ServiceErrors if username is not provided and password is not a string', async () => {
-            const serviceError = {type: SERVICE_ERROR_TYPE_NAME.description};
             const input = { password: 34 };
 
             const actual = await profileService.create(input);
@@ -95,15 +66,15 @@ describe('ProfileService test suite', () => {
 
             await profileService.create(input);
 
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile`);
+            const dbResp = await selectFrom('Profile');
 
-            expect(dbResp).toHaveLength(0);
+            expect(dbResp).toBeNull();
         });
 
         it('Should add new Profile to DB if input is valid and return the created Profile', async () => {
             const actual = await profileService.create(profile1);
 
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE username="${profile1.username}"`);
+            const dbResp = await selectFrom('Profile', `username="${profile1.username}"`);
 
             expect(actual).toEqual(expect.objectContaining({...profile1, password: expect.any(String), id: expect.any(Number)}));
             expect(dbResp[0]).toEqual(expect.objectContaining({username: profile1.username}));
@@ -112,7 +83,7 @@ describe('ProfileService test suite', () => {
         it('Should hash a provided password', async () => {
             await profileService.create(profile1);
 
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE username="${profile1.username}"`);
+            const dbResp = await selectFrom('Profile', `username="${profile1.username}"`);
 
             expect(dbResp[0].password).not.toBe(profile1.password);
         });
@@ -160,7 +131,6 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return array of two ServiceErrors if username is not provided and password is not a string', async () => {
-            const serviceError = {type: SERVICE_ERROR_TYPE_NAME.description};
             const input = { password: 34 };
 
             const actual = await profileService.authenticate(input);
@@ -196,7 +166,7 @@ describe('ProfileService test suite', () => {
     describe('read()', () => {
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile1.username}", "${profile1.password}")`);
+            profileId1 = await insertInto('Profile', profile1);
         });
 
         it('Should return Profile object if Profile with requested id exists', async () => {
@@ -223,7 +193,7 @@ describe('ProfileService test suite', () => {
     describe('searchByUserName()', () => {
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile1.username}", "${profile1.password}")`);
+            profileId1 = await insertInto('Profile', profile1);
         });
 
         it('Should return Profile object if Profile with requested username exists', async () => {
@@ -250,9 +220,9 @@ describe('ProfileService test suite', () => {
     describe('readAll()', () => {
         let profileId1, profileId2, profileId3;
         beforeEach(async () => {
-            profileId1 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile1.username}", "${profile1.password}")`);
-            profileId2 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile2.username}", "${profile2.password}")`);
-            profileId3 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile3.username}", "${profile3.password}")`);
+            profileId1 = await insertInto('Profile', profile1);
+            profileId2 = await insertInto('Profile', profile2);
+            profileId3 = await insertInto('Profile', profile3);
         });
 
         it('Should return an array of all existing Profile objects if the options param is not provided', async () => {
@@ -266,7 +236,7 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return empty array if no Profiles exist', async () => {
-            await makeDBQuery('DELETE FROM Profile');
+            await emptyTable('Profile')
             const actual = await profileService.readAll();
             expect(actual).toHaveLength(0);
         });
@@ -288,17 +258,17 @@ describe('ProfileService test suite', () => {
     describe('update()', () => {
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile1.username}", "${profile1.password}")`);
+            profileId1 = await insertInto('Profile', profile1);
         });
 
         it('Should return true if Profile was updated successfully and update the Profile in DB', async () => {
             const updateObj = {...profile1, password: 'newPassword', id: profileId1};
 
             const isSuccess = await profileService.update(updateObj);
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE id="${profileId1}"`);
+            const dbResp = await selectById('Profile', profileId1);
 
             expect(isSuccess).toBe(true);
-            expect(dbResp[0]).toEqual(updateObj);
+            expect(dbResp).toEqual(updateObj);
         });
 
         /**
@@ -331,7 +301,7 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return ServiceError with reason NOT_UNIQUE if Profile with username already exists', async () => {
-            const profileId2 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile2.username}", "password")`);
+            const profileId2 = await insertInto('Profile', profile2);
 
             const actual = await profileService.update({...profile1, id: profileId2});
 
@@ -348,9 +318,9 @@ describe('ProfileService test suite', () => {
 
             await profileService.update(input);
 
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE id="${profileId1}"`);
+            const dbResp = await selectById('Profile', profileId1);
 
-            expect(dbResp[0]).toEqual({...profile1, id: profileId1});
+            expect(dbResp).toEqual({...profile1, id: profileId1});
         });
 
         it('Should return false if nothing was updated', async () => {
@@ -362,15 +332,15 @@ describe('ProfileService test suite', () => {
     describe('delete()', () => {
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await makeDBQuery(`INSERT INTO Profile (username, password) VALUES ("${profile1.username}", "${profile1.password}")`);
+            profileId1 = await insertInto('Profile', profile1);
         });
 
         it('Should return true if Profile was deleted successfully and it is removed from DB', async () => {
             const actual = await profileService.delete(profileId1);
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE id="${profileId1}"`);
+            const dbResp = await selectById('Profile', profileId1);
 
             expect(actual).toBe(true);
-            expect(dbResp).toHaveLength(0);
+            expect(dbResp).toBeNull();
         });
 
         it('Should return ServiceError with reason REQUIRED if no id provided', async () => {
@@ -390,9 +360,9 @@ describe('ProfileService test suite', () => {
 
         it('Should not delete the profile from DB if validation failed', async () => {
             await profileService.delete('not_valid');
-            const dbResp = await makeDBQuery(`SELECT * FROM Profile WHERE id="${profileId1}"`);
+            const dbResp = await selectById('Profile', profileId1);
 
-            expect(dbResp[0]).toEqual({...profile1, id: profileId1});
+            expect(dbResp).toEqual({...profile1, id: profileId1});
         });
     });
 });
