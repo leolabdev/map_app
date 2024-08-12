@@ -45,7 +45,7 @@ export async function selectById(tableName, id){
         const [resp] = await db.query(`SELECT * FROM ${tableName} WHERE id=${id}`);
         return resp && resp[0] ? resp[0] : null;
     }catch(e){
-        console.error('selectFrom(): ', e);
+        console.error('selectById(): ', e);
         throw e;
     }
 }
@@ -65,7 +65,7 @@ export async function selectOne(tableName, condition){
         const [resp] = await db.query(query);
         return resp && resp[0] ? resp[0] : null;
     }catch(e){
-        console.error('selectFrom(): ', e);
+        console.error('selectOne(): ', e);
         throw e;
     }
 }
