@@ -1,8 +1,9 @@
+import { object } from "joi";
 import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import OrderDataService from "../../service/OrderDataService";
 import { clientRecipient1, clientRecipient2, clientSender1, clientSender2 } from "../test_utils/data/client";
-import { profile1 } from "../test_utils/data/profiles";
-import { notFoundError, notNumberError, notStringError, notUniqueError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
+import { profile1, profile2 } from "../test_utils/data/profiles";
+import { notArrayError, notFoundError, notNumberError, notStringError, notUniqueError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
 import { emptyTable, insertInto, selectById, selectFrom, selectOne } from "../test_utils/db";
 
 describe('OrderDataService test suite', () => {
@@ -84,6 +85,33 @@ describe('OrderDataService test suite', () => {
         });
     });
 
+    describe('readOneById()', () => {
+        let orderId;
+        beforeEach(async () => {
+            orderId = await insertInto('OrderData', order);
+        });
+
+        it('Should return Order object if Order with requested id exists', async () => {
+            const actual = await orderService.readOneById(orderId);
+            expect(actual).toEqual(expect.objectContaining({...order, id: orderId}));
+        });
+
+        it('Should return ServiceError with reason REQUIRED if id is not specified', async () => {
+            const actual = await orderService.readOneById();
+            expect(actual).toEqual(expect.objectContaining(requiredError));
+        });
+
+        it('Should return ServiceError with reason NOT_NUMBER if id is not number', async () => {
+            const actual = await orderService.readOneById('not_num');
+            expect(actual).toEqual(expect.arrayContaining([expect.objectContaining(notNumberError)]));
+        });
+
+        it('Should return null if Order with provided id does not exists', async () => {
+            const actual = await orderService.readOneById(12345);
+            expect(actual).toBeNull();
+        });
+    });
+
     describe('readOneByIdAndProfileId()', () => {
         let orderId;
         beforeEach(async () => {
@@ -135,6 +163,51 @@ describe('OrderDataService test suite', () => {
             await emptyTable('OrderData')
             const actual = await orderService.readAllByProfileId(profileId);
             expect(actual).toHaveLength(0);
+        });
+    });
+
+    describe('readAllByIds()', () => {
+        let orderId1, orderId2;
+        beforeEach(async () => {
+            orderId1 = await insertInto('OrderData', order);
+
+            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
+            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
+        });
+
+        it('Finds all existing Orders and returns Order objects array with Sender and Recipient fields', async () => {
+            const actual = await orderService.readAllByIds([orderId1, orderId2]);
+            expect(actual).toHaveLength(2);
+            expect(actual).toEqual(expect.arrayContaining([expect.objectContaining({Sender: expect.any(Object), Recipient: expect.any(Object)})]));
+        });
+
+        it('Should return empty array if no Orders exist', async () => {
+            await emptyTable('OrderData')
+            const actual = await orderService.readAllByIds([orderId1, orderId2]);
+            expect(actual).toEqual([]);
+        });
+    });
+
+    describe('readOrderIdsByProfileIdAndIds()', () => {
+        let orderId1, orderId2;
+        beforeEach(async () => {
+            orderId1 = await insertInto('OrderData', order);
+
+            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
+            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
+        });
+
+        it('Finds all existing Orders ids for specified profile and returns them', async () => {
+            const actual = await orderService.readOrderIdsByProfileIdAndIds(profileId, [orderId1, orderId2]);
+            expect(actual).toHaveLength(2);
+            expect(actual).toEqual(expect.arrayContaining([expect.any(Number)]));
+        });
+
+        it('Should return ServiceError with NOT_FOUND reason if no Orders exist for the provided profile id', async () => {
+            const actual = await orderService.readOrderIdsByProfileIdAndIds(12345, [orderId1, orderId2]);
+            expect(actual).toEqual(expect.objectContaining(notFoundError));
         });
     });
 
@@ -190,14 +263,14 @@ describe('OrderDataService test suite', () => {
     });
 
     describe('delete()', () => {
-        let clientId;
+        let orderId;
         beforeEach(async () => {
-            clientId = await insertInto('Client', clientWithProfile1);
+            orderId = await insertInto('OrderData', order);
         });
 
-        it('Should return true if Client was deleted successfully and it is removed from DB', async () => {
-            const actual = await orderService.delete(clientId);
-            const dbResp = await selectById('Client', clientId);
+        it('Should return true if Order was deleted successfully and it is removed from DB', async () => {
+            const actual = await orderService.delete(orderId);
+            const dbResp = await selectById('OrderData', orderId);
 
             expect(actual).toBe(true);
             expect(dbResp).toBeNull();
@@ -208,35 +281,79 @@ describe('OrderDataService test suite', () => {
             expect(actual).toEqual(expect.objectContaining(requiredError));
         });
 
-        it('Should return ServiceError with reason NOT_NUMBER if id field is not a number', async () => {
-            const actual = await orderService.delete('not_num');
-            expect(actual).toEqual(expect.arrayContaining([expect.objectContaining(notNumberError)]));
-        });
-
-        it('Should return ServiceError with reason NOT_FOUND if Profile with provided id does not exists', async () => {
+        it('Should return ServiceError with reason NOT_FOUND if Order with provided id does not exists', async () => {
             const actual = await orderService.delete(12345);
             expect(actual).toEqual(expect.objectContaining(notFoundError));
         });
+    });
 
-        it('Should removes all associated Orders from the DB', async () => {
-            const clientId2 = await insertInto('Client', {...clientRecipient2, profileId});
-            const orderId = await insertInto('OrderData', { senderId: clientId, recipientId: clientId2, profileId });
-            await orderService.delete(clientId);
+    describe('deleteByCondition()', () => {
+        let orderId;
+        beforeEach(async () => {
+            orderId = await insertInto('OrderData', order);
+        });
 
+        it('Should return true if Order was deleted successfully and it is removed from DB', async () => {
+            const actual = await orderService.deleteByCondition({where: { senderId: order.senderId }});
             const dbResp = await selectById('OrderData', orderId);
 
+            expect(actual).toBe(true);
             expect(dbResp).toBeNull();
         });
+
+        it('Should return ServiceError with reason REQUIRED if no id provided', async () => {
+            const actual = await orderService.delete();
+            expect(actual).toEqual(expect.objectContaining(requiredError));
+        });
+
+        it('Should return false if Order with provided id does not exists', async () => {
+            const actual = await orderService.deleteByCondition({where: {senderId: 12345}});
+            expect(actual).toBe(false);
+        });
     });
-});
 
+    describe('deleteProfileOrdersByIds()', () => {
+        let orderId1, orderId2;
+        beforeEach(async () => {
+            orderId1 = await insertInto('OrderData', order);
 
-/*
-describe('ClientService test suite', () => {
-    describe('', () => {
-        it('Should', async () => {
+            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
+            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
+        });
 
+        it('Should remove all Orders by provided ids and profile id and return true', async () => {
+            const actual = await orderService.deleteProfileOrdersByIds([orderId1, orderId2], profileId);
+            const dbResp = await selectFrom('OrderData', `profileId="${profileId}"`);
+
+            expect(actual).toBe(true);
+            expect(dbResp).toBeNull();
+        });
+
+        it('Should return ServiceError with reason REQUIRED if order ids are not specified', async () => {
+            const actual = await orderService.deleteProfileOrdersByIds();
+            expect(actual).toEqual(expect.objectContaining(requiredError));
+        });
+
+        it('Should return ServiceError with reason NOT_ARRAY if order ids are not array', async () => {
+            const actual = await orderService.deleteProfileOrdersByIds('not_array');
+            expect(actual).toEqual(expect.arrayContaining([expect.objectContaining(notArrayError)]));
+        });
+
+        it('Should return false if Orders with provided ids do not exists', async () => {
+            const actual = await orderService.deleteProfileOrdersByIds([1235, 1234], profileId);
+            expect(actual).toBe(false);
+        });
+
+        it('Should not remove Orders with other profile ids', async () => {
+            const otherProfileId = await insertInto('Profile', profile2);
+            const orderWithOtherProfileId = await insertInto('OrderData', {...order, profileId: otherProfileId});
+
+            await orderService.deleteProfileOrdersByIds([orderId1, orderId2], profileId);
+
+            const dbResp = await selectById('OrderData', orderWithOtherProfileId);
+            
+            expect(dbResp).not.toBeNull();
         });
     });
 });
-*/
