@@ -69,6 +69,8 @@ function determineErrorReason(joiErrorDetails) {
             return SEReason.NOT_NUMBER;
         case 'boolean.base':
             return SEReason.NOT_BOOLEAN;
+        case 'array.base':
+            return SEReason.NOT_ARRAY;
         case 'any.required':
             return SEReason.REQUIRED;
         case 'object.unknown':
