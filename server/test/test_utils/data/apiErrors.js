@@ -1,7 +1,8 @@
-import { API_ERROR_TYPE_NAME } from "../../../router/api/v2/routeBuilder/core/config";
+import { API_ERROR_TYPE_NAME, API_MULTIPLE_ERROR } from "../../../router/api/v2/routeBuilder/core/config";
 import { ErrorReason } from "../../../router/api/v2/routeBuilder/core/error/ErrorReason";
 
 export const apiError = {type: API_ERROR_TYPE_NAME.description};
+export const apiMultipleError = {type: API_MULTIPLE_ERROR};
 
 export const badRequestAPIError = {reason: ErrorReason.BAD_REQUEST, type: API_ERROR_TYPE_NAME.description, status: 400};
 
