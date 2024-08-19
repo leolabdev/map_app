@@ -4,6 +4,7 @@ import {APIError} from "../error/APIError.js";
 import {ErrorReason} from "../error/ErrorReason.js";
 import {ErrorLocation} from "../error/ErrorLocation.js";
 import { config } from "../config.js";
+import { ErrorName } from "../error/ErrorName.js";
 
 const secret = 'your_secret_key';
 
@@ -15,7 +16,8 @@ export const authenticate = (authFieldName) => {
             endpoint: req.baseUrl,
             location: ErrorLocation.HEADER,
             field: 'Authorization',
-            status: 401
+            status: 401,
+            name: ErrorName.NOT_AUTHENTICATED
         });
 
         if(!authHeader)
