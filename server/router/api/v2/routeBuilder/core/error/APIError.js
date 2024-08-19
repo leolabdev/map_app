@@ -108,7 +108,7 @@ function determineName(reason){
         return ErrorName.NOT_AUTHENTICATED;
 
     if(notAuthorized.includes(reason))
-        return ErrorName.NOT_AUTHENTICATED;
+        return ErrorName.NOT_AUTHORIZED;
 
     if(tooManyRequests.includes(reason))
         return ErrorName.TOO_MANY_REQUESTS;
