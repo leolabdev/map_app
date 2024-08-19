@@ -15,7 +15,7 @@ import {formatResponse} from "./core/pipelineHandlers/formatResponse.js";
 import {config} from "./core/config.js";
 import {ErrorName} from "./core/error/ErrorName.js";
 import { paginate } from "./core/pipelineHandlers/paginate.js";
-import { addReqLimit } from "./core/pipelineHandlers/addReqLimit..js";
+import { addReqLimit } from "./core/pipelineHandlers/addReqLimit.js";
 import { determineResError } from "./core/pipelineHandlers/determineResError.js";
 
 
