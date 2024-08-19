@@ -1,7 +1,7 @@
 import express from "express";
 import { autocompleteQueue, reverseQueue, validateQueue } from "../../../../util/throttlingQueue.js";
 import { catchErrors } from "../routeBuilder/core/pipelineHandlers/catchErrors.js";
-import { addReqLimit } from "../routeBuilder/core/pipelineHandlers/addReqLimit..js";
+import { addReqLimit } from "../routeBuilder/core/pipelineHandlers/addReqLimit.js";
 import { formatResponse } from "../routeBuilder/core/pipelineHandlers/formatResponse.js";
 import AddressService from "../../../../service/AddressService.js";
 import validate from "../routeBuilder/core/pipelineHandlers/validate.js";
