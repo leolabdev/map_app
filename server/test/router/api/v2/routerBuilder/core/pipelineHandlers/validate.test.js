@@ -36,4 +36,24 @@ describe('validate() test suite', () => {
         const resp = await callValidationHandler();
         expect(resp).toEqual(expect.objectContaining(serverMisconfiguredAPIError));
     });
+
+    it('Should throw MultipleError for the validation errors found containing found validation errors', async () => {
+        createAsyncHandler.mockImplementation((fn) => { 
+            return () => {
+                return fn({...reqMock, body: {username: 23}}, resMock, nextMock);
+            }; 
+        });
+    
+        const validationHandler = validate(schema);
+        async function callValidationHandler() {
+            try {
+                return await validationHandler();
+            } catch (error) {
+                return error;
+            }
+        }
+        
+        const resp = await callValidationHandler();
+        expect(resp).toEqual(expect.objectContaining(apiMultipleError));
+    });
 });
