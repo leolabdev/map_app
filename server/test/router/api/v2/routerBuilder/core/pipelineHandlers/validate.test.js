@@ -56,4 +56,27 @@ describe('validate() test suite', () => {
         const resp = await callValidationHandler();
         expect(resp).toEqual(expect.objectContaining(apiMultipleError));
     });
+
+    it('Should not throw any errors and call next() if no validation errors found', async () => {
+        createAsyncHandler.mockImplementation((fn) => { 
+            return () => {
+                return fn(reqMock, resMock, nextMock);
+            }; 
+        });
+    
+        const validationHandler = validate(schema);
+        async function callValidationHandler() {
+            try {
+                return await validationHandler();
+            } catch (error) {
+                return error;
+            }
+        }
+        
+        const resp = await callValidationHandler();
+        expect(resp).not.toEqual(expect.objectContaining(apiMultipleError));
+        expect(resp).not.toEqual(expect.objectContaining(serverMisconfiguredAPIError));
+
+        expect(nextMock).toHaveBeenCalledTimes(1);
+    });
 });
