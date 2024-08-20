@@ -6,4 +6,9 @@ describe('isServiceError() test suite', () => {
         const isError = isServiceError(requiredError);
         expect(isError).toBeTruthy();
     });
+
+    it('Should return false if provided param is ServiceError object', () => {
+        const isError = isServiceError(new Error('Not ServiceError'));
+        expect(isError).toBeFalsy();
+    });
 });
