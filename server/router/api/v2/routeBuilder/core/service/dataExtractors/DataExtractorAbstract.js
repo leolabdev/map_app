@@ -3,6 +3,6 @@ import {SEReason} from "./error/SEReason.js";
 
 export default class DataExtractorAbstract {
     extract(dbResponse, options) {
-        throw new ServiceError({ reason: SEReason.METHOD_NOT_IMPLEMENTED });
+        throw new ServiceError({ reason: SEReason.MISCONFIGURED });
     }
 }
