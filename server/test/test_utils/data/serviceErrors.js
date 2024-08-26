@@ -12,3 +12,6 @@ export const notValidError = {reason: SEReason.NOT_VALID, type: SERVICE_ERROR_TY
 export const notBooleanError = {reason: SEReason.NOT_BOOLEAN, type: SERVICE_ERROR_TYPE_NAME.description};
 export const notArrayError = {reason: SEReason.NOT_ARRAY, type: SERVICE_ERROR_TYPE_NAME.description};
 export const notLimitExceededError = {reason: SEReason.LIMIT_EXCEEDED, type: SERVICE_ERROR_TYPE_NAME.description};
+
+export const misconfiguredError = {reason: SEReason.MISCONFIGURED, type: SERVICE_ERROR_TYPE_NAME.description};
+export const unexpectedError = {reason: SEReason.UNEXPECTED, type: SERVICE_ERROR_TYPE_NAME.description};
