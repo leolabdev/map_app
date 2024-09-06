@@ -5,17 +5,17 @@ import { toBeSE_NOT_ALLOWED } from "../../../matchers/serviceError/toBeSE_NOT_AL
 
 describe('toBeSE_NOT_ALLOWED() test suite', () => {
     it('Should return object with pass equal to true if the object is ServiceError NOT_ALLOWED', () => {
-        const notFoundErr = new ServiceError({ reason: SEReason.NOT_ALLOWED });
+        const validError = new ServiceError({ reason: SEReason.NOT_ALLOWED });
 
-        const isError = passJestThis(toBeSE_NOT_ALLOWED)(notFoundErr);
+        const isError = passJestThis(toBeSE_NOT_ALLOWED)(validError);
 
         expect(isError.pass).toBeTruthy();
     });
 
     it('Should return object with pass equal to false if the object is ServiceError without reason NOT_ALLOWED', () => {
-        const notArrayErr = new ServiceError({ reason: SEReason.NOT_ARRAY });
+        const otherError = new ServiceError({ reason: SEReason.NOT_ARRAY });
 
-        const isError = passJestThis(toBeSE_NOT_ALLOWED)(notArrayErr);
+        const isError = passJestThis(toBeSE_NOT_ALLOWED)(otherError);
 
         expect(isError.pass).toBeFalsy();
     });
@@ -27,10 +27,10 @@ describe('toBeSE_NOT_ALLOWED() test suite', () => {
     });
 
     it('Should be properly registered as a custom jest matcher', () => {
-        const notAllowedErr = new ServiceError({ reason: SEReason.NOT_ALLOWED });
-        const notFoundErr = new ServiceError({ reason: SEReason.NOT_FOUND });
+        const validError = new ServiceError({ reason: SEReason.NOT_ALLOWED });
+        const otherError = new ServiceError({ reason: SEReason.NOT_FOUND });
 
-        expect(notAllowedErr).toBeSE_NOT_ALLOWED();
-        expect(notFoundErr).not.toBeSE_NOT_ALLOWED();
+        expect(validError).toBeSE_NOT_ALLOWED();
+        expect(otherError).not.toBeSE_NOT_ALLOWED();
     });
 });
