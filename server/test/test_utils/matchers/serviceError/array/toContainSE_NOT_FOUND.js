@@ -17,8 +17,8 @@ export function toContainSE_NOT_FOUND(object) {
     const isValid = object.find(item => isErrorWithReason(item, SEReason.NOT_FOUND));
 
     return isValid ?
-        returner.passTrue('Expected to not receive an array containing ServiceError with reason NOT_FOUND') :
-        returner.passFalse('Expected to receive an array containing at least ServiceError with reason NOT_FOUND')
+        returner.passTrue('Expected to not receive an array containing any ServiceErrors with reason NOT_FOUND') :
+        returner.passFalse('Expected to receive an array containing at least one ServiceError with reason NOT_FOUND')
 }
 
 expect.extend({toContainSE_NOT_FOUND});
