@@ -1,7 +1,7 @@
-import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
-import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
-import passJestThis from "../../../jest_util/passJestThisObject";
-import { toBeSE_UNEXPECTED } from "../../../matchers/serviceError/toBeSE_UNEXPECTED";
+import { SEReason } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
+import { ServiceError } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
+import passJestThis from "../../../../jest_util/passJestThisObject";
+import { toBeSE_UNEXPECTED } from "../../../../matchers/serviceError/individual/toBeSE_UNEXPECTED";
 
 describe('toBeSE_UNEXPECTED() test suite', () => {  
     it('Should return object with pass equal to true if the object is ServiceError UNEXPECTED', () => {

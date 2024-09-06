@@ -1,7 +1,7 @@
-import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
-import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
-import passJestThis from "../../../jest_util/passJestThisObject";
-import { toBeSE_LIMIT_EXCEEDED } from "../../../matchers/serviceError/toBeSE_LIMIT_EXCEEDED";
+import { SEReason } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
+import { ServiceError } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
+import passJestThis from "../../../../jest_util/passJestThisObject";
+import { toBeSE_LIMIT_EXCEEDED } from "../../../../matchers/serviceError/individual/toBeSE_LIMIT_EXCEEDED";
 
 describe('toBeSE_LIMIT_EXCEEDED() test suite', () => {  
     it('Should return object with pass equal to true if the object is ServiceError LIMIT_EXCEEDED', () => {

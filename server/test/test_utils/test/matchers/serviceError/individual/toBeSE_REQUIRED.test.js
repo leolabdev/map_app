@@ -1,7 +1,7 @@
-import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
-import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
-import passJestThis from "../../../jest_util/passJestThisObject";
-import { toBeSE_REQUIRED } from "../../../matchers/serviceError/toBeSE_REQUIRED";
+import { SEReason } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
+import { ServiceError } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
+import passJestThis from "../../../../jest_util/passJestThisObject";
+import { toBeSE_REQUIRED } from "../../../../matchers/serviceError/individual/toBeSE_REQUIRED";
 
 describe('toBeSE_REQUIRED() test suite', () => {  
     it('Should return object with pass equal to true if the object is ServiceError REQUIRED', () => {

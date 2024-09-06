@@ -1,7 +1,7 @@
-import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
-import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
-import passJestThis from "../../../jest_util/passJestThisObject";
-import { toBeSE_NOT_NUMBER } from "../../../matchers/serviceError/toBeSE_NOT_NUMBER";
+import { SEReason } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
+import { ServiceError } from "../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
+import passJestThis from "../../../../jest_util/passJestThisObject";
+import { toBeSE_NOT_NUMBER } from "../../../../matchers/serviceError/individual/toBeSE_NOT_NUMBER";
 
 describe('toBeSE_NOT_NUMBER() test suite', () => {  
     it('Should return object with pass equal to true if the object is ServiceError NOT_NUMBER', () => {
