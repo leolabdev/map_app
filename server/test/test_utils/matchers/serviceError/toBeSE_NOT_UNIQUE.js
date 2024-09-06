@@ -4,7 +4,7 @@ import MatcherReturner from "../../jest_util/MatcherReturner";
 import { isErrorWithReason } from "./isErrorWithReason";
 
 /**
- * Jest matcher checks whenever provided param is ServiceError with reason NOT_FOUND
+ * Jest matcher checks whenever provided param is ServiceError with reason NOT_UNIQUE
  * @param {*} object object to check
  * @returns {{ message: () => string, pass: boolean }}
  */
