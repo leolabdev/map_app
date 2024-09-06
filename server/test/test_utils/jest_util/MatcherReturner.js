@@ -4,7 +4,10 @@
 export default class MatcherReturner{
     /**
      * 
-     * @param {{ expected?: any, received?: any, utils?: any }=} param0 
+     * @param {Object=} [param0] - The parameters object.
+     * @param {any} [param0.expected] - The expected value to receive.
+     * @param {any} [param0.received] - The received value.
+     * @param {any} [param0.utils] - Utils object from jest this
      */
     constructor({ expected, received, utils } = {}){
         this.#expected = expected;
