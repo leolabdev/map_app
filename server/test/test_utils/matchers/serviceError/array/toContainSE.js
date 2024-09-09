@@ -1,5 +1,4 @@
 import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
-import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import MatcherReturner from "../../../jest_util/MatcherReturner";
 import isSEReasonArray from "../isSEErrorArray";
 
