@@ -1,34 +1,42 @@
+import { SEReason } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/SEReason";
+import { ServiceError } from "../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import MatcherReturner from "../../../jest_util/MatcherReturner";
+import isSEReasonArray from "../isSEErrorArray";
 
 /**
  * Jest matcher checks whenever provided param is an array 
- * containing specified ServiceErrors.
+ * containing specified ServiceErrors reasons.
  *
  * Notice that the order does not matter.
  *
- * Notice that if array will contain other objects they will be ignored.
+ * Notice that if array will contain other objects or ServiceErrors with other reasons they will be ignored.
+ *
  * @param {*} object object to check
- * @param {*[]} expected expected object
+ * @param {SEReason[]} expected expected reasons
  * @returns {{ message: () => string, pass: boolean }}
  */
 export default function toContainSE(object, expected) {
+    if(!isSEReasonArray(expected))
+        throw new TypeError('The expected value must be array of SEReasons');
+
     const returner = new MatcherReturner({received: object, utils: this.utils, expected});
 
-    if(!expected || !Array.isArray(expected))
-        throw new TypeError('The expected field must be an array');
-
     if(!object || !Array.isArray(object))
-        return returner.passFalse('Received object is not array');
+        return returner.passFalse('Received object is not an array');
 
     let foundErrors = 0;
 
     for(let i=0, l=object.length; i<l; i++){
-        const currentItem = object[i];
+        const error = object[i];
+        const reason = error?.reason;
 
-        if(expected.includes(currentItem))
+        if(expected.includes(reason))
             foundErrors++;
+        
+        if(foundErrors === expected.length)
+            break;
     }
-    const isValid = foundErrors >= expected.length;
+    const isValid = foundErrors === expected.length;
 
     return isValid ?
         returner.passTrue('Expected to not receive an array containing these ServiceErrors') :
