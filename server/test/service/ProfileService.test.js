@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import ProfileService from "../../service/ProfileService";
-import { emptyTable, insertInto, makeDBQuery, selectById, selectFrom } from "../test_utils/db";
+import { emptyTable, insertInto, selectById, selectFrom } from "../test_utils/db";
 import {requiredError, notStringError, notNumberError, notUniqueError, notFoundError, serviceError} from '../test_utils/data/serviceErrors';
 import {profile1, profile2, profile3} from '../test_utils/data/profiles';
 

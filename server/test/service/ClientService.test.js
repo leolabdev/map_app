@@ -3,7 +3,7 @@ import ClientService from "../../service/ClientService";
 import { clientRecipient1, clientRecipient2, clientSender1 } from "../test_utils/data/client";
 import { profile1 } from "../test_utils/data/profiles";
 import { notFoundError, notNumberError, notStringError, notUniqueError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
-import { emptyTable, insertInto, selectById, selectFrom, selectOne } from "../test_utils/db";
+import { emptyTable, insertInto, selectById, selectOne } from "../test_utils/db";
 
 describe('ClientService test suite', () => {
     /**
