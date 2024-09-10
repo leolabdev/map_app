@@ -1,12 +1,13 @@
 import { formatResponse } from "../../../../../../../router/api/v2/routeBuilder/core/pipelineHandlers/formatResponse";
 import { notBooleanAPIError, notFoundAPIError } from "../../../../../../test_utils/data/apiErrors";
-import { profile1 } from "../../../../../../test_utils/data/profiles";
+import ProfileGenerator from "../../../../../../test_utils/data/ProfileGenerator";
 
 describe('formatResponse() test suite', () => {
     const respFieldName = 'data';
     const respErrorFieldName = 'errors';
     const successStatus = 201;
-    const returnedData = profile1;
+    const profileGen = new ProfileGenerator();
+    const returnedData = profileGen.create();
     const returnedErrors = [notBooleanAPIError, notFoundAPIError];
 
     const reqMock = {

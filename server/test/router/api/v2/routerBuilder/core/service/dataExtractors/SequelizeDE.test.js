@@ -1,6 +1,6 @@
 import { DataExtractorType } from "../../../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/DataExtractorType";
 import { DEFactory } from "../../../../../../../../router/api/v2/routeBuilder/core/service/dataExtractors/DEFactory";
-import { profile1, profile2 } from "../../../../../../../test_utils/data/profiles";
+import ProfileGenerator from "../../../../../../../test_utils/data/ProfileGenerator";
 
 describe('SequelizeDE class test suite', () => {
     describe('extract()', () => {
@@ -8,6 +8,10 @@ describe('SequelizeDE class test suite', () => {
         * @type {SequelizeDE}
         */
         let extractor;
+
+        const profileGen = new ProfileGenerator();
+        const profile1 = profileGen.create({username: 'user1'});
+        const profile2 = profileGen.create({username: 'user2'});
 
         beforeEach(() => {
             extractor = DEFactory.create(DataExtractorType.SEQUELIZE);
