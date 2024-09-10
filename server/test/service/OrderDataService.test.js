@@ -1,10 +1,9 @@
-import { object } from "joi";
 import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import OrderDataService from "../../service/OrderDataService";
-import { clientRecipient1, clientRecipient2, clientSender1, clientSender2 } from "../test_utils/data/client";
-import { profile1, profile2 } from "../test_utils/data/profiles";
-import { notArrayError, notFoundError, notNumberError, notStringError, notUniqueError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
+import { notArrayError, notFoundError, notNumberError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
 import { emptyTable, insertInto, selectById, selectFrom, selectOne } from "../test_utils/db";
+import ProfileGenerator from "../test_utils/data/ProfileGenerator";
+import ClientGenerator from "../test_utils/data/ClientGenerator";
 
 describe('OrderDataService test suite', () => {
     /**
@@ -29,12 +28,20 @@ describe('OrderDataService test suite', () => {
      */
     let order;
 
+    const profileGen = new ProfileGenerator();
+    const clientGen = new ClientGenerator();
+
     beforeEach(async () => {
         orderService = new OrderDataService();
 
-        profileId = await insertInto('Profile', profile1);
-        recipientId = await insertInto('Client', {...clientRecipient1, profileId});
-        senderId = await insertInto('Client', {...clientSender1, profileId});
+        const profile = profileGen.create();
+        profileId = await insertInto('Profile', profile);
+
+        const sender = clientGen.create({username: 'sender1'}, { type: 'Sender' });
+        recipientId = await insertInto('Client', {...sender, profileId});
+
+        const recipient = clientGen.create({username: 'recipient1'}, { type: 'Recipient' });
+        senderId = await insertInto('Client', {...recipient, profileId});
 
         order = {profileId, recipientId, senderId};
     });
@@ -170,9 +177,11 @@ describe('OrderDataService test suite', () => {
         let orderId1, orderId2;
         beforeEach(async () => {
             orderId1 = await insertInto('OrderData', order);
+            const sender2 = clientGen.create({username: 'sender2'}, { type: 'Sender' });
+            const senderId2 = await insertInto('Client', {...sender2, profileId});
 
-            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
-            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            const recipient2 = clientGen.create({username: 'recipient2'}, { type: 'Recipient' });
+            const recipientId2 = await insertInto('Client', {...recipient2, profileId});
             orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
         });
 
@@ -194,8 +203,11 @@ describe('OrderDataService test suite', () => {
         beforeEach(async () => {
             orderId1 = await insertInto('OrderData', order);
 
-            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
-            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            const sender2 = clientGen.create({username: 'sender2'}, { type: 'Sender' });
+            const senderId2 = await insertInto('Client', {...sender2, profileId});
+
+            const recipient2 = clientGen.create({username: 'recipient2'}, { type: 'Recipient' });
+            const recipientId2 = await insertInto('Client', {...recipient2, profileId});
             orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
         });
 
@@ -256,7 +268,8 @@ describe('OrderDataService test suite', () => {
         });
 
         it('Should return true if Order was updated successfully', async () => {
-            const newSenderId = await insertInto('Client', {...clientSender2, profileId});
+            const newSender = clientGen.create({username: 'sender2'});
+            const newSenderId = await insertInto('Client', {...newSender, profileId});
             const isSuccess = await orderService.update({...orderWithId, senderId: newSenderId});
             expect(isSuccess).toBe(true);
         });
@@ -317,8 +330,10 @@ describe('OrderDataService test suite', () => {
         beforeEach(async () => {
             orderId1 = await insertInto('OrderData', order);
 
-            const senderId2 = await insertInto('Client', {...clientSender2, profileId});
-            const recipientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            const sender2 = clientGen.create({username: 'sender2'}, {type: 'Sender'});
+            const senderId2 = await insertInto('Client', {...sender2, profileId});
+            const recipient2 = clientGen.create({username: 'recipient2'}, {type: 'Recipient'});
+            const recipientId2 = await insertInto('Client', {...recipient2, profileId});
             orderId2 = await insertInto('OrderData', {profileId, senderId: senderId2, recipientId: recipientId2});
         });
 
@@ -346,6 +361,7 @@ describe('OrderDataService test suite', () => {
         });
 
         it('Should not remove Orders with other profile ids', async () => {
+            const profile2 = profileGen.create({username: 'user2'});
             const otherProfileId = await insertInto('Profile', profile2);
             const orderWithOtherProfileId = await insertInto('OrderData', {...order, profileId: otherProfileId});
 
