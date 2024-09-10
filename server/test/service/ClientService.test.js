@@ -1,9 +1,9 @@
 import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/dataExtractors/error/ServiceError";
 import ClientService from "../../service/ClientService";
-import { clientRecipient1, clientRecipient2, clientSender1 } from "../test_utils/data/client";
-import { profile1 } from "../test_utils/data/profiles";
+import ClientGenerator from "../test_utils/data/ClientGenerator";
+import ProfileGenerator from "../test_utils/data/ProfileGenerator";
 import { notFoundError, notNumberError, notStringError, notUniqueError, requiredError, serviceError } from "../test_utils/data/serviceErrors";
-import { emptyTable, insertInto, selectById, selectFrom, selectOne } from "../test_utils/db";
+import { emptyTable, insertInto, selectById, selectOne } from "../test_utils/db";
 
 describe('ClientService test suite', () => {
     /**
@@ -11,18 +11,27 @@ describe('ClientService test suite', () => {
      */
     let clientService;
     
+    const profileGen = new ProfileGenerator();
+    const clientGen = new ClientGenerator();
+
+    const profile = profileGen.create();
+    /**
+     * @type {number}
+     */
     let profileId;
-    let clientWithProfile1;
+    let clientWithProfile;
 
     beforeEach(async () => {
         clientService = new ClientService();
-        profileId = await insertInto('Profile', profile1);
-        clientWithProfile1 = {...clientRecipient1, profileId};
+        profileId = await insertInto('Profile', profile);
+        const client = clientGen.create();
+        clientWithProfile = {...client, profileId};
     });
 
     describe('create()', () => {
         it('Should add new Client to DB if input is valid and return it', async () => {
-            const input = {...clientRecipient1, profileId};
+            const client = clientGen.create();
+            const input = {...client, profileId};
             const actual = await clientService.create(input);
             const dbResp = await selectOne('Client', `username="${input.username}"`);
 
@@ -36,14 +45,14 @@ describe('ClientService test suite', () => {
          */
         const requiredErrors = [
             {input: null, output: expect.objectContaining(requiredError), message: 'provided Client is null' },
-            {input: {...clientWithProfile1, username: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no username' },
-            {input: {...clientWithProfile1, type: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no type' },
-            {input: {...clientWithProfile1, city: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no city' },
-            {input: {...clientWithProfile1, street: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no street' },
-            {input: {...clientWithProfile1, building: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no building' },
-            {input: {...clientWithProfile1, profileId: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no profileId' },
-            {input: {...clientWithProfile1, lon: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no lon' },
-            {input: {...clientWithProfile1, lat: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no lat' }
+            {input: {...clientWithProfile, username: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no username' },
+            {input: {...clientWithProfile, type: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no type' },
+            {input: {...clientWithProfile, city: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no city' },
+            {input: {...clientWithProfile, street: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no street' },
+            {input: {...clientWithProfile, building: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no building' },
+            {input: {...clientWithProfile, profileId: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no profileId' },
+            {input: {...clientWithProfile, lon: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no lon' },
+            {input: {...clientWithProfile, lat: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no lat' }
         ];
         it.each(requiredErrors)(`Should return ServiceError(s) with reason REQUIRED if $message`, async ({input, output}) => {
             const actual = await clientService.create(input);
@@ -54,11 +63,11 @@ describe('ClientService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notStringErrors = [
-            {input: {...clientWithProfile1, username: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client username in not a string' },
-            {input: {...clientWithProfile1, type: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client type in not a string' },
-            {input: {...clientWithProfile1, city: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client city in not a string' },
-            {input: {...clientWithProfile1, street: false}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client street in not a string' },
-            {input: {...clientWithProfile1, building: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client building in not a string' },
+            {input: {...clientWithProfile, username: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client username in not a string' },
+            {input: {...clientWithProfile, type: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client type in not a string' },
+            {input: {...clientWithProfile, city: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client city in not a string' },
+            {input: {...clientWithProfile, street: false}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client street in not a string' },
+            {input: {...clientWithProfile, building: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client building in not a string' },
         ];
         it.each(notStringErrors)(`Should return ServiceError(s) with reason NOT_STRING if $message`, async ({input, output}) => {
             const actual = await clientService.create(input);
@@ -69,10 +78,10 @@ describe('ClientService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notNumberErrors = [
-            {input: {...clientWithProfile1, flat: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client flat in not a number' },
-            {input: {...clientWithProfile1, profileId: true}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client profileId in not a number' },
-            {input: {...clientWithProfile1, lon: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lon in not a number' },
-            {input: {...clientWithProfile1, lat: false}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lat in not a number' },
+            {input: {...clientWithProfile, flat: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client flat in not a number' },
+            {input: {...clientWithProfile, profileId: true}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client profileId in not a number' },
+            {input: {...clientWithProfile, lon: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lon in not a number' },
+            {input: {...clientWithProfile, lat: false}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lat in not a number' },
         ];
         it.each(notNumberErrors)(`Should return ServiceError(s) with reason NOT_NUMBER if $message`, async ({input, output}) => {
             const actual = await clientService.create(input);
@@ -80,7 +89,7 @@ describe('ClientService test suite', () => {
         });
 
         it('Should return array of two ServiceErrors if username is not provided and city is not a string', async () => {
-            const input = { ...clientWithProfile1, username: undefined, city: 345 };
+            const input = { ...clientWithProfile, username: undefined, city: 345 };
 
             const actual = await clientService.create(input);
 
@@ -89,9 +98,9 @@ describe('ClientService test suite', () => {
         });
 
         it('Should return ServiceError with reason NOT_UNIQUE if Client with username already exists', async () => {
-            await insertInto('Client', clientWithProfile1);
+            await insertInto('Client', clientWithProfile);
 
-            const actual = await clientService.create(clientWithProfile1);
+            const actual = await clientService.create(clientWithProfile);
 
             expect(actual).toEqual(expect.objectContaining(notUniqueError));
         });
@@ -100,12 +109,12 @@ describe('ClientService test suite', () => {
     describe('readOneByIdAndProfileId()', () => {
         let clientId1;
         beforeEach(async () => {
-            clientId1 = await insertInto('Client', clientWithProfile1);
+            clientId1 = await insertInto('Client', clientWithProfile);
         });
 
         it('Should return Client object if Client with requested id and profileId exists', async () => {
             const actual = await clientService.readOneByIdAndProfileId(clientId1, profileId);
-            expect(actual).toEqual({...clientWithProfile1, id: clientId1});
+            expect(actual).toEqual({...clientWithProfile, id: clientId1});
         });
 
         it('Should return null if Client with provided id and profileId does not exists', async () => {
@@ -118,16 +127,16 @@ describe('ClientService test suite', () => {
         let clientId1, clientId2, clientId3;
         let clientWithProfile2, clientWithProfile3;
         beforeEach(async () => {
-            clientWithProfile2 = {...clientSender1, profileId}
-            clientWithProfile3 = {...clientRecipient2, profileId};
-            clientId1 = await insertInto('Client', clientWithProfile1);
+            clientWithProfile2 = clientGen.create({username: 'user2'}, {profileId});
+            clientWithProfile3 = clientGen.create({username: 'user3'}, {profileId});
+            clientId1 = await insertInto('Client', clientWithProfile);
             clientId2 = await insertInto('Client', clientWithProfile2);
             clientId3 = await insertInto('Client', clientWithProfile3);
         });
 
         it('Should return an array of all existing Client objects if the pagination param is not provided', async () => {
             const expected = [
-                {...clientWithProfile1, id: clientId1},
+                {...clientWithProfile, id: clientId1},
                 {...clientWithProfile2, id: clientId2},
                 {...clientWithProfile3, id: clientId3}
             ];
@@ -156,10 +165,11 @@ describe('ClientService test suite', () => {
 
     describe('update()', () => {
         let clientId1;
-        let client1;
+        let clientToUpdate;
         beforeEach(async () => {
-            clientId1 = await insertInto('Client', clientWithProfile1);
-            client1 = {...clientRecipient1, id: clientId1};
+            clientId1 = await insertInto('Client', clientWithProfile);
+            const client = clientGen.create();
+            clientToUpdate = {...client, id: clientId1};
         });
 
         /**
@@ -167,7 +177,7 @@ describe('ClientService test suite', () => {
          */
         const requiredErrors = [
             {input: null, output: expect.objectContaining(requiredError), message: 'provided Client is null' },
-            {input: {...client1, id: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no id' },
+            {input: {...clientToUpdate, id: undefined}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Client has no id' },
         ];
         it.each(requiredErrors)(`Should return ServiceError(s) with reason REQUIRED if $message`, async ({input, output}) => {
             const actual = await clientService.update(input);
@@ -178,11 +188,11 @@ describe('ClientService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notStringErrors = [
-            {input: {...client1, username: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client username in not a string' },
-            {input: {...client1, type: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client type in not a string' },
-            {input: {...client1, city: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client city in not a string' },
-            {input: {...client1, street: false}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client street in not a string' },
-            {input: {...client1, building: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client building in not a string' },
+            {input: {...clientToUpdate, username: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client username in not a string' },
+            {input: {...clientToUpdate, type: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client type in not a string' },
+            {input: {...clientToUpdate, city: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client city in not a string' },
+            {input: {...clientToUpdate, street: false}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client street in not a string' },
+            {input: {...clientToUpdate, building: 45}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Client building in not a string' },
         ];
         it.each(notStringErrors)(`Should return ServiceError(s) with reason NOT_STRING if $message`, async ({input, output}) => {
             const actual = await clientService.update(input);
@@ -193,10 +203,10 @@ describe('ClientService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notNumberErrors = [
-            {input: {...client1, id: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client id in not a number' },
-            {input: {...client1, flat: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client flat in not a number' },
-            {input: {...client1, lon: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lon in not a number' },
-            {input: {...client1, lat: false}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lat in not a number' },
+            {input: {...clientToUpdate, id: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client id in not a number' },
+            {input: {...clientToUpdate, flat: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client flat in not a number' },
+            {input: {...clientToUpdate, lon: 'str'}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lon in not a number' },
+            {input: {...clientToUpdate, lat: false}, output: expect.arrayContaining([expect.objectContaining(notNumberError)]), message: 'provided Client lat in not a number' },
         ];
         it.each(notNumberErrors)(`Should return ServiceError(s) with reason NOT_NUMBER if $message`, async ({input, output}) => {
             const actual = await clientService.update(input);
@@ -204,25 +214,27 @@ describe('ClientService test suite', () => {
         });
 
         it('Should return ServiceError with reason NOT_UNIQUE if Client with username already exists', async () => {
-            await insertInto('Client', {...clientRecipient2, profileId});
+            const client2 = clientGen.create({username: 'client2'});
+            await insertInto('Client', {...client2, profileId});
 
-            const actual = await clientService.update({...client1, username: clientRecipient2.username});
+            const actual = await clientService.update({...clientToUpdate, username: client2.username});
 
             expect(actual).toEqual(expect.objectContaining(notUniqueError));
         });
 
         it('Should return ServiceError with reason NOT_FOUND if Client with provided id does not exist', async () => {
-            const actual = await clientService.update({...clientRecipient2, id: 12345});
+            const client = clientGen.create({ username: 'client2' });
+            const actual = await clientService.update({...client, id: 12345});
             expect(actual).toEqual(expect.objectContaining(notFoundError));
         });
 
         it('Should return false if nothing was updated', async () => {
-            const isSuccess = await clientService.update(client1);
+            const isSuccess = await clientService.update(clientToUpdate);
             expect(isSuccess).toBe(false);
         });
 
         it('Should return true if Client was updated successfully', async () => {
-            const isSuccess = await clientService.update({...client1, city: 'Lahti'});
+            const isSuccess = await clientService.update({...clientToUpdate, city: 'Lahti'});
             expect(isSuccess).toBe(true);
         });
     });
@@ -230,7 +242,7 @@ describe('ClientService test suite', () => {
     describe('delete()', () => {
         let clientId;
         beforeEach(async () => {
-            clientId = await insertInto('Client', clientWithProfile1);
+            clientId = await insertInto('Client', clientWithProfile);
         });
 
         it('Should return true if Client was deleted successfully and it is removed from DB', async () => {
@@ -257,7 +269,8 @@ describe('ClientService test suite', () => {
         });
 
         it('Should removes all associated Orders from the DB', async () => {
-            const clientId2 = await insertInto('Client', {...clientRecipient2, profileId});
+            const client2 = clientGen.create({username: 'client2'});
+            const clientId2 = await insertInto('Client', {...client2, profileId});
             const orderId = await insertInto('OrderData', { senderId: clientId, recipientId: clientId2, profileId });
             await clientService.delete(clientId);
 
@@ -267,14 +280,3 @@ describe('ClientService test suite', () => {
         });
     });
 });
-
-
-/*
-describe('ClientService test suite', () => {
-    describe('', () => {
-        it('Should', async () => {
-
-        });
-    });
-});
-*/

@@ -1,8 +1,8 @@
 import Joi from "joi";
-import { profile1 } from "../../../../../../test_utils/data/profiles";
 import validate from "../../../../../../../router/api/v2/routeBuilder/core/pipelineHandlers/validate";
 import { apiMultipleError, serverMisconfiguredAPIError } from "../../../../../../test_utils/data/apiErrors";
 import { createAsyncHandler } from "../../../../../../../router/api/v2/routeBuilder/core/util/createAsyncHandler";
+import ProfileGenerator from "../../../../../../test_utils/data/ProfileGenerator";
 
 jest.mock("../../../../../../../router/api/v2/routeBuilder/core/util/createAsyncHandler");
 
@@ -11,8 +11,9 @@ describe('validate() test suite', () => {
         username: Joi.string(),
         password: Joi.string()
     });
+    const profileGen = new ProfileGenerator();
     const reqMock = {
-        body: profile1
+        body: profileGen.create()
     };
     const resMock = {};
     const nextMock = jest.fn();

@@ -1,5 +1,5 @@
 import { serialize } from "../../../../../../../router/api/v2/routeBuilder/core/pipelineHandlers/serialize";
-import { profile1 } from "../../../../../../test_utils/data/profiles";
+import ProfileGenerator from "../../../../../../test_utils/data/ProfileGenerator";
 
 describe('serialize() test suite', () => {
     it('Should remove all fields from the res object dtoField, which value is not set to true', () => {
@@ -11,8 +11,10 @@ describe('serialize() test suite', () => {
         const location = 'res';
         const dtoField = respFieldName;
         const reqMock = {};
+        const profileGen = new ProfileGenerator();
+        const profile = profileGen.create();
         const resMock = {
-            [respFieldName]: profile1
+            [respFieldName]: profile
         };
         const nextMock = jest.fn();
 
@@ -20,6 +22,6 @@ describe('serialize() test suite', () => {
 
         serializeHandler(reqMock, resMock, nextMock);
 
-        expect(resMock[respFieldName]).toEqual({...profile1, password: undefined});
+        expect(resMock[respFieldName]).toEqual({...profile, password: undefined});
     });
 });
