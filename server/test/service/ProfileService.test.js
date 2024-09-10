@@ -3,13 +3,15 @@ import { ServiceError } from "../../router/api/v2/routeBuilder/core/service/data
 import ProfileService from "../../service/ProfileService";
 import { emptyTable, insertInto, selectById, selectFrom } from "../test_utils/db";
 import {requiredError, notStringError, notNumberError, notUniqueError, notFoundError, serviceError} from '../test_utils/data/serviceErrors';
-import {profile1, profile2, profile3} from '../test_utils/data/profiles';
+import ProfileGenerator from "../test_utils/data/ProfileGenerator";
 
 describe('ProfileService test suite', () => {
     /**
      * @type {ProfileService}
      */
     let profileService;
+
+    const profileGen = new ProfileGenerator();
 
     beforeEach(() => {
         profileService = new ProfileService();
@@ -21,8 +23,8 @@ describe('ProfileService test suite', () => {
          */
         const requiredErrors = [
             {input: null, output: expect.objectContaining(requiredError), message: 'provided Profile is null' },
-            {input: {password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no username' },
-            {input: {username: 'user'}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no password' },
+            {input: profileGen.createAny({username: undefined}), output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no username' },
+            {input: profileGen.createAny({username: 'user'}, { password: undefined }), output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no password' },
             {input: {}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no username and password' }
         ];
         it.each(requiredErrors)(`Should return ServiceError(s) with reason REQUIRED if $message`, async ({input, output}) => {
@@ -34,8 +36,8 @@ describe('ProfileService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notStringErrors = [
-            {input: {username: 1, password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile username in not a string' },
-            {input: {username: 'user', password: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile password in not a string' }
+            {input: profileGen.createAny({username: 1}), output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile username in not a string' },
+            {input: profileGen.createAny({username: 'user'}, { password: true }), output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile password in not a string' }
         ];
         it.each(notStringErrors)(`Should return ServiceError(s) with reason NOT_STRING if $message`, async ({input, output}) => {
             const actual = await profileService.create(input);
@@ -43,17 +45,17 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return ServiceError with reason NOT_UNIQUE if Profile with username already exists', async () => {
-            const existingUserName = 'user1';
+            const existingProfile = profileGen.create({username: 'user1'});
 
-            await insertInto('Profile', {username: existingUserName, password: 'password'});
+            await insertInto('Profile', existingProfile);
 
-            const actual = await profileService.create({username: existingUserName, password: 'pass'});
+            const actual = await profileService.create(existingProfile);
 
             expect(actual).toEqual(expect.objectContaining(notUniqueError));
         });
 
         it('Should return array of two ServiceErrors if username is not provided and password is not a string', async () => {
-            const input = { password: 34 };
+            const input = profileGen.createAny({username: undefined}, {password: 34});
 
             const actual = await profileService.create(input);
 
@@ -62,7 +64,7 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should not add anything to DB if validation failed', async () => {
-            const input = { password: 34 };
+            const input = profileGen.createAny({username: undefined}, {password: 34});
 
             await profileService.create(input);
 
@@ -72,33 +74,37 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should add new Profile to DB if input is valid and return the created Profile', async () => {
-            const actual = await profileService.create(profile1);
+            const profileToCreate = profileGen.create();
+            const actual = await profileService.create(profileToCreate);
 
-            const dbResp = await selectFrom('Profile', `username="${profile1.username}"`);
+            const dbResp = await selectFrom('Profile', `username="${profileToCreate.username}"`);
 
-            expect(actual).toEqual(expect.objectContaining({...profile1, password: expect.any(String), id: expect.any(Number)}));
-            expect(dbResp[0]).toEqual(expect.objectContaining({username: profile1.username}));
+            expect(actual).toEqual(expect.objectContaining({...profileToCreate, password: expect.any(String), id: expect.any(Number)}));
+            expect(dbResp[0]).toEqual(expect.objectContaining({username: profileToCreate.username}));
         });
 
         it('Should hash a provided password', async () => {
-            await profileService.create(profile1);
+            const profileToCreate = profileGen.create();
+            await profileService.create(profileToCreate);
 
-            const dbResp = await selectFrom('Profile', `username="${profile1.username}"`);
+            const dbResp = await selectFrom('Profile', `username="${profileToCreate.username}"`);
 
-            expect(dbResp[0].password).not.toBe(profile1.password);
+            expect(dbResp[0].password).not.toBe(profileToCreate.password);
         });
     });
 
     describe('authenticate()', () => {
+        const profile = profileGen.create();
+
         beforeEach(async () => {
-            await profileService.create(profile1);
+            await profileService.create(profile);
         });
 
         it('Should return object with accessToken, expiresOn, username and password fields if credentials are valid', async () => {
-            const actual = await profileService.authenticate(profile1);
+            const actual = await profileService.authenticate(profile);
 
             expect(actual).toEqual(expect.objectContaining({
-                ...profile1, 
+                ...profile, 
                 accessToken: expect.any(String), 
                 expiresOn: expect.any(Number)
             }));
@@ -109,8 +115,8 @@ describe('ProfileService test suite', () => {
          */
         const requiredErrors = [
             {input: null, output: expect.objectContaining(requiredError), message: 'provided credentials are null' },
-            {input: {password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided credentials have no username' },
-            {input: {username: 'user'}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided credentials have no password' },
+            {input: profileGen.createAny({username: undefined}), output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided credentials have no username' },
+            {input: profileGen.createAny({username: 'user1'}, {password: undefined}), output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided credentials have no password' },
             {input: {}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided credentials have no username and password' }
         ];
         it.each(requiredErrors)(`Should return ServiceError(s) with reason REQUIRED if $message`, async ({input, output}) => {
@@ -122,8 +128,8 @@ describe('ProfileService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notStringErrors = [
-            {input: {username: 1, password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided credentials username in not a string' },
-            {input: {username: 'user', password: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided credentials password in not a string' }
+            {input: profileGen.createAny({username: 1}), output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided credentials username in not a string' },
+            {input: profileGen.createAny({username: 'user'}, { password: 1 }), output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided credentials password in not a string' }
         ];
         it.each(notStringErrors)(`Should return ServiceError(s) with reason NOT_STRING if $message`, async ({input, output}) => {
             const actual = await profileService.authenticate(input);
@@ -131,7 +137,7 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return array of two ServiceErrors if username is not provided and password is not a string', async () => {
-            const input = { password: 34 };
+            const input = profileGen.createAny({username: undefined}, { password: 34 });
 
             const actual = await profileService.authenticate(input);
 
@@ -140,7 +146,7 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return null if password is invalid', async () => {
-            const actual = await profileService.authenticate({...profile1, password: 'wrong_password'});
+            const actual = await profileService.authenticate({...profile, password: 'wrong_password'});
 
             expect(actual).toBeNull();
         });
@@ -154,7 +160,7 @@ describe('ProfileService test suite', () => {
         it('Should return right expiresOn field, which should be after 12h from the creation moment', async () => {
             const expected = Date.now() + 12 * 60 * 60 * 1000;
 
-            const { expiresOn } = await profileService.authenticate(profile1);
+            const { expiresOn } = await profileService.authenticate(profile);
 
             const difference = Math.abs(expiresOn - expected);
             const oneMinute = 60000;
@@ -164,14 +170,15 @@ describe('ProfileService test suite', () => {
     });
 
     describe('read()', () => {
+        const profile = profileGen.create();
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await insertInto('Profile', profile1);
+            profileId1 = await insertInto('Profile', profile);
         });
 
         it('Should return Profile object if Profile with requested id exists', async () => {
             const actual = await profileService.read(profileId1);
-            expect(actual).toEqual({...profile1, id: profileId1});
+            expect(actual).toEqual({...profile, id: profileId1});
         });
 
         it('Should return ServiceError with reason REQUIRED if no id provided', async () => {
@@ -191,14 +198,16 @@ describe('ProfileService test suite', () => {
     });
 
     describe('searchByUserName()', () => {
+        const profile = profileGen.create();
+
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await insertInto('Profile', profile1);
+            profileId1 = await insertInto('Profile', profile);
         });
 
         it('Should return Profile object if Profile with requested username exists', async () => {
-            const actual = await profileService.searchByUserName(profile1.username);
-            expect(actual).toEqual({...profile1, id: profileId1});
+            const actual = await profileService.searchByUserName(profile.username);
+            expect(actual).toEqual({...profile, id: profileId1});
         });
 
         it('Should return ServiceError with reason REQUIRED if no username provided', async () => {
@@ -218,7 +227,12 @@ describe('ProfileService test suite', () => {
     });
 
     describe('readAll()', () => {
+        const profile1 = profileGen.create({username: 'user1'});
+        const profile2 = profileGen.create({username: 'user2'});
+        const profile3 = profileGen.create({username: 'user3'});
+
         let profileId1, profileId2, profileId3;
+        
         beforeEach(async () => {
             profileId1 = await insertInto('Profile', profile1);
             profileId2 = await insertInto('Profile', profile2);
@@ -256,13 +270,15 @@ describe('ProfileService test suite', () => {
     });
 
     describe('update()', () => {
+        const profile = profileGen.create();
+
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await insertInto('Profile', profile1);
+            profileId1 = await insertInto('Profile', profile);
         });
 
         it('Should return true if Profile was updated successfully and update the Profile in DB', async () => {
-            const updateObj = {...profile1, password: 'newPassword', id: profileId1};
+            const updateObj = {...profile, password: 'newPassword', id: profileId1};
 
             const isSuccess = await profileService.update(updateObj);
             const dbResp = await selectById('Profile', profileId1);
@@ -276,7 +292,7 @@ describe('ProfileService test suite', () => {
          */
         const requiredErrors = [
             {input: null, output: expect.objectContaining(requiredError), message: 'provided Profile is null' },
-            {input: {password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no id' }
+            {input: profileGen.create(), output: expect.arrayContaining([expect.objectContaining(requiredError)]), message: 'provided Profile has no id' }
         ];
         it.each(requiredErrors)(`Should return ServiceError(s) with reason REQUIRED if $message`, async ({input, output}) => {
             const actual = await profileService.update(input);
@@ -284,7 +300,7 @@ describe('ProfileService test suite', () => {
         });
 
         it(`Should return ServiceError array with reason NOT_NUMBER if id is not number`, async () => {
-            const actual = await profileService.update({...profile1, id: 'not_num'});
+            const actual = await profileService.update({...profile, id: 'not_num'});
             expect(actual).toEqual(expect.arrayContaining([expect.objectContaining(notNumberError)]));
         });
 
@@ -292,8 +308,8 @@ describe('ProfileService test suite', () => {
          * @type{ {input: {}, output: ServiceError[], message: string}[] }
          */
         const notStringErrors = [
-            {input: {id: profileId1, username: 1, password: 'pass'}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile username in not a string' },
-            {input: {id: profileId1, username: 'user', password: true}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile password in not a string' }
+            {input: {id: profileId1, ...profileGen.createAny({username: 1})}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile username in not a string' },
+            {input: {id: profileId1, ...profileGen.createAny({username: 'user1'}, {password: 1})}, output: expect.arrayContaining([expect.objectContaining(notStringError)]), message: 'provided Profile password in not a string' }
         ];
         it.each(notStringErrors)(`Should return ServiceError(s) with reason NOT_STRING if $message`, async ({input, output}) => {
             const actual = await profileService.update(input);
@@ -301,26 +317,28 @@ describe('ProfileService test suite', () => {
         });
 
         it('Should return ServiceError with reason NOT_UNIQUE if Profile with username already exists', async () => {
+            const profile2 = profileGen.create({username: 'user2'});
             const profileId2 = await insertInto('Profile', profile2);
 
-            const actual = await profileService.update({...profile1, id: profileId2});
+            const actual = await profileService.update({...profile, id: profileId2});
 
             expect(actual).toEqual(expect.objectContaining(notUniqueError));
         });
 
         it('Should return ServiceError with reason NOT_FOUND if Profile with provided id does not exist', async () => {
+            const profile2 = profileGen.create({username: 'user2'});
             const actual = await profileService.update({...profile2, id: 1234});
             expect(actual).toEqual(expect.objectContaining(notFoundError));
         });
 
         it('Should not update anything to DB if validation failed', async () => {
-            const input = { password: 34, id: profileId1 };
+            const input = { ...profileGen.create({username: undefined}, {password: 123}), id: profileId1 };
 
             await profileService.update(input);
 
             const dbResp = await selectById('Profile', profileId1);
 
-            expect(dbResp).toEqual({...profile1, id: profileId1});
+            expect(dbResp).toEqual({...profile, id: profileId1});
         });
 
         it('Should return false if nothing was updated', async () => {
@@ -330,9 +348,10 @@ describe('ProfileService test suite', () => {
     });
 
     describe('delete()', () => {
+        const profile = profileGen.create({username: 'user1'});
         let profileId1;
         beforeEach(async () => {
-            profileId1 = await insertInto('Profile', profile1);
+            profileId1 = await insertInto('Profile', profile);
         });
 
         it('Should return true if Profile was deleted successfully and it is removed from DB', async () => {
@@ -362,7 +381,7 @@ describe('ProfileService test suite', () => {
             await profileService.delete('not_valid');
             const dbResp = await selectById('Profile', profileId1);
 
-            expect(dbResp).toEqual({...profile1, id: profileId1});
+            expect(dbResp).toEqual({...profile, id: profileId1});
         });
     });
 });
